@@ -1,8 +1,8 @@
 import express from "express";
-import { postDoctorDetails } from "../controllers/doctorController.js";
+import { putDoctorDetails } from "../controllers/doctorController.js";
 
 const router = express.Router();
 
-router.route("/doctor/:id").post(postDoctorDetails);
+router.put("/doctor/:id", putDoctorDetails);
 
 export default router;

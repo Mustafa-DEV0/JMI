@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-import React, { useState } from "react";
+import { useState } from "react";
 import { PlusCircle, Trash2, FileText } from "lucide-react";
 import styles from "./Prescription.module.css";
-=======
-import  { useState } from 'react';
-import { PlusCircle, Trash2, FileText } from 'lucide-react';
-import styles from './Prescription.module.css';
->>>>>>> 3b4e6e65681484947bad7f28da560d117db320bb
 
 const Prescriptions = () => {
   const [medications, setMedications] = useState([
@@ -14,14 +8,8 @@ const Prescriptions = () => {
   ]);
 
   const [formData, setFormData] = useState({
-<<<<<<< HEAD
     patient: "",
     doctor: "",
-    remarks: "",
-=======
-    patient: '',
-    doctor: ''
->>>>>>> 3b4e6e65681484947bad7f28da560d117db320bb
   });
 
   const handleAddMedication = () => {

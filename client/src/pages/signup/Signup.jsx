@@ -29,8 +29,9 @@ const Signup = () => {
       );
       localStorage.setItem("token", response.data.token);
       const id = response.data.user.id;
+      const typeUser = response.data.user.userType;
       setSuccess(response.data.message || "Registration successful!");
-      setTimeout(() => navigate(`/patient/${id}`), 2000);
+      setTimeout(() => navigate(`/${typeUser}/${id}`), 2000);
     } catch (error) {
       setError(
         error.response?.data?.message || "Registration failed. Try again."
