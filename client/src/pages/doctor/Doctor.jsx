@@ -1,24 +1,13 @@
 import React, { useState } from "react";
-import {
-  ChevronRight,
-  Guitar as Hospital,
-  User,
-  Award,
-  Clock,
-} from "lucide-react";
-import axios from "axios"; // Import Axios
-import styles from "./Doctor.module.css";
+import { ChevronRight, User, Award, Clock } from "lucide-react";
+import axios from "axios";
 import { useParams } from "react-router-dom";
+import styles from "./Doctor.module.css";
 
 const Doctor = () => {
   const [activeSection, setActiveSection] = useState("personal");
   const [formData, setFormData] = useState({
-    personalDetails: {
-      name: "",
-      age: "",
-      phone: "",
-      gender: "",
-    },
+    personalDetails: { name: "", age: "", phone: "", gender: "" },
     professionalDetails: {
       specialization: "",
       qualification: "",
@@ -27,26 +16,16 @@ const Doctor = () => {
       consultingFees: "",
       medicalLicenseId: "",
     },
-    availability: {
-      days: [],
-      time: "",
-    },
-    clinicOrHospital: {
-      address: "",
-      officeNumber: "",
-    },
+    availability: { days: [], time: "" },
+    clinicOrHospital: { address: "", officeNumber: "" },
   });
+
+  const { id } = useParams(); // Move useParams() here, inside the component
 
   const handleInputChange = (section, field, value) => {
     setFormData((prev) => ({
       ...prev,
-      [section]:
-        typeof field === "string"
-          ? value
-          : {
-              ...prev[section],
-              [field]: value,
-            },
+      [section]: { ...prev[section], [field]: value },
     }));
   };
 
@@ -74,28 +53,12 @@ const Doctor = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { id } = useParams();
-
-    // Destructure formData
-    const {
-      personalDetails,
-      professionalDetails,
-      availability,
-      clinicOrHospital,
-    } = formData;
-
+    console.log(formData);
     try {
-      const response = await axios.post(`/doctor/${id}`, {
-        personalDetails,
-        professionalDetails,
-        availability,
-        clinicOrHospital,
-      });
-      console.log("Doctor details updated:", response.data);
-      // Handle success (e.g., show a success message or redirect)
+      await axios.put(`http://localhost:5000/api/doctor/${id}`, formData);
+      console.log("Doctor details updated");
     } catch (error) {
       console.error("Error submitting doctor details:", error);
-      // Handle error (e.g., show an error message)
     }
   };
 
@@ -117,6 +80,7 @@ const Doctor = () => {
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
+          {/* Personal Details Section */}
           <div
             className={`${styles.section} ${
               activeSection === "personal" ? styles.active : ""
@@ -175,6 +139,7 @@ const Doctor = () => {
             </button>
           </div>
 
+          {/* Professional Details Section */}
           <div
             className={`${styles.section} ${
               activeSection === "professional" ? styles.active : ""
@@ -281,6 +246,7 @@ const Doctor = () => {
             </div>
           </div>
 
+          {/* Availability & Location Section */}
           <div
             className={`${styles.section} ${
               activeSection === "availability" ? styles.active : ""

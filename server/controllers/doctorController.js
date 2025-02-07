@@ -1,31 +1,55 @@
 import Doctor from "../models/Doctor.js";
 
-const postDoctorDetails = async (req, res) => {
+const putDoctorDetails = async (req, res) => {
   try {
     const { id } = req.params;
+
     const {
-      personalDetails,
-      professionalDetails,
-      availability,
-      clinicOrHospital,
+      personalDetails: { name, age, phone, gender } = {},
+      professionalDetails: {
+        specialization,
+        qualification,
+        experience,
+        mobileNumber,
+        consultingFees,
+        medicalLicenseId,
+      } = {},
+      availability: { days, time } = {},
+      clinicOrHospital: { address, officeNumber } = {},
     } = req.body;
 
-    const updatedDoctor = await Doctor.findByIdAndUpdate(id, {
-      isVerified,
-      personalDetails,
-      professionalDetails,
-      availability,
-      clinicOrHospital,
-    });
-
-    if (!updatedDoctor) {
+    // Check if the doctor exists first
+    const doctor = await Doctor.findById(id);
+    if (!doctor) {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
-    res.status(200).json(updatedDoctor);
+    // Proceed with updating the doctor's details
+    doctor.personalDetails = {
+      name: name || "",
+      age: age || "",
+      phone: phone || "",
+      gender: gender || "",
+    };
+    doctor.professionalDetails = {
+      specialization: specialization || "",
+      qualification: qualification || "",
+      experience: experience || "",
+      mobileNumber: mobileNumber || "",
+      consultingFees: consultingFees || "",
+      medicalLicenseId: medicalLicenseId || "",
+    };
+    doctor.availability = { days: days || [], time: time || "" };
+    doctor.clinicOrHospital = {
+      address: address || "",
+      officeNumber: officeNumber || "",
+    };
+
+    // Save the updated doctor details
+    await doctor.save();
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error });
   }
 };
 
-export { postDoctorDetails };
+export { putDoctorDetails };
