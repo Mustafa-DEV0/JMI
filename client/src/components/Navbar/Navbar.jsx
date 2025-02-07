@@ -75,19 +75,18 @@ const Navbar = () => {
               </div>
             </div>
           </li>
-
-          
         </ul>
 
         <div className={styles.navRight}>
           {token ? (
-            <button 
-            onClick={handleLogout}
-            className={styles.createAccount}>
+            <button onClick={handleLogout} className={styles.createAccount}>
               Logout
             </button>
           ) : (
-            <button className={styles.createAccount}>
+            <button
+              onClick={navigate(`/register`)}
+              className={styles.createAccount}
+            >
               Create Account
             </button>
           )}
