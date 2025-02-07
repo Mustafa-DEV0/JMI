@@ -1,12 +1,19 @@
-import React from 'react'
-import AppRouter from './routes/AppRouter'
+import React from 'react';
+import AppRoutes from './Routes/Routes.jsx';
+import Navbar from './components/Navbar/Navbar.jsx';
+import Footer from './components/Footer/Footer.jsx';
+import './App.css';
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <AppRouter/>
-    </div>
-  )
+    <>
+      <Navbar /> 
+      <div>
+        <AppRoutes /> 
+      </div>
+      <Footer />
+    </>
+  );
 }
 
-export default App
+export default App;

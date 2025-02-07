@@ -1,0 +1,183 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #E2F3F4;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.navItem {
+    position: relative;
+}
+
+.navItem a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+    transition: var(--transition);
+}
+
+.navItem a:hover,
+.navItem a.active {
+    color: var(--primary-color);
+}
+
+/* Dropdown Menu */
+.dropdown {
+    position: relative;
+}
+
+.dropdownToggle {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.dropdownToggle::after {
+    content: '';
+    display: inline-block;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+}
+
+.dropdownMenu {
+    position: absolute;
+    top: 100%;
+    left: -1rem;
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: var(--transition);
+    min-width: 600px;
+    padding: 1.5rem;
+    z-index: 100;
+}
+
+.dropdownToggle {
+    position: relative;
+    bottom: 7px;
+}
+
+.dropdown:hover .dropdownMenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdownContent {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    background-color: #fff;
+}
+
+.dropdownSection {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.dropdownSection ul {
+    list-style: none;
+}
+
+.dropdownSection ul li {
+    margin-bottom: 0.5rem;
+}
+
+.dropdownSection ul li a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: var(--transition);
+    display: block;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.dropdownSection ul li a:hover {
+    background: #fff;
+    color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #000;
+}
+
+.logo img {
+    width: 32px;
+    height: 32px;
+}
+
+.logo span {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.navLinks {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.navLinks li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    position: relative;
+}
+
+.navLinks li a:hover::after,
+.navLinks li a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #6366f1;
+}
+
+.navRight {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.adminLink {
+    text-decoration: none;
+    color: #666;
+    font-size: 16px;
+}
+
+.createAccount {
+    background-color: #6366f1;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.createAccount:hover {
+    background-color: #4f46e5;
+}

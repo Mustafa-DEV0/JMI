@@ -1,0 +1,249 @@
+/* Hero Section */
+.hero {
+    background-color: #6DC7D1;
+    color: #fff;
+    padding: 5rem 0;
+    text-align: center;
+}
+
+.heroContent h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+}
+
+.heroContent p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.ctaButton {
+    padding: 0.8rem 2rem;
+    background-color: #fff;
+    color: #6DC7D1;
+    font-size: 1.1rem;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+    display: inline-block;
+}
+
+.ctaButton:hover {
+    background-color: #e2f3f4;
+    color: #333;
+    transform: scale(1.05);
+}
+
+/* Features Section */
+.features {
+    padding: 3rem 0;
+    text-align: center;
+}
+
+.features h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.featureCards {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.featureCard {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.featureCard:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.featureCard i {
+    font-size: 3rem;
+    color: #6DC7D1;
+    margin-bottom: 1rem;
+}
+
+.featureCard h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+}
+
+.featureCard p {
+    font-size: 1rem;
+}
+
+/* Services Section */
+.services {
+    background-color: #fff;
+    padding: 3rem 0;
+    text-align: center;
+}
+
+.services h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.serviceList {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.serviceItem {
+    width: 100%;
+    max-width: 300px;
+}
+
+.serviceItem h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+}
+
+.serviceItem p {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Testimonials Section */
+.testimonials {
+    background-color: #E2F3F4;
+    padding: 3rem 0;
+    text-align: center;
+}
+
+.testimonials h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.testimonialCarousel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.testimonial {
+    width: 100%;
+    max-width: 600px;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.testimonial:hover {
+    transform: scale(1.02);
+}
+
+.testimonial p {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+}
+
+.testimonial cite {
+    font-size: 1rem;
+    color: #6DC7D1;
+}
+
+/* Contact Section */
+
+.contact {
+    background: linear-gradient(145deg, #6DC7D1, #5caca3);
+    padding: 5rem 0;
+    text-align: center;
+    color: #fff;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.contact h2 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.contact form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 500px;
+    margin: 0 auto;
+    gap: 1.5rem;
+    animation: fadeInUp 1.2s ease-in-out;
+}
+
+.contact input,
+.contact textarea {
+    width: 100%;
+    padding: 1.2rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 2px solid #fff;
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+.contact input:focus,
+.contact textarea:focus {
+    border-color: #6DC7D1;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.contact button {
+    padding: 1rem 3rem;
+    background-color: #fff;
+    color: #6DC7D1;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: transform 0.3s ease-in-out, background 0.3s ease;
+}
+
+.contact button:hover {
+    transform: scale(1.05);
+    background-color: #5caca3;
+    color: #fff;
+}
+
+.contact .container {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 3rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    animation: fadeInUp 1.4s ease-in-out;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
