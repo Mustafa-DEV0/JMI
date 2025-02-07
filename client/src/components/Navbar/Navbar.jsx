@@ -1,8 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./Navbar.module.css";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token"); // Check if user is logged in
+
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Remove token on logout
+    navigate("/login");
+  };
+
   return (
     <div>
       <nav className={styles.navbar}>
@@ -68,21 +76,21 @@ const Navbar = () => {
             </div>
           </li>
 
-          <li>
-            <Link to="/signup">Signup</Link>
-          </li>
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
+          
         </ul>
 
         <div className={styles.navRight}>
-          <Link to="#" className={styles.adminLink}>
-            Admin Panel
-          </Link>
-          <Link to="/signup" className={styles.createAccount}>
-            Create account
-          </Link>
+          {token ? (
+            <button 
+            onClick={handleLogout}
+            className={styles.createAccount}>
+              Logout
+            </button>
+          ) : (
+            <button className={styles.createAccount}>
+              Create Account
+            </button>
+          )}
         </div>
       </nav>
     </div>

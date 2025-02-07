@@ -1,21 +1,53 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import axios from "axios";
 import styles from "./Login.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const togglePassword = () => {
     setPasswordVisible(!passwordVisible);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:5000/api/auth/login", {
+        email,
+        password,
+      });
+      // Assuming the response contains a token and user data
+      const { token } = response.data;
+      // Save the token and user data to local storage or context
+      localStorage.setItem("token", token);
+     
+      // Redirect to the home page or dashboard
+      navigate("/");
+    } catch (error) {
+      setError("Invalid username or password");
+      console.log(error)
+    }
   };
 
   return (
     <div className={styles.formpage}>
       <div className={`${styles.formCard} ${styles.slideIn}`} id="loginForm">
         <h2>Login</h2>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className={styles.inputGroup}>
-            <input type="text" id="username" placeholder=" " required />
+            <input
+              type="text"
+              id="username"
+              placeholder=" "
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
             <label htmlFor="username">Username</label>
           </div>
           <div className={styles.inputGroup}>
@@ -23,6 +55,8 @@ const Login = () => {
               type={passwordVisible ? "text" : "password"}
               id="password"
               placeholder=" "
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
             <label htmlFor="password">Password</label>
@@ -48,24 +82,15 @@ const Login = () => {
               </svg>
             </button>
           </div>
+          {error && <p className={styles.error}>{error}</p>}
           <button type="submit" className={styles.submitBtn}>
             <span className={styles.btnText}>Login</span>
-            <div
-              className={styles.loadingSpinner}
-              style={{ display: "none" }}
-            ></div>
+            <div className={styles.loadingSpinner} style={{ display: "none" }}></div>
           </button>
         </form>
         <p className={styles.switchForm}>
           Don't have an account?
-          <Link
-            to={"/register"}
-            onClick={() =>
-              (document.getElementById("signupForm").style.display = "block")
-            }
-          >
-            Register
-          </Link>
+          <Link to="/signup">Register</Link>
         </p>
       </div>
     </div>
