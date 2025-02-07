@@ -22,6 +22,8 @@ export const registerController = async (req, res) => {
       password: hashedPassword,
     });
 
+    
+
     await newPatient.save();
 
     // Generate JWT token
