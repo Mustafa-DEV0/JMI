@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { User, Phone, Calendar, MapPin, Heart, Ruler, Weight, AlertCircle, Pill as Pills } from 'lucide-react';
-import styles from './Details.module.css';
+import  { useState } from 'react';
+import axios from 'axios';
+import { User, Phone, Calendar, Heart, Ruler, MapPin, AlertCircle,  Weight ,Pill as Pills  } from 'lucide-react';
+import styles from './Patient.module.css';
+import { useParams } from 'react-router-dom';
 
-const Details = () => {
+const Patient = () => {
   const [activeTab, setActiveTab] = useState('personal');
   const [personalDetails, setPersonalDetails] = useState({
     name: '',
@@ -40,9 +42,23 @@ const Details = () => {
     setMedicalDetails(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const { id } = useParams();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ personalDetails, medicalDetails });
+    try {
+      await axios.post(`http://localhost:5000/api/patient/${id}`, {
+        personalDetails,
+        medicalDetails
+      }, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    
+      alert('Details saved successfully');
+    } catch (error) {
+      alert('Failed to save details');
+      console.error('Error:', error);
+    }
   };
 
   return (
@@ -349,4 +365,4 @@ const Details = () => {
   );
 };
 
-export default Details;
+export default Patient;
