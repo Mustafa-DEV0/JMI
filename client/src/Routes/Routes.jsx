@@ -1,18 +1,16 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Login from "../pages/Login/Login.jsx"; // import the Login component
-import Signup from "../pages/Signup/Signup.jsx"; // import the SignUp component
-import Home from "../pages/Home/Home";
+import { Route, Routes } from "react-router-dom";
+import Login from "../pages/login/Login.jsx";
+import Signup from "../pages/signup/Signup.jsx";
+import Home from "../pages/home/Home.jsx";
 
 const AppRoutes = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/login" element={<Login />} />
+    </Routes>
   );
 };
 
