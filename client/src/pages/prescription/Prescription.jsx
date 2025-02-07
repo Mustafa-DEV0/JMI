@@ -9,8 +9,7 @@ const Prescriptions = () => {
   
   const [formData, setFormData] = useState({
     patient: '',
-    doctor: '',
-    remarks: ''
+    doctor: ''
   });
 
   const handleAddMedication = () => {
@@ -97,7 +96,7 @@ const Prescriptions = () => {
           </div>
 
           <div className={styles.remarksSection}>
-            <label htmlFor="remarks">Remarks</label>
+            <label htmlFor="remarks"></label>
             <textarea
               id="remarks"
               value={formData.remarks}
