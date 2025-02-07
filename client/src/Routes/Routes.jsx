@@ -4,6 +4,7 @@ import Login from "../pages/login/login.jsx";
 import Home from "../pages/home/Home.jsx";
 import Doctor from "../pages/doctor/Doctor.jsx";
 import Patient from "../pages/patient/Patient.jsx";
+import Prescription from "../pages/prescription/Prescription.jsx";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -12,6 +13,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/doctor" element={<Doctor />} />
       <Route path="/patient/:id" element={<Patient/>} />
+      <Route path="/prescription" element={<Prescription />} />
     </Routes>
   );
 };
