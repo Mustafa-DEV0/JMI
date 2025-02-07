@@ -25,20 +25,29 @@ export const registerController = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user data
-    const userData = { email, password: hashedPassword, createdAt: new Date() };
-
-    let newUser;
+    const userData = { email, password: hashedPassword };
 
     // Create a new Doctor or Patient based on userType
     if (userType === "doctor") {
-      newUser = new Doctor({
+      const newUser = new Doctor({
         ...userData,
-        verified: false, // Default for doctor
       });
       await newUser.save();
-      res.status(201).json({ message: "Doctor registered successfully" });
+
+      // Generate JWT token for doctor
+      const token = jwt.sign(
+        { id: newUser._id, userType },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+      );
+
+      res.status(201).json({
+        message: "Doctor registered successfully",
+        token,
+        user: { id: newUser._id, email, userType },
+      });
     } else if (userType === "patient") {
-      newUser = new Patient(userData);
+      const newUser = new Patient(userData);
       await newUser.save();
 
       // Generate JWT token for patient
