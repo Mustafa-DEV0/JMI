@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-
+import mongoose from "mongoose";
 const PatientSchema = new mongoose.Schema(
   {
     email: { type: String, required: true, unique: true },
@@ -44,4 +43,4 @@ const PatientSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Patient", PatientSchema);
+export default mongoose.model("Patient", PatientSchema);
