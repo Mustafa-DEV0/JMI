@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { PlusCircle, Trash2, FileText, User, UserCog, Calendar } from 'lucide-react';
-import styles from './Prescriptions.module.css';
+import  { useState } from 'react';
+import { PlusCircle, Trash2, FileText } from 'lucide-react';
+import styles from './Prescription.module.css';
 
 const Prescriptions = () => {
   const [medications, setMedications] = useState([
