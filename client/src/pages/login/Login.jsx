@@ -90,7 +90,7 @@ const Login = () => {
         </form>
         <p className={styles.switchForm}>
           Don't have an account?
-          <Link to="/signup">Register</Link>
+          <Link to="/register">Register</Link>
         </p>
       </div>
     </div>
