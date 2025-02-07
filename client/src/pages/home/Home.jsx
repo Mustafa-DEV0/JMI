@@ -1,5 +1,6 @@
-import React from 'react';
-import styles from './Home.module.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import styles from "./Home.module.css";
 
 const Home = () => {
   return (
@@ -7,8 +8,13 @@ const Home = () => {
       <section className={styles.hero}>
         <div className={styles.heroContent}>
           <h1>Revolutionizing Healthcare Management</h1>
-          <p>Streamline your hospital operations with our state-of-the-art system.</p>
-          <a href="#contact" className={styles.ctaButton}>Get Started</a>
+          <p>
+            Streamline your hospital operations with our state-of-the-art
+            system.
+          </p>
+          <Link to="/" className={styles.ctaButton}>
+            Get Started
+          </Link>
         </div>
       </section>
 
@@ -70,7 +76,10 @@ const Home = () => {
         <h2>What Our Clients Say</h2>
         <div className={styles.testimonialCarousel}>
           <div className={styles.testimonial}>
-            <p>"MediCare has transformed our hospital's efficiency. Highly recommended!"</p>
+            <p>
+              "MediCare has transformed our hospital's efficiency. Highly
+              recommended!"
+            </p>
             <cite>- Dr. Jane Smith</cite>
           </div>
           <div className={styles.testimonial}>
@@ -95,6 +104,6 @@ const Home = () => {
       </main>
     </div>
   );
-}
+};
 
 export default Home;
