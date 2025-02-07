@@ -26,8 +26,10 @@ const Login = () => {
       // Save the token and user data to local storage or context
       localStorage.setItem("token", token);
      
-      // Redirect to the home page or dashboard
-      navigate("/");
+      const decoded = JSON.parse(atob(token.split(".")[1])); // Decode JWT
+      const userId = decoded.id; 
+      // Redirect to  dashboard
+      navigate(`/patient/${userId}`);
     } catch (error) {
       setError("Invalid username or password");
       console.log(error)

@@ -10,7 +10,11 @@ const AppRoutes = () => {
       <Route path="/" element={<Home />} />
       <Route path="/register" element={<Signup />} />
       <Route path="/login" element={<Login />} />
+<<<<<<< HEAD
       <Route path="/doctor" element={<Doctor />} />
+=======
+      <Route path="/patient/:id"></Route>
+>>>>>>> b16a30eff08021b06fc8ab97896034e7c0c678d4
     </Routes>
   );
 };
