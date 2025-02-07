@@ -1,32 +1,24 @@
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import Patient from "../models/Patient";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import Patient from "../models/Patient.js";
 
-export const loginUser = async (req, res) => {
+dotenv.config();
+
+export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if the patient already exists
-    let patient = await Patient.findOne({ email });
-
-    if (patient) {
-      // LOGIN: Verify password
-      const isMatch = await bcrypt.compare(password, patient.password);
-      if (!isMatch) {
-        return res.status(400).json({ message: "Invalid credentials" });
-      }
-    } else {
-      // REGISTER: Hash password and create new patient
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-
-      patient = new Patient({ email, password: hashedPassword });
-      await patient.save();
+    // Check if patient exists
+    const patient = await Patient.findOne({ email });
+    if (!patient) {
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Check if JWT_SECRET exists
-    if (!process.env.JWT_SECRET) {
-      throw new Error("JWT_SECRET is not defined");
+    // Verify password
+    const isMatch = await bcrypt.compare(password, patient.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
     // Generate JWT token
@@ -35,7 +27,7 @@ export const loginUser = async (req, res) => {
     });
 
     res.status(200).json({
-      message: "Authentication successful",
+      message: "Login successful",
       token,
       patient: {
         id: patient._id,
