@@ -1,8 +1,8 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import Patient from "../models/Patient.js";
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import Patient from '../models/Patient.js';
 
-export const authPatient = async (req, res) => {
+export const registerController = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -13,7 +13,7 @@ export const authPatient = async (req, res) => {
       // LOGIN: Verify password
       const isMatch = await bcrypt.compare(password, patient.password);
       if (!isMatch) {
-        return res.status(400).json({ message: "Invalid credentials" });
+        return res.status(400).json({ message: 'Invalid credentials' });
       }
     } else {
       // REGISTER: Hash password and create new patient
@@ -26,19 +26,18 @@ export const authPatient = async (req, res) => {
 
     // Check if JWT_SECRET exists
     if (!process.env.JWT_SECRET) {
-      throw new Error("JWT_SECRET is not defined");
+      throw new Error('JWT_SECRET is not defined');
     }
 
     // Generate JWT token
-    const token = jwt.sign({ id: patient._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ id: patient._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     res.status(200).json({
-      message: patient ? "Login successful" : "Registration successful",
+      message: patient ? 'Login successful' : 'Registration successful',
       token,
       patient: { id: patient._id, email: patient.email },
     });
-
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
