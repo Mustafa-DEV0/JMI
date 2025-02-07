@@ -4,7 +4,6 @@ const postDoctorDetails = async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      isVerified,
       personalDetails,
       professionalDetails,
       availability,

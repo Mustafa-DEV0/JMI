@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import styles from "./Signup.module.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -19,18 +19,22 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/register", {
-        userType, // Include user type
-        email,
-        password,
-      });
-
-      const id=response.data.patient.id;
-
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/register",
+        {
+          userType, // Include user type
+          email,
+          password,
+        }
+      );
+      localStorage.setItem("token", response.data.token);
+      const id = response.data.user.id;
       setSuccess(response.data.message || "Registration successful!");
       setTimeout(() => navigate(`/patient/${id}`), 2000);
     } catch (error) {
-      setError(error.response?.data?.message || "Registration failed. Try again.");
+      setError(
+        error.response?.data?.message || "Registration failed. Try again."
+      );
     } finally {
       setLoading(false);
     }

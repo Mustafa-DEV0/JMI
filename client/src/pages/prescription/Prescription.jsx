@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
-import { PlusCircle, Trash2, FileText, User, UserCog, Calendar } from 'lucide-react';
-import styles from './Prescriptions.module.css';
+import React, { useState } from "react";
+import { PlusCircle, Trash2, FileText } from "lucide-react";
+import styles from "./Prescription.module.css";
 
 const Prescriptions = () => {
   const [medications, setMedications] = useState([
-    { medicine: '', dosage: '', duration: '' }
+    { medicine: "", dosage: "", duration: "" },
   ]);
-  
+
   const [formData, setFormData] = useState({
-    patient: '',
-    doctor: '',
-    remarks: ''
+    patient: "",
+    doctor: "",
+    remarks: "",
   });
 
   const handleAddMedication = () => {
-    setMedications([...medications, { medicine: '', dosage: '', duration: '' }]);
+    setMedications([
+      ...medications,
+      { medicine: "", dosage: "", duration: "" },
+    ]);
   };
 
   const handleRemoveMedication = (index) => {
@@ -47,7 +50,6 @@ const Prescriptions = () => {
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
-
           <div className={styles.medicationsSection}>
             <h2>Medications</h2>
             {medications.map((medication, index) => (
@@ -56,21 +58,27 @@ const Prescriptions = () => {
                   <input
                     type="text"
                     value={medication.medicine}
-                    onChange={(e) => handleMedicationChange(index, 'medicine', e.target.value)}
+                    onChange={(e) =>
+                      handleMedicationChange(index, "medicine", e.target.value)
+                    }
                     placeholder="Medicine name"
                     required
                   />
                   <input
                     type="text"
                     value={medication.dosage}
-                    onChange={(e) => handleMedicationChange(index, 'dosage', e.target.value)}
+                    onChange={(e) =>
+                      handleMedicationChange(index, "dosage", e.target.value)
+                    }
                     placeholder="Dosage"
                     required
                   />
                   <input
                     type="text"
                     value={medication.duration}
-                    onChange={(e) => handleMedicationChange(index, 'duration', e.target.value)}
+                    onChange={(e) =>
+                      handleMedicationChange(index, "duration", e.target.value)
+                    }
                     placeholder="Duration"
                     required
                   />
@@ -101,7 +109,9 @@ const Prescriptions = () => {
             <textarea
               id="remarks"
               value={formData.remarks}
-              onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, remarks: e.target.value })
+              }
               placeholder="Add any additional notes or remarks"
             />
           </div>
