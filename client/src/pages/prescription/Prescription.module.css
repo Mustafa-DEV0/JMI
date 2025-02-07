@@ -224,4 +224,20 @@
     transform: translateY(0);
   }
   
-
+  @media (max-width: 768px) {
+    .container {
+      padding: 1rem;
+    }
+  
+    .formCard {
+      padding: 1.5rem;
+    }
+  
+    .medicationInputs {
+      grid-template-columns: 1fr;
+    }
+  
+    .topSection {
+      grid-template-columns: 1fr;
+    }
+  }
