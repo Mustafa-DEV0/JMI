@@ -1,55 +1,88 @@
-import React from 'react';
-import styles from './Navbar.module.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import styles from "./Navbar.module.css";
 
 const Navbar = () => {
   return (
     <div>
       <nav className={styles.navbar}>
-        <a href="#" className={styles.logo}>
-          <img 
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gIg0k2I4KamRyeqQufC8X0g2zqQUCp.png" 
+        <Link to="/" className={styles.logo}>
+          <img
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gIg0k2I4KamRyeqQufC8X0g2zqQUCp.png"
             alt="Prescripto Logo"
           />
           <span>Prescripto</span>
-        </a>
+        </Link>
 
         <ul className={styles.navLinks}>
-          <li><a href="/" className={styles.active}>Home</a></li>
-          <li><a href="#features">Features</a></li>
+          <li>
+            <Link to="/" className={styles.active}>
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link to="/features">Features</Link>
+          </li>
 
           <li className={`${styles.navItem} ${styles.dropdown}`}>
-            <a href="#" className={styles.dropdownToggle}>Services</a>
+            <Link to="#" className={styles.dropdownToggle}>
+              Services
+            </Link>
             <div className={styles.dropdownMenu}>
               <div className={styles.dropdownContent}>
                 <div className={styles.dropdownSection}>
                   <h3>Medical Services</h3>
                   <ul>
-                    <li><a href="/PrimaryCare">Primary Care</a></li>
-                    <li><a href="/SpecialityCare">Specialist Care</a></li>
-                    <li><a href="/EmergencyCare">Emergency Care</a></li>
-                    <li><a href="/PreventiveCare">Preventive Care</a></li>
+                    <li>
+                      <Link to="/PrimaryCare">Primary Care</Link>
+                    </li>
+                    <li>
+                      <Link to="/SpecialityCare">Specialist Care</Link>
+                    </li>
+                    <li>
+                      <Link to="/EmergencyCare">Emergency Care</Link>
+                    </li>
+                    <li>
+                      <Link to="/PreventiveCare">Preventive Care</Link>
+                    </li>
                   </ul>
                 </div>
                 <div className={styles.dropdownSection}>
                   <h3>Support Services</h3>
                   <ul>
-                    <li><a href="#">Lab Tests</a></li>
-                    <li><a href="#">Pharmacy</a></li>
-                    <li><a href="#">Rehabilitation</a></li>
-                    <li><a href="#">Mental Health</a></li>
+                    <li>
+                      <Link to="#">Lab Tests</Link>
+                    </li>
+                    <li>
+                      <Link to="#">Pharmacy</Link>
+                    </li>
+                    <li>
+                      <Link to="#">Rehabilitation</Link>
+                    </li>
+                    <li>
+                      <Link to="#">Mental Health</Link>
+                    </li>
                   </ul>
                 </div>
               </div>
             </div>
           </li>
 
-          <li><a href="/Signup">Signup</a></li>
-          <li><a href="/Login">Login</a></li>
+          <li>
+            <Link to="/signup">Signup</Link>
+          </li>
+          <li>
+            <Link to="/login">Login</Link>
+          </li>
         </ul>
 
         <div className={styles.navRight}>
-          <a href="#" className={styles.adminLink}>Admin Panel</a>
-          <a href="/Signup" className={styles.createAccount}>Create account</a>
+          <Link to="#" className={styles.adminLink}>
+            Admin Panel
+          </Link>
+          <Link to="/signup" className={styles.createAccount}>
+            Create account
+          </Link>
         </div>
       </nav>
     </div>
