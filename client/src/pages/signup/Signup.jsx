@@ -25,8 +25,10 @@ const Signup = () => {
         password,
       });
 
+      const id=response.data.patient.id;
+
       setSuccess(response.data.message || "Registration successful!");
-      setTimeout(() => navigate("/login"), 2000);
+      setTimeout(() => navigate(`/patient/${id}`), 2000);
     } catch (error) {
       setError(error.response?.data?.message || "Registration failed. Try again.");
     } finally {
