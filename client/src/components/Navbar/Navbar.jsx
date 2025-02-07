@@ -83,7 +83,7 @@ const Navbar = () => {
             </button>
           ) : (
             <button
-              onClick={navigate(`/register`)}
+              onClick={() => navigate(`/register`)}
               className={styles.createAccount}
             >
               Create Account
