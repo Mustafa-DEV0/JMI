@@ -26,8 +26,9 @@ const Appointment = () => {
     const fetchDoctor = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/appointment/${id}`
+          `http://localhost:5000/appointment/get/${id}`
         );
+        console.log(response.data);
         if (response.data) {
           setDoctor(response.data);
           setFormData((prev) => ({
@@ -66,9 +67,17 @@ const Appointment = () => {
     setIsSubmitted(true);
     setShowPending(true);
     const token = localStorage.getItem("token");
+    const data = {
+      doctor: id,
+      concerns: formData.concerns,
+      scheduledAt: formData.date + " " + formData.time,
+      mode: formData.mode,
+      token,
+    };
+    console.log(data);
 
     try {
-      await axios.post("http://localhost:5000/api/appointment", {
+      await axios.post("http://localhost:5000/appointment/save", {
         doctor: id,
         concerns: formData.concerns,
         scheduledAt: formData.date + " " + formData.time,
