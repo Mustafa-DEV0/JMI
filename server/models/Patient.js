@@ -10,6 +10,7 @@ const PatientSchema = new mongoose.Schema(
       phone: { type: String },
       dob: { type: Date },
       age: { type: Number },
+      profileImg: { type: String },
       gender: { type: String, enum: ["Male", "Female", "Other"] },
       address: {
         city: { type: String },
