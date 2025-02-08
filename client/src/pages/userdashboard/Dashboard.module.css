@@ -576,6 +576,11 @@
     transform: scale(1.1);
   }
 
+  .disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
   @media (max-width: 768px) {
     .dashboard {
       padding: 1rem;

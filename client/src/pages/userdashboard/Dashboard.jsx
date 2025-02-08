@@ -68,8 +68,8 @@ const Dashboard = () => {
     },
     orders: [],
     upcomingAppointments: []
-  });
-  console.log(patientData.patient.personalDetails.name)
+  });clearInterval
+  
 const {id} = useParams();
   useEffect(() => {
     const fetchPatientData = async () => {
@@ -80,7 +80,7 @@ const {id} = useParams();
           },
         
         });
-  console.log(response.data)
+  
         setPatientData(response.data);
       } catch (error) {
         console.error('Error fetching patient data:', error);
@@ -157,7 +157,7 @@ const {id} = useParams();
   return (
     <div className={styles.dashboard}>
       <div className={styles.header}>
-        <h1>Patient Dashboard</h1>
+        <h1>{patientData.patient.personalDetails.name}</h1>
         <button className={styles.updateButton} onClick={handleUpdateProfile}>
           <Edit size={20} />
           Update Profile
@@ -194,8 +194,13 @@ const {id} = useParams();
             <button
               className={`${styles.tab} ${
                 activeTab === "orders" ? styles.active : ""
-              }`}
-              onClick={() => setActiveTab("orders")}
+              } ${!(patientData.orders && patientData.orders.length) ? styles.disabled : ""}`}
+              onClick={() => {
+                if (patientData.orders && patientData.orders.length) {
+                  setActiveTab("orders");
+                }
+              }}
+              disabled={!(patientData.orders && patientData.orders.length)}
             >
               Orders
             </button>
@@ -209,7 +214,7 @@ const {id} = useParams();
                   <div>
                     <h3>Name</h3>
                     <p>
-                      {patientData?.patient?.personalDetails?.name || "Not provided"}
+                      {patientData.patient.personalDetails.name}
                     </p>
                   </div>
                 </div>
@@ -219,7 +224,7 @@ const {id} = useParams();
                   <div>
                     <h3>Phone</h3>
                     <p>
-                      {patientData?.personalDetails?.phone || "Not provided"}
+                      {patientData.patient.personalDetails.phone} 
                     </p>
                   </div>
                 </div>
@@ -229,9 +234,9 @@ const {id} = useParams();
                   <div>
                     <h3>Date of Birth</h3>
                     <p>
-                      {patientData?.personalDetails?.dob
+                      {patientData?.patient.personalDetails?.dob
                         ? new Date(
-                            patientData.personalDetails.dob
+                            patientData.patient.personalDetails.dob
                           ).toLocaleDateString()
                         : "Not provided"}
                     </p>
@@ -243,8 +248,8 @@ const {id} = useParams();
                   <div>
                     <h3>Address</h3>
                     <p>
-                      {patientData?.personalDetails?.address
-                        ? `${patientData.personalDetails.address.city}, ${patientData.personalDetails.address.state} - ${patientData.personalDetails.address.pincode}`
+                      {patientData.patient.personalDetails?.address
+                        ? `${patientData.patient.personalDetails.address.city}, ${patientData.patient.personalDetails.address.state} - ${patientData.patient.personalDetails.address.pincode}`
                         : "Not provided"}
                     </p>
                   </div>
@@ -258,17 +263,17 @@ const {id} = useParams();
                 <div className={styles.emergencyInfo}>
                   <p>
                     <strong>Name:</strong>{" "}
-                    {patientData?.personalDetails?.emergencyContact?.name ||
+                    {patientData?.patient.personalDetails?.emergencyContact?.name ||
                       "Not provided"}
                   </p>
                   <p>
                     <strong>Phone:</strong>{" "}
-                    {patientData?.personalDetails?.emergencyContact?.phone ||
+                    {patientData?.patient.personalDetails?.emergencyContact?.phone ||
                       "Not provided"}
                   </p>
                   <p>
                     <strong>Relation:</strong>{" "}
-                    {patientData?.personalDetails?.emergencyContact?.relation ||
+                    {patientData?.patient.personalDetails?.emergencyContact?.relation ||
                       "Not provided"}
                   </p>
                 </div>
@@ -284,7 +289,7 @@ const {id} = useParams();
                   <div>
                     <h3>Blood Group</h3>
                     <p>
-                      {patientData?.medicalDetails?.bloodGroup ||
+                      {patientData?.patient.medicalDetails?.bloodGroup ||
                         "Not provided"}
                     </p>
                   </div>
@@ -295,10 +300,10 @@ const {id} = useParams();
                   <div>
                     <h3>Physical Details</h3>
                     <p>
-                      Height: {patientData?.medicalDetails?.height || "N/A"} cm
+                      Height: {patientData?.patient.medicalDetails?.height || "N/A"} cm
                     </p>
                     <p>
-                      Weight: {patientData?.medicalDetails?.weight || "N/A"} kg
+                      Weight: {patientData?.patient.medicalDetails?.weight || "N/A"} kg
                     </p>
                   </div>
                 </div>
@@ -308,7 +313,7 @@ const {id} = useParams();
                   <div>
                     <h3>Allergies</h3>
                     <div className={styles.tagList}>
-                      {patientData?.medicalDetails?.allergies?.map(
+                      {patientData?.patient.medicalDetails?.allergies?.map(
                         (allergy, index) => (
                           <span key={index} className={styles.tag}>
                             {allergy}
@@ -324,7 +329,7 @@ const {id} = useParams();
                   <div>
                     <h3>Diseases</h3>
                     <div className={styles.tagList}>
-                      {patientData?.medicalDetails?.diseases?.map(
+                      {patientData?.patient.medicalDetails?.diseases?.map(
                         (disease, index) => (
                           <span key={index} className={styles.tag}>
                             {disease}
@@ -340,7 +345,7 @@ const {id} = useParams();
                     <Pills className={styles.icon} /> Current Medication
                   </h3>
                   <div className={styles.medicationList}>
-                    {patientData?.medicalDetails?.currentMedication?.map(
+                    {patientData?.patient.medicalDetails?.currentMedication?.map(
                       (med, index) => (
                         <div key={index} className={styles.medicationItem}>
                           <h4>{med.tabletName}</h4>
@@ -449,13 +454,16 @@ const {id} = useParams();
           )}
 
           {activeTab === "orders" && (
+            
             <div className={styles.detailsCard}>
               <div className={styles.ordersSection}>
                 <div className={styles.orderCategory}>
                   <h3>
                     <Package className={styles.icon} /> Upcoming Orders
                   </h3>
+                  
                   <div className={styles.ordersList}>
+                    
                     {medicineOrders.upcoming.map((order) => (
                       <div key={order.id} className={styles.orderCard}>
                         <div className={styles.orderHeader}>
@@ -538,6 +546,7 @@ const {id} = useParams();
                 </div>
               </div>
             </div>
+            
           )}
         </div>
 
