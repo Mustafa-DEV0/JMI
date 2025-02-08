@@ -1,6 +1,6 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
-import { User, Phone, Calendar, Heart, Ruler, MapPin, AlertCircle,  Weight ,Pill as Pills  } from 'lucide-react';
+import { User, Phone, Calendar, Heart, Ruler, MapPin, AlertCircle, Weight, Pill as Pills, Trash2 } from 'lucide-react';
 import styles from './Patient.module.css';
 import { useParams } from 'react-router-dom';
 
@@ -10,15 +10,15 @@ const Patient = () => {
     name: '',
     phone: '',
     dob: '',
-    age: 0,
+    age: '',
     gender: '',
     address: { city: '', state: '', pincode: '' },
     emergencyContact: { name: '', phone: '', relation: '' }
   });
   const [medicalDetails, setMedicalDetails] = useState({
     bloodGroup: '',
-    height: 0,
-    weight: 0,
+    height: '',
+    weight: '',
     allergies: [''],
     diseases: [''],
     currentMedication: [{ tabletName: '', dosage: '', duration: '' }]
@@ -59,6 +59,19 @@ const Patient = () => {
       alert('Failed to save details');
       console.error('Error:', error);
     }
+  };
+
+  const handleNext = (e) => {
+    e.preventDefault();
+    setActiveTab('medical');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleDeleteMedication = (index) => {
+    setMedicalDetails(prev => ({
+      ...prev,
+      currentMedication: prev.currentMedication.filter((_, i) => i !== index)
+    }));
   };
 
   return (
@@ -132,7 +145,7 @@ const Patient = () => {
               <div className={styles.formGroup}>
                 <label>Age</label>
                 <input
-                  type="number"
+                  type="text"
                   name="age"
                   value={personalDetails.age}
                   onChange={handlePersonalDetailsChange}
@@ -223,6 +236,12 @@ const Patient = () => {
                 </div>
               </div>
             </div>
+
+            <div className={styles.formActions}>
+              <button type="button" onClick={handleNext} className={styles.nextButton}>
+                Next
+              </button>
+            </div>
           </div>
         ) : (
           <div className={styles.section}>
@@ -244,28 +263,28 @@ const Patient = () => {
               <div className={styles.formGroup}>
                 <label>
                   <Ruler size={18} />
-                  Height (cm)
+                  Height
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   name="height"
                   value={medicalDetails.height}
                   onChange={handleMedicalDetailsChange}
-                  placeholder="Enter height"
+                  placeholder="Enter height (cm)"
                 />
               </div>
 
               <div className={styles.formGroup}>
                 <label>
                   <Weight size={18} />
-                  Weight (kg)
+                  Weight
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   name="weight"
                   value={medicalDetails.weight}
                   onChange={handleMedicalDetailsChange}
-                  placeholder="Enter weight"
+                  placeholder="Enter weight (kg)"
                 />
               </div>
             </div>
@@ -339,6 +358,13 @@ const Patient = () => {
                       setMedicalDetails(prev => ({ ...prev, currentMedication: newMeds }));
                     }}
                   />
+                  <button
+                    type="button"
+                    className={styles.deleteButton}
+                    onClick={() => handleDeleteMedication(index)}
+                  >
+                    <Trash2 size={18} />
+                  </button>
                 </div>
               ))}
               <button
@@ -352,14 +378,14 @@ const Patient = () => {
                 + Add Medication
               </button>
             </div>
+
+            <div className={styles.formActions}>
+              <button type="submit" className={styles.submitButton}>
+                Save Details
+              </button>
+            </div>
           </div>
         )}
-
-        <div className={styles.formActions}>
-          <button type="submit" className={styles.submitButton}>
-            Save Details
-          </button>
-        </div>
       </form>
     </div>
   );
