@@ -64,7 +64,7 @@ const MedicalStoreSchema = new mongoose.Schema({
       required: true,
     },
     daysOpen: {
-      type: [String], // e.g., ["Monday", "Tuesday", "Wednesday"]
+      type: [String], //["Monday", "Tuesday", "Wednesday"]
       required: true,
     },
   },
