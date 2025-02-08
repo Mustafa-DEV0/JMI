@@ -6,7 +6,7 @@ import Doctor from "../pages/doctor/Doctor.jsx";
 import Patient from "../pages/patient/Patient.jsx";
 import Prescription from "../pages/prescription/Prescription.jsx";
 import DoctorList from "../pages/doctorlist/DoctorList.jsx";
-import MedicalStore from "../../../server/models/MedicalStore.js";
+import MedicalStore from "../pages/medicalstore/MedicalStore.jsx";
 
 const AppRoutes = () => {
   return (
