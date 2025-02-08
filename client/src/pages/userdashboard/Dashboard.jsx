@@ -1,5 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 import {
   User,
   Phone,
@@ -21,63 +23,72 @@ import {
 } from "lucide-react";
 import styles from "./Dashboard.module.css";
 
-const Dashboard = ({ patientData, onUploadReport }) => {
+const Dashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("personal");
   const fileInputRef = useRef(null);
   const [previews, setPreviews] = useState([]);
   const [uploadingReports, setUploadingReports] = useState(false);
+  
 
-  // Dummy upcoming appointments - replace with actual data
-  const upcomingAppointments = [
-    {
-      id: 1,
-      doctorName: "Dr. Sarah Wilson",
-      specialization: "Cardiologist",
-      date: "2024-03-25",
-      time: "14:30",
-      status: "confirmed",
-    },
-    {
-      id: 2,
-      doctorName: "Dr. Michael Chen",
-      specialization: "Neurologist",
-      date: "2024-04-02",
-      time: "10:15",
-      status: "pending",
-    },
-  ];
-
-  // Dummy medicine orders - replace with actual data
-  const medicineOrders = {
-    upcoming: [
-      {
-        id: 1,
-        orderDate: "2024-03-20",
-        medicalName: "LifeCare Pharmacy",
-        status: "processing",
-        total: 245.5,
-        items: [
-          { name: "Paracetamol 500mg", quantity: 2, price: 45.5 },
-          { name: "Vitamin D3", quantity: 1, price: 200.0 },
-        ],
+  const [patientData, setPatientData] = useState({
+    patient: {
+      personalDetails: {
+        address: {
+          city: '',
+          state: '',
+          pincode: ''
+        },
+        emergencyContact: {
+          name: '',
+          phone: '',
+          relation: ''
+        },
+        name: '',
+        phone: '',
+        dob: '',
+        age: null,
+        gender: ''
       },
-    ],
-    previous: [
-      {
-        id: 2,
-        orderDate: "2024-03-15",
-        medicalName: "MedPlus",
-        status: "delivered",
-        deliveryDate: "2024-03-17",
-        total: 560.75,
-        items: [
-          { name: "Blood Pressure Monitor", quantity: 1, price: 499.99 },
-          { name: "Bandages", quantity: 2, price: 60.76 },
-        ],
+      medicalDetails: {
+        bloodGroup: '',
+        height: null,
+        weight: null,
+        allergies: [],
+        diseases: [],
+        currentMedication: []
       },
-    ],
-  };
+      _id: '',
+      email: '',
+      password: '',
+      isAdmin: false,
+      reports: [],
+      createdAt: '',
+      updatedAt: ''
+    },
+    orders: [],
+    upcomingAppointments: []
+  });
+  console.log(patientData.patient.personalDetails.name)
+const {id} = useParams();
+  useEffect(() => {
+    const fetchPatientData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/dashboard/${id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        
+        });
+  console.log(response.data)
+        setPatientData(response.data);
+      } catch (error) {
+        console.error('Error fetching patient data:', error);
+      }
+    };
+  
+    fetchPatientData();
+  }, []);
 
   const calculateTimeRemaining = (date, time) => {
     const appointmentDate = new Date(`${date}T${time}`);
@@ -198,7 +209,7 @@ const Dashboard = ({ patientData, onUploadReport }) => {
                   <div>
                     <h3>Name</h3>
                     <p>
-                      {patientData?.personalDetails?.name || "Not provided"}
+                      {patientData?.patient?.personalDetails?.name || "Not provided"}
                     </p>
                   </div>
                 </div>
@@ -532,8 +543,10 @@ const Dashboard = ({ patientData, onUploadReport }) => {
 
         <div className={styles.appointmentsSection}>
           <h2>Upcoming Appointments</h2>
+          {patientData.upcomingAppointments?<>
           <div className={styles.appointmentsList}>
-            {upcomingAppointments.map((appointment) => (
+            
+            {patientData.upcomingAppointments.map((appointment) => (
               <div key={appointment.id} className={styles.appointmentCard}>
                 <div className={styles.appointmentHeader}>
                   <h3>{appointment.doctorName}</h3>
@@ -561,6 +574,7 @@ const Dashboard = ({ patientData, onUploadReport }) => {
               </div>
             ))}
           </div>
+          </>:<>suck my cock</>}
         </div>
       </div>
     </div>
