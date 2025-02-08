@@ -1,0 +1,335 @@
+.dashboard {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  color: #1a365d;
+}
+
+/* Header Styles */
+.header {
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.headerContent {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.storeInfo h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+}
+
+.licenseNumber {
+  font-size: 0.875rem;
+  color: #718096;
+  margin: 0.25rem 0 0;
+}
+
+.quickInfo {
+  display: flex;
+  gap: 2rem;
+}
+
+.infoItem {
+  text-align: center;
+}
+
+.label {
+  display: block;
+  font-size: 0.75rem;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.value {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-top: 0.25rem;
+}
+
+/* Main Content */
+.main {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+/* Store Details Section */
+.storeDetails {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.storeImage {
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+}
+
+.storeImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+.detailCard {
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.detailCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.cardIcon {
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.detailCard h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detailCard p {
+  margin: 0.25rem 0;
+  color: #4a5568;
+  font-size: 0.9375rem;
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.features span {
+  padding: 0.25rem 0.75rem;
+  background: #fff;
+  border-radius: 4px;
+  font-size: 0.8125rem;
+  color: #4a5568;
+}
+
+/* Orders Section */
+.ordersSection {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.orderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.orderHeader h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+}
+
+.statusFilter {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #fff;
+  color: #4a5568;
+  font-size: 0.875rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.statusFilter:focus {
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.ordersList {
+  display: grid;
+  gap: 1rem;
+}
+
+.orderCard {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.orderCard:hover {
+  border-color: #4299e1;
+  box-shadow: 0 4px 6px rgba(66, 153, 225, 0.1);
+}
+
+.orderTop {
+  padding: 0.75rem 1rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statusNew {
+  background: #ebf8ff;
+  color: #2b6cb0;
+}
+
+.statusProcessing {
+  background: #fefcbf;
+  color: #975a16;
+}
+
+.statusCompleted {
+  background: #c6f6d5;
+  color: #2f855a;
+}
+
+.orderDate {
+  font-size: 0.75rem;
+  color: #718096;
+}
+
+.orderContent {
+  padding: 1rem;
+}
+
+.orderPatient h4 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+}
+
+.orderPatient p {
+  font-size: 0.8125rem;
+  color: #718096;
+  margin: 0.25rem 0 0;
+}
+
+.orderItems {
+  margin: 0.75rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.item {
+  font-size: 0.8125rem;
+  padding: 0.25rem 0.75rem;
+  background: #f7fafc;
+  border-radius: 4px;
+  color: #4a5568;
+}
+
+.orderDocs {
+  margin: 0.75rem 0;
+}
+
+.docLink {
+  font-size: 0.8125rem;
+  color: #4299e1;
+  text-decoration: none;
+  margin-right: 1rem;
+}
+
+.docLink:hover {
+  text-decoration: underline;
+}
+
+.orderActions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.actionButton {
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #fff;
+  background: #4299e1;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background: #3182ce;
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}

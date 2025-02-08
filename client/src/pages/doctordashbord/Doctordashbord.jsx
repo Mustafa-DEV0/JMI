@@ -125,7 +125,7 @@ const initialAppointments = {
   ]
 };
 
-function DoctorDashboard() {
+const DoctorDashboard=()=> {
   const [activeTab, setActiveTab] = useState('patients');
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
