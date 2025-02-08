@@ -79,16 +79,21 @@ const Appointment = () => {
 
     const data = {
       doctor: id,
+      doctorName: doctor.personalDetails.name,
       concerns: formData.concerns,
       scheduledAt: selectedDate,
       mode: formData.mode,
-      token,
     };
 
     console.log("Sending appointment:", data);
 
     try {
-      await axios.post("http://localhost:5000/appointment/save", data);
+      await axios.post("http://localhost:5000/appointment/save", data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
     } catch (error) {
       console.error("Error sending appointment request:", error);
     }
