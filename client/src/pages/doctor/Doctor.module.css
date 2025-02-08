@@ -1,220 +1,271 @@
 /* Container styles */
 .container {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #6DC7D1 0%, #E2F3F4 100%);
-    padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #6DC7D1 0%, #E2F3F4 100%);
+  padding: 2rem;
+}
+
+.formWrapper {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.5s ease-out;
+}
+
+/* Title styles */
+.title {
+  text-align: center;
+  color: #2d3748;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  font-weight: 700;
+}
+
+/* Progress bar styles */
+.progressBar {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  margin: 2rem 0;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background: #4c51bf;
+  transition: width 0.3s ease;
+  width: 33.33%;
+}
+
+.progress.halfFilled {
+  width: 66.66%;
+}
+
+.progress.filled {
+  width: 100%;
+}
+
+/* Section styles */
+.section {
+  display: none;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.section.active {
+  display: block;
+}
+
+.section h2 {
+  color: #2d3748;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon {
+  color: #4c51bf;
+}
+
+/* Input group styles */
+.inputGroup {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.inputGroup input,
+.inputGroup select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.inputGroup input:focus,
+.inputGroup select:focus {
+  border-color: #4c51bf;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.1);
+}
+
+/* Time selector styles */
+.timeSelector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.timeGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.timeGroup label {
+  font-size: 0.875rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.timeInputGroup {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0.5rem;
+}
+
+.timeInputGroup select {
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #4a5568;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.timeInputGroup select:hover {
+  border-color: #4c51bf;
+}
+
+.timeInputGroup select:focus {
+  border-color: #4c51bf;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.1);
+}
+
+/* Days selector styles */
+.daysSelector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.dayButton {
+  padding: 0.5rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  background: transparent;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dayButton.selected {
+  background: #4c51bf;
+  color: white;
+  border-color: #4c51bf;
+}
+
+/* Button styles */
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.nextButton,
+.backButton,
+.submitButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nextButton {
+  background: #4c51bf;
+  color: white;
+  border: none;
+}
+
+.backButton {
+  background: transparent;
+  border: 2px solid #4c51bf;
+  color: #4c51bf;
+}
+
+.submitButton {
+  background: #48bb78;
+  color: white;
+  border: none;
+  width: auto;
+}
+
+.nextButton:hover,
+.submitButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 81, 191, 0.2);
+}
+
+.backButton:hover {
+  background: rgba(76, 81, 191, 0.1);
+}
+
+/* Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
   .formWrapper {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 20px;
-    padding: 2rem;
-    width: 100%;
-    max-width: 800px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    animation: slideUp 0.5s ease-out;
+    padding: 1.5rem;
   }
-  
-  /* Title styles */
+
   .title {
-    text-align: center;
-    color: #2d3748;
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-    font-weight: 700;
+    font-size: 2rem;
   }
-  
-  /* Progress bar styles */
-  .progressBar {
-    height: 6px;
-    background: #e2e8f0;
-    border-radius: 3px;
-    margin: 2rem 0;
-    overflow: hidden;
-  }
-  
-  .progress {
-    height: 100%;
-    background: #4c51bf;
-    transition: width 0.3s ease;
-    width: 33.33%;
-  }
-  
-  .progress.halfFilled {
-    width: 66.66%;
-  }
-  
-  .progress.filled {
-    width: 100%;
-  }
-  
-  /* Section styles */
-  .section {
-    display: none;
-    animation: fadeIn 0.5s ease-out;
-  }
-  
-  .section.active {
-    display: block;
-  }
-  
-  .section h2 {
-    color: #2d3748;
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .icon {
-    color: #4c51bf;
-  }
-  
-  /* Input group styles */
-  .inputGroup {
-    display: grid;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .inputGroup input,
-  .inputGroup select {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-  }
-  
-  .inputGroup input:focus,
-  .inputGroup select:focus {
-    border-color: #4c51bf;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.1);
-  }
-  
-  /* Days selector styles */
+
   .daysSelector {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
   }
-  
-  .dayButton {
-    padding: 0.5rem;
-    border: 2px solid #e2e8f0;
-    border-radius: 6px;
-    background: transparent;
-    color: #4a5568;
-    cursor: pointer;
-    transition: all 0.2s ease;
+
+  .timeSelector {
+    grid-template-columns: 1fr;
   }
-  
-  .dayButton.selected {
-    background: #4c51bf;
-    color: white;
-    border-color: #4c51bf;
-  }
-  
-  /* Button styles */
+
   .buttonGroup {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: 2rem;
+    flex-direction: column;
   }
-  
+
   .nextButton,
   .backButton,
   .submitButton {
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    width: 100%;
+    justify-content: center;
   }
-  
-  .nextButton {
-    background: #4c51bf;
-    color: white;
-    border: none;
-  }
-  
-  .backButton {
-    background: transparent;
-    border: 2px solid #4c51bf;
-    color: #4c51bf;
-  }
-  
-  .submitButton {
-    background: #48bb78;
-    color: white;
-    border: none;
-    width: auto;
-  }
-  
-  .nextButton:hover,
-  .submitButton:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(76, 81, 191, 0.2);
-  }
-  
-  .backButton:hover {
-    background: rgba(76, 81, 191, 0.1);
-  }
-  
-  /* Animations */
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 640px) {
-    .formWrapper {
-      padding: 1.5rem;
-    }
-  
-    .title {
-      font-size: 2rem;
-    }
-  
-    .daysSelector {
-      grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-    }
-  
-    .buttonGroup {
-      flex-direction: column;
-    }
-  
-    .nextButton,
-    .backButton,
-    .submitButton {
-      width: 100%;
-      justify-content: center;
-    }
-  }
+}

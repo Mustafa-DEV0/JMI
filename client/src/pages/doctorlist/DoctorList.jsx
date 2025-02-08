@@ -1,183 +1,110 @@
-import React, { useState } from 'react';
-import { Search, MapPin, Phone, Star, Clock, Calendar } from 'lucide-react';
-import styles from './DoctorList.module.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Search , MapPin,Phone,Star,Clock, Calendar} from "lucide-react";
+import styles from "./DoctorList.module.css";
 
-const doctors = [
-  {
-    id: 1,
-    name: "Dr. Peter Doe",
-    image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=800&auto=format&fit=crop&q=60",
-    specialization: "Orthodontist",
-    qualifications: "BDS, MDS",
-    experience: "13+ Years",
-    location: "Boston",
-    rating: 4.7,
-    consultationFee: 58,
-    phone: "+1 (656) 738 1100",
-    availability: ["Monday", "Wednesday", "Friday"]
-  },
-  {
-    id: 2,
-    name: "Dr. Sarah William",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&auto=format&fit=crop&q=60",
-    specialization: "Dentofacial Orthopedist",
-    qualifications: "BDS, MDS",
-    experience: "8+ Years",
-    location: "Boston",
-    rating: 4.7,
-    consultationFee: 100,
-    phone: "+1 (678) 977 1103",
-    availability: ["Tuesday", "Thursday", "Saturday"]
-  },
-  {
-    id: 3,
-    name: "Dr. Mathew John",
-    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&auto=format&fit=crop&q=60",
-    specialization: "Orthodontist",
-    qualifications: "BDS, MDS",
-    experience: "5+ Years",
-    location: "Boston",
-    rating: 4.7,
-    consultationFee: 40,
-    phone: "+1 (764) 675 4368",
-    availability: ["Monday", "Tuesday", "Friday"]
-  }
-];
-
-const specializations = [
-  "All",
-  "Orthodontist",
-  "Dentofacial Orthopedist",
-  "Periodontist",
-  "Endodontist"
-];
-
-const experienceRanges = [
-  "All",
-  "0-5 Years",
-  "5-10 Years",
-  "10+ Years"
-];
-
-const daysOfWeek = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday"
-];
+const specializations = ["All", "Orthodontist", "Dentofacial Orthopedist", "Periodontist", "Endodontist"];
+const experienceRanges = ["All", "0-5 Years", "5-10 Years", "10+ Years"];
+const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 function DoctorList() {
-  const [selectedGender, setSelectedGender] = useState('all');
-  const [selectedSpecialization, setSelectedSpecialization] = useState('All');
-  const [selectedExperience, setSelectedExperience] = useState('All');
-  const [selectedDay, setSelectedDay] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [priceRange, setPriceRange] = useState([0, 200]);
+  const [filters, setFilters] = useState({
+    gender: "all",
+    specialization: "All",
+    experience: "All",
+    day: "All",
+    search: "",
+    priceRange: [0, 1000],
+  });
 
-  const getExperienceYears = (experience) => {
-    return parseInt(experience.split('+')[0]);
-  };
+  const [appliedFilters, setAppliedFilters] = useState(filters);
+  const [doctors, setDoctors] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const checkExperienceRange = (doctorExperience, selectedRange) => {
-    if (selectedRange === 'All') return true;
-    const years = getExperienceYears(doctorExperience);
-    
-    switch(selectedRange) {
-      case '0-5 Years':
-        return years <= 5;
-      case '5-10 Years':
-        return years > 5 && years <= 10;
-      case '10+ Years':
-        return years > 10;
-      default:
-        return true;
+  useEffect(() => {
+    fetchDoctors();
+  }, [appliedFilters]);
+
+  const fetchDoctors = async () => {
+    try {
+      setLoading(true);
+      let queryParams = new URLSearchParams();
+
+      if (appliedFilters.specialization !== "All") queryParams.append("specialization", appliedFilters.specialization);
+      if (appliedFilters.experience !== "All") queryParams.append("experience", appliedFilters.experience);
+      if (appliedFilters.day !== "All") queryParams.append("day", appliedFilters.day);
+      if (appliedFilters.search.trim() !== "") queryParams.append("search", appliedFilters.search);
+      queryParams.append("minFee", appliedFilters.priceRange[0]);
+      queryParams.append("maxFee", appliedFilters.priceRange[1]);
+
+      const url = `http://localhost:5000/doctorList?${queryParams}`;
+      
+
+      const response = await axios.get(url);
+
+      setDoctors(response.data);
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const filteredDoctors = doctors.filter(doctor => {
-    const matchesGender = selectedGender === 'all' || 
-      (selectedGender === 'male' && doctor.name.includes('Dr.')) ||
-      (selectedGender === 'female' && doctor.name.includes('Dr.'));
-    const matchesSpecialization = selectedSpecialization === 'All' || 
-      doctor.specialization === selectedSpecialization;
-    const matchesExperience = checkExperienceRange(doctor.experience, selectedExperience);
-    const matchesDay = selectedDay === 'All' || doctor.availability.includes(selectedDay);
-    const matchesSearch = doctor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doctor.specialization.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesPrice = doctor.consultationFee >= priceRange[0] && 
-      doctor.consultationFee <= priceRange[1];
+  const handleApplyFilters = () => {
+    setAppliedFilters(filters);
+  };
 
-    return matchesGender && matchesSpecialization && matchesExperience && 
-           matchesDay && matchesSearch && matchesPrice;
-  });
+
 
   return (
     <div className={styles.container}>
       <div className={styles.sidebar}>
-        <h2 className={styles.filtersTitle}>Filters</h2>
+        <div><h2 className={styles.filtersTitle}>Filters</h2></div>
+
         
+
         <div className={styles.filterSection}>
-          <h3>Gender</h3>
-          <div className={styles.radioGroup}>
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="all"
-                checked={selectedGender === 'all'}
-                onChange={(e) => setSelectedGender(e.target.value)}
-              />
-              All
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="male"
-                checked={selectedGender === 'male'}
-                onChange={(e) => setSelectedGender(e.target.value)}
-              />
-              Male Doctor
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="female"
-                checked={selectedGender === 'female'}
-                onChange={(e) => setSelectedGender(e.target.value)}
-              />
-              Female Doctor
-            </label>
-          </div>
+          <h3>Specialization</h3>
+          <select
+            value={filters.specialization}
+            onChange={(e) => setFilters({ ...filters, specialization: e.target.value })}
+            className={styles.select}
+          >
+            {specializations.map((spec) => (
+              <option key={spec} value={spec}>
+                {spec}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className={styles.filterSection}>
           <h3>Experience</h3>
-          <select 
-            value={selectedExperience}
-            onChange={(e) => setSelectedExperience(e.target.value)}
+          <select
+            value={filters.experience}
+            onChange={(e) => setFilters({ ...filters, experience: e.target.value })}
             className={styles.select}
           >
-            {experienceRanges.map(range => (
-              <option key={range} value={range}>{range}</option>
+            {experienceRanges.map((range) => (
+              <option key={range} value={range}>
+                {range}
+              </option>
             ))}
           </select>
         </div>
 
         <div className={styles.filterSection}>
           <h3>Availability</h3>
-          <select 
-            value={selectedDay}
-            onChange={(e) => setSelectedDay(e.target.value)}
+          <select
+            value={filters.day}
+            onChange={(e) => setFilters({ ...filters, day: e.target.value })}
             className={styles.select}
           >
             <option value="All">All Days</option>
-            {daysOfWeek.map(day => (
-              <option key={day} value={day}>{day}</option>
+            {daysOfWeek.map((day) => (
+              <option key={day} value={day}>
+                {day}
+              </option>
             ))}
           </select>
         </div>
@@ -188,17 +115,20 @@ function DoctorList() {
             <input
               type="range"
               min="0"
-              max="200"
-              value={priceRange[1]}
-              onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+              max="1000"
+              value={filters.priceRange[1]}
+              onChange={(e) => setFilters({ ...filters, priceRange: [filters.priceRange[0], parseInt(e.target.value)] })}
               className={styles.rangeSlider}
             />
             <div className={styles.priceLabels}>
-              <span>${priceRange[0]}</span>
-              <span>${priceRange[1]}</span>
+              <span>${filters.priceRange[0]}</span>
+              <span>${filters.priceRange[1]}</span>
             </div>
           </div>
         </div>
+
+        <button onClick={handleApplyFilters} className={styles.applyButton}>Apply Filters</button>
+        
       </div>
 
       <div className={styles.mainContent}>
@@ -207,69 +137,57 @@ function DoctorList() {
           <input
             type="text"
             placeholder="Search doctors by name or specialization..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            value={filters.search}
+            onChange={(e) => setFilters({ ...filters, search: e.target.value })}
           />
         </div>
 
-        <div className={styles.filterBar}>
-          <div className={styles.resultCount}>
-            {filteredDoctors.length} Doctors Available
-          </div>
-          <div className={styles.specializationFilter}>
-            <select 
-              value={selectedSpecialization}
-              onChange={(e) => setSelectedSpecialization(e.target.value)}
-              className={styles.select}
-            >
-              {specializations.map(spec => (
-                <option key={spec} value={spec}>{spec}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className={styles.doctorGrid}>
-          {filteredDoctors.map(doctor => (
-            <div key={doctor.id} className={styles.doctorCard}>
+        {loading ? (
+          <p>Loading doctors...</p>
+        ) : doctors.length === 0 ? (
+          <p>No doctors found.</p>
+        ) : (
+          <div className={styles.doctorGrid}>
+            {doctors.map((doctor, index) => (
+               <div key={doctor.id || index} className={styles.doctorCard}>
               <div className={styles.doctorInfo}>
-                <img src={doctor.image} alt={doctor.name} className={styles.doctorImage} />
+                <img src={doctor?.image } alt={doctor.name} className={styles.doctorImage} />
                 <div className={styles.doctorDetails}>
                   <div className={styles.headerRow}>
-                    <h3>{doctor.name}</h3>
+                    <h3>{doctor?.name || "NA"}</h3>
                     <div className={styles.specialityTag}>
-                      {doctor.specialization}
+                      {doctor?.specialization || "NA"}
                     </div>
                   </div>
-                  <p className={styles.qualifications}>{doctor.qualifications}</p>
+                  <p className={styles.qualifications}>{doctor?.qualification || "NA"}</p>
                   <p className={styles.consultationFee}>
-                    ${doctor.consultationFee} Consultation Fee
+                    &#8377;{doctor?.consultationFee || "NA"} Consultation Fee
                   </p>
                   
                   <div className={styles.metadata}>
                     <div className={styles.metaItem}>
                       <Star className={styles.icon} />
-                      <span>{doctor.rating}/5</span>
+                      <span>{doctor?.rating || "NA"}/5</span>
                     </div>
                     <div className={styles.metaItem}>
                       <Clock className={styles.icon} />
-                      <span>{doctor.experience}</span>
+                      <span>{doctor?.experience || "NA"} years of Experience</span>
                     </div>
                     <div className={styles.metaItem}>
                       <MapPin className={styles.icon} />
-                      <span>{doctor.location}</span>
+                      <span>{doctor?.clinicAddress || "NA"}</span>
                     </div>
                   </div>
 
                   <div className={styles.availability}>
                     <Calendar className={styles.icon} />
-                    <span>Available on: {doctor.availability.join(', ')}</span>
+                    <span>Available on: {doctor?.availability.join(', ') || "NA"}</span>
                   </div>
                 </div>
               </div>
               
               <div className={styles.actionButtons}>
-                <a href={`tel:${doctor.phone}`} className={styles.phoneButton}>
+                <a href={`tel:${doctor?.phone || "NA"}`} className={styles.phoneButton}>
                   <Phone className={styles.icon} />
                   {doctor.phone}
                 </a>
@@ -278,8 +196,9 @@ function DoctorList() {
                 </button>
               </div>
             </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import styles from "./Appointment.module.css";
 
 import { Calendar, Clock, AlertCircle } from "lucide-react";
+import styles from "./Appointment.module.css";
 
 const Appointment = () => {
   const navigate = useNavigate();
