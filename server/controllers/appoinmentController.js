@@ -17,10 +17,10 @@ const getDoctorDetails = async (req, res) => {
 
 const saveAppointmentDetails = async (req, res) => {
   try {
-    const data = req.body;
-    console.log(data);
+    const { doctor, concerns, scheduledAt, mode, token } = req.body;
+    console.log(req.body);
 
-    if (!doctor || !concerns || !scheduledAt || !mode || !token) {
+    if (!doctor || !scheduledAt || !mode || !token) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 

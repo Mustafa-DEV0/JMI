@@ -6,7 +6,7 @@ import {
 
 const router = express.Router();
 
-router.get("/:id", getDoctorDetails);
-router.post("/", saveAppointmentDetails);
+router.get("/get/:id", getDoctorDetails);
+router.post("/save", saveAppointmentDetails);
 
 export default router;
