@@ -12,7 +12,7 @@ import DoctorDetails from "../pages/doctor/DoctorDetails.jsx";
 import Dashboard from "../pages/userdashboard/Dashboard.jsx";
 import Appointment from "../pages/Appointment/appointment.jsx";
 // import AdminDashboard from "../pages/admindashboard/AdminDashboard.jsx";
-import Doctordashbord from "../pages/doctordashbord/Doctordashbord.jsx";
+import DoctorDashboard from "../pages/doctordashbord/Doctordashboard.jsx";
 
 const AppRoutes = () => {
   return (
@@ -30,7 +30,7 @@ const AppRoutes = () => {
       <Route path="/userdashboard" element={<Dashboard />} />
       <Route path="/payment" element={<Payment />} />
       {/* <Route path="/admindashboard" element={<AdminDashboard />} /> */}
-      <Route path="/doctordashbord" element={<Doctordashbord />} />
+      <Route path="/doctordashboard" element={<DoctorDashboard />} />
     </Routes>
   );
 };
