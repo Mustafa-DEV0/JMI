@@ -1,249 +1,442 @@
-/* Hero Section */
-.hero {
-    background-color: #6DC7D1;
-    color: #fff;
-    padding: 5rem 0;
-    text-align: center;
-}
-
-.heroContent h1 {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-}
-
-.heroContent p {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-}
-
-.ctaButton {
-    padding: 0.8rem 2rem;
-    background-color: #fff;
-    color: #6DC7D1;
-    font-size: 1.1rem;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: all 0.3s ease-in-out;
-    display: inline-block;
-}
-
-.ctaButton:hover {
+/* Container */
+.container {
+    width: 100%;
+    overflow-x: hidden;
+  }
+  
+  /* Hero Section */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 6rem 2rem;
     background-color: #e2f3f4;
-    color: #333;
-    transform: scale(1.05);
-}
-
-/* Features Section */
-.features {
-    padding: 3rem 0;
-    text-align: center;
-}
-
-.features h2 {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-}
-
-.featureCards {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 2rem;
-}
-
-.featureCard {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    padding: 1.5rem;
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.featureCard:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.featureCard i {
-    font-size: 3rem;
-    color: #6DC7D1;
-    margin-bottom: 1rem;
-}
-
-.featureCard h3 {
-    font-size: 1.5rem;
-    margin-bottom: 0.8rem;
-}
-
-.featureCard p {
-    font-size: 1rem;
-}
-
-/* Services Section */
-.services {
-    background-color: #fff;
-    padding: 3rem 0;
-    text-align: center;
-}
-
-.services h2 {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-}
-
-.serviceList {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 2rem;
-}
-
-.serviceItem {
-    width: 100%;
-    max-width: 300px;
-}
-
-.serviceItem h3 {
-    font-size: 1.5rem;
-    margin-bottom: 0.8rem;
-}
-
-.serviceItem p {
-    font-size: 1rem;
-    color: #666;
-}
-
-/* Testimonials Section */
-.testimonials {
-    background-color: #E2F3F4;
-    padding: 3rem 0;
-    text-align: center;
-}
-
-.testimonials h2 {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-}
-
-.testimonialCarousel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-}
-
-.testimonial {
-    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .heroContent {
+    flex: 1;
     max-width: 600px;
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out;
-}
-
-.testimonial:hover {
-    transform: scale(1.02);
-}
-
-.testimonial p {
-    font-size: 1.2rem;
-    margin-bottom: 0.8rem;
-}
-
-.testimonial cite {
-    font-size: 1rem;
-    color: #6DC7D1;
-}
-
-/* Contact Section */
-
-.contact {
-    background: linear-gradient(145deg, #6DC7D1, #5caca3);
-    padding: 5rem 0;
-    text-align: center;
-    color: #fff;
-    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-}
-
-.contact h2 {
-    font-size: 3rem;
-    margin-bottom: 2rem;
-    text-transform: uppercase;
+    z-index: 1;
+    animation: fadeInUp 1s ease-out;
+  }
+  
+  .heroTitle {
+    font-size: 3.1rem;
     font-weight: 700;
-    letter-spacing: 1px;
-    animation: fadeIn 1s ease-in-out;
-}
-
-.contact form {
+    color: #1a1a1a;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+  }
+  
+  .heroSubtitle {
+    font-size: 1.3rem;
+    color: #4a5568;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+  
+  .heroImage {
+    flex: 1;
+    position: relative;
+    height: 600px;
+    animation: fadeInRight 1s ease-out;
+  }
+  
+  .heroImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Video Section */
+  .videoSection {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .backgroundVideo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+  }
+  
+  .videoOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    max-width: 500px;
+    color: #edefef;
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .videoOverlay h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: fadeInUp 1s ease-out;
+    font-family:Verdana, Geneva, Tahoma, sans-serif
+  }
+  
+  .videoOverlay p {
+    font-size: 1.5rem;
+    max-width: 600px;
+    animation: fadeInUp 1s ease-out 0.3s;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+  
+  /* About Section */
+  .about {
+    padding: 6rem 2rem;
+    background-color: #edefef;
+  }
+  
+  .aboutContent {
+    max-width: 1200px;
     margin: 0 auto;
-    gap: 1.5rem;
-    animation: fadeInUp 1.2s ease-in-out;
-}
+    text-align: center;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+  
+  .aboutContent h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #1a1a1a;
+    font-family:Verdana, Geneva, Tahoma, sans-serif
+  }
+  
+  .values {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  
+  .valueCard {
+    padding: 2rem;
+    background: #edefef;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .valueCard:hover {
+    transform: translateY(-10px);
+  }
+  
+  .valueIcon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+  
+  /* Features Section */
+  .features {
+    padding: 6rem 2rem;
+    background-color: #e2f3f4;
+    text-align: center;
+  }
+  
 
-.contact input,
-.contact textarea {
+  .features h2{
+    font-family:Verdana, Geneva, Tahoma, sans-serif
+  }
+
+  .featureGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 3rem auto 0;
+  }
+  
+  .featureCard {
+    background: #edefef;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .featureCard:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  }
+  
+  .featureIcon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .featureIcon h3{
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+  }
+
+  .featureIcon p{
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+  
+  /* Services Section */
+  .services {
+    padding: 6rem 2rem;
+    background-color: #edefef;
+    text-align: center;
+  }
+  
+  .serviceCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 3rem auto 0;
+  }
+  
+  .serviceCard {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .serviceCard:hover {
+    transform: translateY(-10px);
+  }
+  
+  .serviceCard img {
     width: 100%;
-    padding: 1.2rem;
-    font-size: 1rem;
-    border-radius: 8px;
-    border: 2px solid #fff;
-    outline: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    transition: all 0.3s ease-in-out;
-}
+    height: 200px;
+    object-fit: cover;
+  }
 
-.contact input:focus,
-.contact textarea:focus {
-    border-color: #6DC7D1;
-    background: rgba(255, 255, 255, 0.2);
-}
+  .services>h2 {
+font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;  }
 
-.contact button {
-    padding: 1rem 3rem;
-    background-color: #fff;
-    color: #6DC7D1;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    text-transform: uppercase;
+  .serviceCard h3 {
+    margin: 1.5rem 0 1rem;
+  }
+  
+  .serviceCard p {
+    padding: 0 1.5rem 1.5rem;
+    color: #4a5568;
+  }
+  
+  /* Testimonials Section */
+  .testimonials {
+    padding: 6rem 2rem;
+    background-color: #e2f3f4;
+    text-align: center;
+  }
+  
+  .testimonialCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 3rem auto 0;
+  }
+  
+  .testimonialCard {
+    background: #edefef;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .testimonialImage {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    overflow: hidden;
+  }
+  
+  .testimonialImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* How It Works Section */
+  .howItWorks {
+    padding: 6rem 2rem;
+    background-color: #edefef;
+    text-align: center;
+  }
+  
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 3rem auto 0;
+  }
+  
+  .step {
+    position: relative;
+    padding: 2rem;
+  }
+  
+  .stepNumber {
+    width: 40px;
+    height: 40px;
+    background: #6dc7d1;
+    color: #edefef;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: 600;
-    letter-spacing: 1px;
-    transition: transform 0.3s ease-in-out, background 0.3s ease;
+    margin: 0 auto 1rem;
+  }
+  
+  /* CTA Section */
+  .cta {
+    padding: 6rem 2rem;
+    background: linear-gradient(135deg, #6dc7d1 0%, #4a90e2 100%);
+    color: #edefef;
+    text-align: center;
+  }
+  
+  .ctaContent {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+.ctaContent a{
+    text-decoration: none;
 }
 
-.contact button:hover {
-    transform: scale(1.05);
-    background-color: #5caca3;
-    color: #fff;
-}
-
-.contact .container {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 15px;
-    padding: 3rem;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    animation: fadeInUp 1.4s ease-in-out;
-}
-
-/* Animations */
-@keyframes fadeIn {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-}
-
-@keyframes fadeInUp {
-    0% { transform: translateY(20px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
-}
+  .ctaContent h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #1a1a1a;
+    font-family:Verdana, Geneva, Tahoma, sans-serif
+  }
+  
+  .ctaContent p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+  
+  /* Buttons */
+  .ctaButton {
+    background: #edefef;
+    color: #6dc7d1;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .ctaButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .heroTitle {
+      font-size: 3rem;
+    }
+    
+    .hero {
+      flex-direction: column;
+      text-align: center;
+      gap: 3rem;
+    }
+    
+    .heroContent {
+      max-width: 100%;
+    }
+    
+    .heroImage {
+      width: 100%;
+      height: 400px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .heroTitle {
+      font-size: 2.5rem;
+    }
+    
+    .heroSubtitle {
+      font-size: 1.1rem;
+    }
+    
+    .videoOverlay h2 {
+      font-size: 2rem;
+    }
+    
+    .videoOverlay p {
+      font-size: 1.1rem;
+    }
+    
+    .values,
+    .featureGrid,
+    .serviceCards,
+    .testimonialCards,
+    .steps {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .heroTitle {
+      font-size: 2rem;
+    }
+    
+    .heroImage {
+      height: 300px;
+    }
+    
+    .ctaButton {
+      width: 100%;
+    }
+  }
