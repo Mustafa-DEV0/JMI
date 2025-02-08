@@ -28,7 +28,6 @@ const Appointment = () => {
         const response = await axios.get(
           `http://localhost:5000/appointment/get/${id}`
         );
-        console.log(response.data);
         if (response.data) {
           setDoctor(response.data);
           setFormData((prev) => ({
@@ -66,24 +65,30 @@ const Appointment = () => {
     e.preventDefault();
     setIsSubmitted(true);
     setShowPending(true);
+
     const token = localStorage.getItem("token");
+    const selectedDate = formData.date;
+    const selectedTimeSlot = availableTimeSlots.find(
+      (slot) => slot === formData.time
+    );
+
+    if (!selectedDate) {
+      console.error("Invalid appointment details.");
+      return;
+    }
+
     const data = {
       doctor: id,
       concerns: formData.concerns,
-      scheduledAt: formData.date + " " + formData.time,
+      scheduledAt: selectedDate,
       mode: formData.mode,
       token,
     };
-    console.log(data);
+
+    console.log("Sending appointment:", data);
 
     try {
-      await axios.post("http://localhost:5000/appointment/save", {
-        doctor: id,
-        concerns: formData.concerns,
-        scheduledAt: formData.date + " " + formData.time,
-        mode: formData.mode,
-        token,
-      });
+      await axios.post("http://localhost:5000/appointment/save", data);
     } catch (error) {
       console.error("Error sending appointment request:", error);
     }
@@ -217,8 +222,8 @@ const Appointment = () => {
               >
                 <option value="">Select time slot</option>
                 {availableTimeSlots.map((slot) => (
-                  <option key={slot} value={slot}>
-                    {slot}
+                  <option key={slot} value={slot.time}>
+                    {slot.time}
                   </option>
                 ))}
               </select>
@@ -242,21 +247,9 @@ const Appointment = () => {
             </select>
           </div>
 
-          <div className={styles.formGroup}>
-            <textarea
-              name="concerns"
-              value={formData.concerns || ""}
-              onChange={handleChange}
-              placeholder="Any specific concerns or requirements?"
-              className={formData.concerns ? styles.filled : ""}
-            />
-          </div>
-
           <button
             type="submit"
-            className={`${styles.submitButton} ${
-              isSubmitted ? styles.submitted : ""
-            }`}
+            className={styles.submitButton}
             disabled={!formData.date || !isDateAvailable(formData.date)}
           >
             Schedule Appointment
