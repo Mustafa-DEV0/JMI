@@ -1,0 +1,491 @@
+/* Modern CSS Reset */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Variables */
+  :root {
+    --primary-color: #06b6d4;
+    --primary-light: #67e8f9;
+    --primary-dark: #0891b2;
+    --primary-gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --cyan-50: #ecfeff;
+    --cyan-100: #cffafe;
+    --cyan-200: #a5f3fc;
+    --cyan-300: #67e8f9;
+    --cyan-400: #22d3ee;
+    --cyan-500: #06b6d4;
+    --cyan-600: #0891b2;
+    --cyan-700: #0e7490;
+    --cyan-800: #155e75;
+    --cyan-900: #164e63;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Container and Layout */
+  .container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--cyan-50) 0%, var(--cyan-100) 100%);
+    padding: 2rem;
+  }
+  
+  .wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Header Styles */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  
+  .headerTitle h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--cyan-900);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.025em;
+  }
+  
+  .subtitle {
+    color: var(--gray-600);
+    font-size: 1.125rem;
+  }
+  
+  .headerControls {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  /* Search Input */
+  .searchContainer {
+    position: relative;
+  }
+  
+  .searchInput {
+    width: 320px;
+    padding: 0.875rem 1rem 0.875rem 2.75rem;
+    border: 2px solid var(--cyan-200);
+    border-radius: 0.75rem;
+    background-color: white;
+    font-size: 0.9375rem;
+    transition: all 0.2s ease;
+  }
+  
+  .searchInput:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--cyan-100);
+  }
+  
+  .searchIcon {
+    position: absolute;
+    left: 0.875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--cyan-500);
+  }
+  
+  /* Filter Styles */
+  .filterWrapper {
+    position: relative;
+  }
+  
+  .filterButton {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1.25rem;
+    background-color: white;
+    border: 2px solid var(--cyan-200);
+    border-radius: 0.75rem;
+    cursor: pointer;
+    font-size: 0.9375rem;
+    color: var(--cyan-700);
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .filterButton:hover {
+    background-color: var(--cyan-50);
+    border-color: var(--cyan-300);
+  }
+  
+  .filterIcon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--cyan-500);
+  }
+  
+  .filterDropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+    width: 220px;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-xl);
+    padding: 0.75rem;
+    z-index: 50;
+    animation: slideDown 0.2s ease-out;
+    border: 1px solid var(--cyan-200);
+  }
+  
+  .filterOption {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--gray-700);
+    font-weight: 500;
+  }
+  
+  .filterOption:hover {
+    background-color: var(--cyan-50);
+    color: var(--cyan-600);
+  }
+  
+  .filterOption.active {
+    background-color: var(--cyan-500);
+    color: white;
+  }
+  
+  /* Empty State */
+  .emptyState {
+    text-align: center;
+    padding: 5rem 2rem;
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-lg);
+    animation: fadeIn 0.3s ease-out;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .emptyStateIcon {
+    font-size: 4.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .emptyState h2 {
+    color: var(--gray-900);
+    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+  }
+  
+  .emptyState p {
+    color: var(--gray-500);
+    margin-bottom: 1.5rem;
+  }
+  
+  .resetButton {
+    background-color: var(--cyan-500);
+    color: white;
+    padding: 0.875rem 2rem;
+    border-radius: 0.75rem;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .resetButton:hover {
+    background-color: var(--cyan-600);
+  }
+  
+  /* Appointment Grid */
+  .appointmentGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  /* Appointment Card */
+  .appointmentCard {
+    background: white;
+    border-radius: 1.25rem;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid var(--cyan-100);
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .appointmentCard:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--cyan-200);
+  }
+  
+  /* Card Header */
+  .cardHeader {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--cyan-100);
+    background: linear-gradient(to right, var(--cyan-50), white);
+  }
+  
+  .doctorInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .doctorAvatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: var(--shadow-md);
+  }
+  
+  .doctorInfo h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 0.25rem;
+  }
+  
+  .doctorInfo p {
+    color: var(--gray-500);
+    font-size: 0.9375rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .stars {
+    color: var(--warning-color);
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+  }
+  
+  .ratingNumber {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  /* Status Badge */
+  .statusBadge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+  
+  .statusBadge.upcoming {
+    background-color: var(--cyan-100);
+    color: var(--cyan-800);
+  }
+  
+  .statusBadge.completed {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+  
+  .statusBadge.pending {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  
+  .statusBadge.cancelled {
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
+  
+  /* Appointment Details */
+  .appointmentDetails {
+    padding: 1.5rem;
+  }
+  
+  .detailItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    color: var(--gray-700);
+    border-bottom: 1px solid var(--gray-100);
+  }
+  
+  .detailItem:last-child {
+    border-bottom: none;
+  }
+  
+  .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--cyan-500);
+  }
+  
+  /* Card Actions */
+  .cardActions {
+    padding: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    border-top: 1px solid var(--cyan-100);
+    background: var(--gray-50);
+  }
+  
+  .rescheduleButton, .cancelButton {
+    flex: 1;
+    padding: 0.875rem 1.25rem;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .rescheduleButton {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+  }
+  
+  .rescheduleButton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
+  }
+  
+  .buttonIcon {
+    transition: transform 0.2s ease;
+  }
+  
+  .rescheduleButton:hover .buttonIcon {
+    transform: translateX(4px);
+  }
+  
+  .cancelButton {
+    background-color: white;
+    border: 2px solid var(--danger-color);
+    color: var(--danger-color);
+  }
+  
+  .cancelButton:hover {
+    background-color: var(--danger-color);
+    color: white;
+  }
+  
+  /* Animations */
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .container {
+      padding: 1rem;
+    }
+  
+    .header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .headerControls {
+      flex-direction: column;
+      width: 100%;
+    }
+  
+    .searchInput {
+      width: 100%;
+    }
+  
+    .filterButton {
+      width: 100%;
+      justify-content: center;
+    }
+  
+    .appointmentGrid {
+      grid-template-columns: 1fr;
+    }
+  
+    .headerTitle h1 {
+      font-size: 2rem;
+    }
+  
+    .subtitle {
+      font-size: 1rem;
+    }
+  }
+  
+  /* Print Styles */
+  @media print {
+    .container {
+      background: white;
+      padding: 0;
+    }
+  
+    .appointmentCard {
+      break-inside: avoid;
+      box-shadow: none;
+      border: 1px solid var(--gray-200);
+    }
+  
+    .headerControls,
+    .cardActions {
+      display: none;
+    }
+  }
