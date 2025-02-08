@@ -19,15 +19,49 @@
   margin: 0 auto;
 }
 
+/* Header */
 .header {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 2.5rem;
 }
 
-.header h1 {
+.heading {
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--cyan-900);
+}
+
+.filterWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.filterIcon {
+  margin-right: 0.5rem;
+  color: var(--cyan-500); /* Icon color */
+}
+
+.filterSelect {
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  color: var(--cyan-800);
+  border: 1px solid var(--cyan-200);
+  border-radius: 0.75rem;
+  background-color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.filterSelect:hover {
+  border-color: var(--cyan-300);
+}
+
+.filterSelect:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--cyan-100);
 }
 
 /* Appointment Grid */
@@ -95,41 +129,66 @@
   color: var(--cyan-500);
 }
 
-/* Card Actions */
-.cardActions {
-  display: flex;
-  gap: 1rem;
-}
-
-.actionButton,
-.cancelButton {
-  flex: 1;
-  padding: 0.875rem 1.25rem;
-  border-radius: 0.75rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 1rem;
-}
-
-.actionButton {
-  background-color: var(--primary-gradient);
+/* Status Badge */
+.statusBadge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
   color: white;
-  border: none;
 }
 
-.actionButton:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
+.statusBadge.scheduled {
+  background-color: var(--cyan-500);
 }
 
-.cancelButton {
-  background-color: white;
-  border: 2px solid var(--danger-color);
-  color: var(--danger-color);
+.statusBadge.pending {
+  background-color: var(--warning-color);
 }
 
-.cancelButton:hover {
+.statusBadge.completed {
+  background-color: var(--success-color);
+}
+
+.statusBadge.cancelled {
   background-color: var(--danger-color);
-  color: white;
+}
+
+/* Appointment Filter */
+.filterSelect {
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  color: var(--cyan-800);
+  border: 1px solid var(--cyan-200);
+  border-radius: 0.75rem;
+  background-color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.filterSelect:hover {
+  border-color: var(--cyan-300);
+}
+
+.filterSelect:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--cyan-100);
+}
+
+/* Appointment Card Hover Effect */
+.appointmentCard {
+  background: white;
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--cyan-100);
+}
+
+.appointmentCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-xl);
 }

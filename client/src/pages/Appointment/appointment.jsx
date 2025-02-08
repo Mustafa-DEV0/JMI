@@ -82,6 +82,7 @@ const Appointment = () => {
       doctorName: doctor.personalDetails.name,
       concerns: formData.concerns,
       scheduledAt: selectedDate,
+      specialization: doctor.professionalDetails.specialization,
       mode: formData.mode,
     };
 

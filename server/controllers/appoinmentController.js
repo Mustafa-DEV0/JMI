@@ -17,7 +17,8 @@ const getDoctorDetails = async (req, res) => {
 
 const saveAppointmentDetails = async (req, res) => {
   try {
-    const { doctorName, doctor, concerns, scheduledAt, mode } = req.body;
+    const { doctorName, doctor, concerns, specialization, scheduledAt, mode } =
+      req.body;
     console.log(req.body);
     const token = req.headers.authorization?.split(" ")[1];
     if (!doctor || !scheduledAt || !mode || !token) {
@@ -35,6 +36,7 @@ const saveAppointmentDetails = async (req, res) => {
       patient: patientId,
       concerns,
       scheduledAt,
+      specialization,
       mode,
     };
     const newAppointment = new Appointment(appointmentData);
