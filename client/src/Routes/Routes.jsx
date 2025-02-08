@@ -10,6 +10,7 @@ import PatientAppointmentHistory from "../pages/patient appointment history/Pati
 import PatientDetail from "../pages/patient/PatientDetail.jsx";
 import DoctorDetails from "../pages/doctor/DoctorDetails.jsx";
 import Dashboard from "../pages/userdashboard/Dashboard.jsx";
+import Appointment from "../pages/Appointment/appointment.jsx";
 
 const AppRoutes = () => {
   return (
@@ -20,6 +21,7 @@ const AppRoutes = () => {
       <Route path="/doctor/:id" element={<DoctorDetails />} />
       <Route path="/patient/:id" element={<PatientDetail />} />
       <Route path="/prescription/:id" element={<Prescription />} />
+      <Route path="/appointment/:id" element={<Appointment />} />
       <Route path="/doctorlist" element={<DoctorList />} />
       <Route path="/medical-store" element={<MedicalStore />} />
       <Route path="/history" element={<PatientAppointmentHistory />} />

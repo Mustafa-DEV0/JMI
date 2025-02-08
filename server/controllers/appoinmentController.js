@@ -48,4 +48,16 @@ const saveAppointmentDetails = async (req, res) => {
   }
 };
 
-export { getDoctorDetails, saveAppointmentDetails };
+const getPatientHistory = async (req, res) => {
+  const { token } = req.body;
+  try {
+    const patientId = getUserIdFromJwt(token);
+    const appointments = await Appointment.find({ patient: patientId });
+    res.status(200).json(appointments);
+  } catch (error) {
+    console.error("Error fetching patient history:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export { getDoctorDetails, saveAppointmentDetails, getPatientHistory };
