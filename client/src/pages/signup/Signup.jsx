@@ -9,21 +9,20 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    setLoading(true);
-    
+    setIsLoading(true);
 
     try {
       const response = await axios.post(
         "http://localhost:5000/api/auth/register",
         {
-          userType, // Include user type
+          userType,
           email,
           password,
         }
@@ -38,72 +37,97 @@ const Signup = () => {
         error.response?.data?.message || "Registration failed. Try again."
       );
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className={styles.formpage}>
-      <div className={styles.formCard}>
-        <h2 className={styles.heading}>Sign Up</h2>
+    <div className={styles.container}>
+      <div className={styles.background}>
+        <div className={styles.shape}></div>
+        <div className={styles.shape}></div>
+        <div className={styles.shape}></div>
+      </div>
+      
+      <div className={`${styles.formCard} ${styles.glassEffect}`}>
+        <div className={styles.logoContainer}>
+          <div className={styles.logo}>
+            <span className={styles.cross}></span>
+          </div>
+        </div>
+        
+        <h2 className={styles.title}>Create Account</h2>
+        <p className={styles.subtitle}>Join our healthcare community</p>
 
-        <form onSubmit={handleSubmit}>
-          {/* User Type Selection */}
-          <div className={styles.userTypeSelection}>
-            <label>Select User Type</label>
-            <select
-              value={userType}
-              onChange={(e) => setUserType(e.target.value)}
-              className={styles.userTypeDropdown}
-              required
-            >
-              <option value="">Choose a user type</option>
-              <option value="admin">Admin</option>
-              <option value="patient">Patient</option>
-              <option value="doctor">Doctor</option>
-            </select>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.userTypeContainer}>
+            <label className={styles.userTypeLabel}>I am a</label>
+            <div className={styles.userTypeOptions}>
+              {['patient', 'doctor', 'admin'].map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  className={`${styles.userTypeBtn} ${userType === type ? styles.active : ''}`}
+                  onClick={() => setUserType(type)}
+                >
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Email Input */}
           <div className={styles.inputGroup}>
             <input
               type="email"
               id="email"
+              placeholder=" "
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder=" "
               required
+              className={styles.input}
             />
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email" className={styles.label}>Email</label>
+            <div className={styles.inputLine}></div>
           </div>
 
-          {/* Password Input */}
           <div className={styles.inputGroup}>
             <input
               type="password"
               id="password"
+              placeholder=" "
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder=" "
               required
+              className={styles.input}
             />
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password" className={styles.label}>Password</label>
+            <div className={styles.inputLine}></div>
           </div>
 
-          {/* Error and Success Messages */}
-          {error && <p className={styles.error}>{error}</p>}
-          {success && <p className={styles.success}>{success}</p>}
+          {error && <div className={styles.errorMessage}>{error}</div>}
+          {success && <div className={styles.successMessage}>{success}</div>}
 
-          {/* Submit Button */}
-          <button type="submit" className={styles.submitBtn} disabled={loading}>
-            {loading ? "Signing Up..." : "Sign Up"}
-
+          <button 
+            type="submit" 
+            className={`${styles.submitBtn} ${isLoading ? styles.loading : ''}`}
+            disabled={isLoading || !userType}
+          >
+            <span className={styles.btnText}>
+              {isLoading ? 'Creating Account...' : 'Sign Up'}
+            </span>
+            <div className={styles.btnGlow}></div>
           </button>
         </form>
 
-        {/* Switch Form Link */}
+        <div className={styles.divider}>
+          <span>or</span>
+        </div>
+
         <p className={styles.switchForm}>
-          Already have an account? <Link to={"/login"}>Login</Link>
+          Already have an account?{" "}
+          <Link to="/login" className={styles.link}>
+            Login
+          </Link>
         </p>
       </div>
     </div>
