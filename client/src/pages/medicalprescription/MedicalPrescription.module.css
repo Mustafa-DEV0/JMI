@@ -17,7 +17,17 @@
     animation: slideIn 0.5s ease-out;
   }
   
-
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
   .header {
     display: flex;
     align-items: center;
@@ -198,3 +208,4 @@
     background-color: #cbd5e1;
     cursor: not-allowed;
   }
+  
