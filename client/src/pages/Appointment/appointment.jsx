@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { Check, Calendar, Clock, AlertCircle } from 'lucide-react';
 import styles from './Appointment.module.css';
 
