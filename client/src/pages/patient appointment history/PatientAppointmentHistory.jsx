@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Calendar, Clock, Video, Phone, Map, MapPin } from "lucide-react";
+import { Calendar, Clock, Video, Phone, MapPin, Filter } from "lucide-react";
 import styles from "./PatientAppointmentHistory.module.css";
 
 const PatientAppointmentHistory = () => {
@@ -22,7 +22,6 @@ const PatientAppointmentHistory = () => {
           }
         );
         setAppointments(response.data);
-        setFilteredAppointments(response.data); // Set default to all appointments
       } catch (error) {
         console.error("Error fetching appointments:", error);
       }
@@ -31,6 +30,18 @@ const PatientAppointmentHistory = () => {
   }, []);
 
   useEffect(() => {
+    const filterAppointments = () => {
+      let filtered = [...appointments];
+      if (filter !== "all") {
+        filtered = filtered.filter(
+          (appointment) => appointment.status === filter
+        );
+      }
+      // Prioritize scheduled appointments first when filter is "all"
+      filtered.sort((a, b) => (a.status === "scheduled" ? -1 : 1));
+      setFilteredAppointments(filtered);
+    };
+
     filterAppointments();
   }, [filter, appointments]);
 
@@ -41,40 +52,25 @@ const PatientAppointmentHistory = () => {
       case "phone":
         return <Phone className={styles.icon} />;
       default:
-        return <Map className={styles.icon} />;
+        return <MapPin className={styles.icon} />;
     }
-  };
-
-  const filterAppointments = () => {
-    let filtered = [...appointments];
-    if (filter !== "all") {
-      filtered = filtered.filter(
-        (appointment) => appointment.status === filter
-      );
-    }
-
-    // Sort appointments so that Scheduled ones come first
-    filtered.sort((a, b) => (a.status === "scheduled" ? -1 : 1));
-
-    setFilteredAppointments(filtered);
-  };
-
-  const handleFilterChange = (e) => {
-    setFilter(e.target.value);
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <div className={styles.header}>
-          <h1 className={styles.heading}>My Appointments</h1>
-          <div className={styles.filterWrapper}>
-            <span className={styles.filterIcon}>
-              <MapPin /> {/* Added a filter icon */}
-            </span>
+          <div className={styles.headerContent}>
+            <h1 className={styles.title}>My Appointments</h1>
+            <p className={styles.subtitle}>
+              Manage your upcoming and past appointments
+            </p>
+          </div>
+          <div className={styles.filterContainer}>
+            <Filter className={styles.filterIcon} size={20} />
             <select
               value={filter}
-              onChange={handleFilterChange}
+              onChange={(e) => setFilter(e.target.value)}
               className={styles.filterSelect}
             >
               <option value="all">All</option>
@@ -87,33 +83,44 @@ const PatientAppointmentHistory = () => {
         </div>
 
         {filteredAppointments.length === 0 ? (
-          <div className={styles.noAppointments}>No appointments yet</div>
+          <div className={styles.emptyState}>
+            <Calendar size={48} className={styles.emptyIcon} />
+            <h2>No appointments found</h2>
+            <p>When you schedule appointments, they will appear here</p>
+          </div>
         ) : (
           <div className={styles.appointmentGrid}>
             {filteredAppointments.map((appointment) => (
               <div key={appointment.id} className={styles.appointmentCard}>
-                <h3>{appointment.doctorName}</h3>
-                <p>{appointment.specialization.toUpperCase()}</p>
-                <div>
-                  <Calendar className={styles.icon} /> {appointment.date}
+                <div className={styles.cardHeader}>
+                  <div className={styles.doctorInfo}>
+                    <h3 className={styles.doctorName}>
+                      {appointment.doctorName}
+                    </h3>
+                    <span className={styles.specialization}>
+                      {appointment.specialization}
+                    </span>
+                  </div>
+                  <div
+                    className={`${styles.status} ${styles[appointment.status]}`}
+                  >
+                    {appointment.status}
+                  </div>
                 </div>
-                <div>
-                  <Clock className={styles.icon} /> {appointment.time}
-                </div>
-                <div>
-                  {getModeIcon(appointment.mode)} {appointment.mode}{" "}
-                  Consultation
-                </div>
-                <div>
-                  <MapPin className={styles.icon} /> {appointment.location}{" "}
-                  {/* Changed to Location icon for location */}
-                </div>
-                <div
-                  className={`${styles.statusBadge} ${
-                    styles[appointment.status]
-                  }`}
-                >
-                  {appointment.status} {/* Displaying status */}
+
+                <div className={styles.appointmentDetails}>
+                  <div className={styles.detailItem}>
+                    <Calendar className={styles.detailIcon} />
+                    <span>{appointment.date}</span>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <Clock className={styles.detailIcon} />
+                    <span>{appointment.time}</span>
+                  </div>
+                  <div className={styles.detailItem}>
+                    {getModeIcon(appointment.mode)}
+                    <span>{appointment.mode} Consultation</span>
+                  </div>
                 </div>
               </div>
             ))}
