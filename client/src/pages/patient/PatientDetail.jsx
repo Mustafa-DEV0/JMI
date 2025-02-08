@@ -101,7 +101,6 @@ const PatientDetail = () => {
             <div className={styles.formGroup}>
               <label>
                 <User size={18} />
-                Full Name
               </label>
               <input
                 type="text"
@@ -116,7 +115,6 @@ const PatientDetail = () => {
               <div className={styles.formGroup}>
                 <label>
                   <Phone size={18} />
-                  Phone Number
                 </label>
                 <input
                   type="tel"
@@ -130,7 +128,6 @@ const PatientDetail = () => {
               <div className={styles.formGroup}>
                 <label>
                   <Calendar size={18} />
-                  Date of Birth
                 </label>
                 <input
                   type="date"
@@ -143,7 +140,7 @@ const PatientDetail = () => {
 
             <div className={styles.formRow}>
               <div className={styles.formGroup}>
-                <label>Age</label>
+                <label></label>
                 <input
                   type="text"
                   name="age"
@@ -154,7 +151,7 @@ const PatientDetail = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label>Gender</label>
+                <label></label>
                 <select
                   name="gender"
                   value={personalDetails.gender}
@@ -249,7 +246,6 @@ const PatientDetail = () => {
               <div className={styles.formGroup}>
                 <label>
                   <Heart size={18} />
-                  Blood Group
                 </label>
                 <input
                   type="text"
@@ -263,7 +259,6 @@ const PatientDetail = () => {
               <div className={styles.formGroup}>
                 <label>
                   <Ruler size={18} />
-                  Height
                 </label>
                 <input
                   type="text"
@@ -277,7 +272,6 @@ const PatientDetail = () => {
               <div className={styles.formGroup}>
                 <label>
                   <Weight size={18} />
-                  Weight
                 </label>
                 <input
                   type="text"
@@ -292,7 +286,6 @@ const PatientDetail = () => {
             <div className={styles.formGroup}>
               <label>
                 <AlertCircle size={18} />
-                Allergies
               </label>
               <input
                 type="text"
@@ -308,7 +301,6 @@ const PatientDetail = () => {
             <div className={styles.formGroup}>
               <label>
                 <AlertCircle size={18} />
-                Existing Conditions
               </label>
               <input
                 type="text"
