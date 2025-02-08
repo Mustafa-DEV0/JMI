@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { User, Phone, Calendar, Heart, Ruler, MapPin, AlertCircle, Weight, Pill as Pills, Trash2 } from 'lucide-react';
-import styles from './Patient.module.css';
+import styles from './PatientDetail.module.css';
 import { useParams } from 'react-router-dom';
 
-const Patient = () => {
+const PatientDetail = () => {
   const [activeTab, setActiveTab] = useState('personal');
   const [personalDetails, setPersonalDetails] = useState({
     name: '',
@@ -391,4 +391,4 @@ const Patient = () => {
   );
 };
 
-export default Patient;
+export default PatientDetail;
