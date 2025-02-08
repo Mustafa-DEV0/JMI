@@ -1,13 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Calendar, Clock, Video, Phone, MapPin, Filter } from "lucide-react";
+import { Calendar, Clock, Video, Phone, MapPin } from "lucide-react";
 import styles from "./PatientAppointmentHistory.module.css";
 
 const PatientAppointmentHistory = () => {
   const [appointments, setAppointments] = useState([]);
-  const [filter, setFilter] = useState("upcoming");
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const filterRef = useRef(null);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -16,9 +13,11 @@ const PatientAppointmentHistory = () => {
         const response = await axios.get(
           "http://localhost:5000/appointment/history",
           {
-            headers: { "Content-Type": "application/json" },
-          },
-          { token }
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setAppointments(response.data);
       } catch (error) {
@@ -26,16 +25,6 @@ const PatientAppointmentHistory = () => {
       }
     };
     fetchAppointments();
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (filterRef.current && !filterRef.current.contains(event.target)) {
-        setIsFilterOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const getModeIcon = (mode) => {
@@ -49,67 +38,42 @@ const PatientAppointmentHistory = () => {
     }
   };
 
-  const filteredAppointments = appointments.filter((apt) =>
-    filter === "all" ? true : apt.status === filter
-  );
-
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <div className={styles.header}>
           <h1>My Appointments</h1>
-          <div className={styles.filterWrapper} ref={filterRef}>
-            <button
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className={styles.filterButton}
-            >
-              <Filter className={styles.filterIcon} />
-              <span>
-                Filter: {filter.charAt(0).toUpperCase() + filter.slice(1)}
-              </span>
-            </button>
-            {isFilterOpen && (
-              <div className={styles.filterDropdown}>
-                {["all", "upcoming", "completed", "pending", "cancelled"].map(
-                  (status) => (
-                    <button
-                      key={status}
-                      onClick={() => {
-                        setFilter(status);
-                        setIsFilterOpen(false);
-                      }}
-                      className={`${styles.filterOption} ${
-                        filter === status ? styles.active : ""
-                      }`}
-                    >
-                      {status.charAt(0).toUpperCase() + status.slice(1)}
-                    </button>
-                  )
-                )}
-              </div>
-            )}
-          </div>
         </div>
-        {filteredAppointments.length === 0 ? (
+        {appointments.length === 0 ? (
           <div className={styles.noAppointments}>No appointments yet</div>
         ) : (
           <div className={styles.appointmentGrid}>
-            {filteredAppointments.map((appointment) => (
+            {appointments.map((appointment) => (
               <div key={appointment.id} className={styles.appointmentCard}>
-                <h3>{appointment.doctorName}</h3>
-                <p>{appointment.department}</p>
-                <div>
-                  <Calendar className={styles.icon} /> {appointment.date}
+                <div className={styles.cardHeader}>
+                  <h3 className={styles.doctorName}>
+                    {appointment.doctorName}
+                  </h3>
+                  <p className={styles.department}>{appointment.department}</p>
                 </div>
-                <div>
-                  <Clock className={styles.icon} /> {appointment.time}
+                <div className={styles.appointmentDetails}>
+                  <div className={styles.detailItem}>
+                    <Calendar className={styles.icon} /> {appointment.date}
+                  </div>
+                  <div className={styles.detailItem}>
+                    <Clock className={styles.icon} /> {appointment.time}
+                  </div>
+                  <div className={styles.detailItem}>
+                    {getModeIcon(appointment.mode)} {appointment.mode}{" "}
+                    Consultation
+                  </div>
+                  <div className={styles.detailItem}>
+                    <MapPin className={styles.icon} /> {appointment.location}
+                  </div>
                 </div>
-                <div>
-                  {getModeIcon(appointment.mode)} {appointment.mode}{" "}
-                  Consultation
-                </div>
-                <div>
-                  <MapPin className={styles.icon} /> {appointment.location}
+                <div className={styles.cardActions}>
+                  <button className={styles.actionButton}>Reschedule</button>
+                  <button className={styles.cancelButton}>Cancel</button>
                 </div>
               </div>
             ))}

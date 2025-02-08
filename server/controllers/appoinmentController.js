@@ -17,9 +17,9 @@ const getDoctorDetails = async (req, res) => {
 
 const saveAppointmentDetails = async (req, res) => {
   try {
-    const { doctor, concerns, scheduledAt, mode, token } = req.body;
+    const { doctorName, doctor, concerns, scheduledAt, mode } = req.body;
     console.log(req.body);
-
+    const token = req.headers.authorization?.split(" ")[1];
     if (!doctor || !scheduledAt || !mode || !token) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -31,6 +31,7 @@ const saveAppointmentDetails = async (req, res) => {
 
     const appointmentData = {
       doctor,
+      doctorName,
       patient: patientId,
       concerns,
       scheduledAt,
@@ -48,7 +49,11 @@ const saveAppointmentDetails = async (req, res) => {
 };
 
 const getPatientHistory = async (req, res) => {
-  const { token } = req.body;
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(400).json({ message: "Token missing" });
+  }
+
   try {
     const patientId = getUserIdFromJwt(token);
     const appointments = await Appointment.find({ patient: patientId });
