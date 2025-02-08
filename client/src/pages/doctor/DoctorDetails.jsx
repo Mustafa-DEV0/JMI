@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { ChevronRight, User, Award, Clock } from "lucide-react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import styles from "./Doctor.module.css";
+import styles from "./DoctorDetails.module.css";
 
-const Doctor = () => {
+const DoctorDetails = () => {
   const [activeSection, setActiveSection] = useState("personal");
   const [formData, setFormData] = useState({
     personalDetails: { name: "", age: "", phone: "", gender: "" },
@@ -16,12 +16,12 @@ const Doctor = () => {
       consultingFees: "",
       medicalLicenseId: "",
     },
-    availability: { 
-      days: [], 
+    availability: {
+      days: [],
       startTime: "09:00",
       endTime: "17:00",
       startPeriod: "AM",
-      endPeriod: "PM"
+      endPeriod: "PM",
     },
     clinicOrHospital: { address: "", officeNumber: "" },
   });
@@ -59,14 +59,14 @@ const Doctor = () => {
 
   const hours = Array.from({ length: 12 }, (_, i) => {
     const hour = i + 1;
-    return hour.toString().padStart(2, '0');
+    return hour.toString().padStart(2, "0");
   });
 
-  const minutes = ["00", "15", "30", "45"];
+  const minutes = ["00"];
 
   const generateTimeOptions = () => {
-    return hours.flatMap(hour => 
-      minutes.map(minute => `${hour}:${minute}`)
+    return hours.flatMap((hour) =>
+      minutes.map((minute) => `${hour}:${minute}`)
     );
   };
 
@@ -79,10 +79,10 @@ const Doctor = () => {
       ...formData,
       availability: {
         ...formData.availability,
-        time: formattedTime
-      }
+        time: formattedTime,
+      },
     };
-    
+
     try {
       await axios.put(`http://localhost:5000/api/doctor/${id}`, submissionData);
       console.log("Doctor details updated");
@@ -308,7 +308,11 @@ const Doctor = () => {
                     <select
                       value={formData.availability.startTime}
                       onChange={(e) =>
-                        handleInputChange("availability", "startTime", e.target.value)
+                        handleInputChange(
+                          "availability",
+                          "startTime",
+                          e.target.value
+                        )
                       }
                       required
                     >
@@ -321,7 +325,11 @@ const Doctor = () => {
                     <select
                       value={formData.availability.startPeriod}
                       onChange={(e) =>
-                        handleInputChange("availability", "startPeriod", e.target.value)
+                        handleInputChange(
+                          "availability",
+                          "startPeriod",
+                          e.target.value
+                        )
                       }
                       required
                     >
@@ -336,7 +344,11 @@ const Doctor = () => {
                     <select
                       value={formData.availability.endTime}
                       onChange={(e) =>
-                        handleInputChange("availability", "endTime", e.target.value)
+                        handleInputChange(
+                          "availability",
+                          "endTime",
+                          e.target.value
+                        )
                       }
                       required
                     >
@@ -349,7 +361,11 @@ const Doctor = () => {
                     <select
                       value={formData.availability.endPeriod}
                       onChange={(e) =>
-                        handleInputChange("availability", "endPeriod", e.target.value)
+                        handleInputChange(
+                          "availability",
+                          "endPeriod",
+                          e.target.value
+                        )
                       }
                       required
                     >
@@ -405,4 +421,4 @@ const Doctor = () => {
   );
 };
 
-export default Doctor;
+export default DoctorDetails;
