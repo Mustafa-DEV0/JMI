@@ -6,7 +6,6 @@ import Doctor from "../pages/doctor/Doctor.jsx";
 import Patient from "../pages/patient/Patient.jsx";
 import Prescription from "../pages/prescription/Prescription.jsx";
 import DoctorList from "../pages/doctorlist/DoctorList.jsx";
-import Appointment from "../pages/Appointment/appointment.jsx";
 import MyAppointment from "../pages/myappointment/Myappointment.jsx"; // Ensure filename matches exactly
 import MedicalStore from "../pages/medicalstore/MedicalStore.jsx";
 import Appointment from "../pages/appointment/appointment.jsx";
