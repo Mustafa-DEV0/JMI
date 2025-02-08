@@ -1,180 +1,486 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   User, 
   Phone, 
   Calendar, 
   MapPin, 
-  Contact, 
+  Heart, 
   Activity, 
-  FileText, 
-  AlertCircle,
-  Pill,
-  Ruler,
-  Weight,
-  Droplet,
-  Mail,
   Clock,
-  Edit3,
+  Edit,
+  AlertCircle,
+  Pill as Pills,
+  FileText,
   ChevronRight,
-  CalendarClock
+  Upload,
+  Image as ImageIcon,
+  Package,
+  ShoppingBag,
+  X
 } from 'lucide-react';
 import styles from './UserDashboard.module.css';
 
-const UserDashboard = ({ patient }) => {
-  const dummyPatient = {
-    personalDetails: {
-      name: "John Doe",
-      phone: "+1 234 567 8900",
-      dob: new Date("1990-01-01"),
-      age: 33,
-      gender: "Male",
-      address: {
-        city: "New York",
-        state: "NY",
-        pincode: "10001"
-      },
-      emergencyContact: {
-        name: "Jane Doe",
-        phone: "+1 234 567 8901",
-        relation: "Spouse"
+const UserDashboard = ({ patientData, onUploadReport }) => {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('personal');
+  const fileInputRef = useRef(null);
+  const [previews, setPreviews] = useState([]);
+  const [uploadingReports, setUploadingReports] = useState(false);
+
+  // Dummy upcoming appointments - replace with actual data
+  const upcomingAppointments = [
+    {
+      id: 1,
+      doctorName: "Dr. Sarah Wilson",
+      specialization: "Cardiologist",
+      date: "2024-03-25",
+      time: "14:30",
+      status: "confirmed"
+    },
+    {
+      id: 2,
+      doctorName: "Dr. Michael Chen",
+      specialization: "Neurologist",
+      date: "2024-04-02",
+      time: "10:15",
+      status: "pending"
+    }
+  ];
+
+  // Dummy medicine orders - replace with actual data
+  const medicineOrders = {
+    upcoming: [
+      {
+        id: 1,
+        orderDate: "2024-03-20",
+        medicalName: "LifeCare Pharmacy",
+        status: "processing",
+        total: 245.50,
+        items: [
+          { name: "Paracetamol 500mg", quantity: 2, price: 45.50 },
+          { name: "Vitamin D3", quantity: 1, price: 200.00 }
+        ]
       }
-    },
-    medicalDetails: {
-      bloodGroup: "O+",
-      height: 175,
-      weight: 70,
-      allergies: ["Peanuts", "Penicillin"],
-      diseases: ["Hypertension"],
-      currentMedication: [
-        {
-          tabletName: "Lisinopril",
-          dosage: "10mg",
-          duration: "Daily"
-        }
-      ]
-    },
-    appointments: [
+    ],
+    previous: [
       {
-        doctor: "Dr. Daniel McAdams",
-        department: "Cardiology",
-        date: "2024-03-09",
-        time: "09:15 AM",
-        type: "Follow up",
-        status: "Upcoming"
-      },
-      {
-        doctor: "Dr. Michael Lee",
-        department: "Endocrinology",
-        date: "2024-03-15",
-        time: "02:30 PM",
-        type: "Consultation",
-        status: "Scheduled"
+        id: 2,
+        orderDate: "2024-03-15",
+        medicalName: "MedPlus",
+        status: "delivered",
+        deliveryDate: "2024-03-17",
+        total: 560.75,
+        items: [
+          { name: "Blood Pressure Monitor", quantity: 1, price: 499.99 },
+          { name: "Bandages", quantity: 2, price: 60.76 }
+        ]
       }
     ]
   };
 
-  const data = patient || dummyPatient;
-
-  const handleUpdateProfile = () => {
-    // Navigate to update profile page
-    console.log("Navigate to update profile");
-  };
-
-  const getTimeRemaining = (appointmentDate) => {
+  const calculateTimeRemaining = (date, time) => {
+    const appointmentDate = new Date(`${date}T${time}`);
     const now = new Date();
-    const appDate = new Date(appointmentDate);
-    const diff = appDate - now;
+    const diff = appointmentDate - now;
+    
+    if (diff < 0) return "Past";
     
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     
-    if (days > 0) return `${days} days`;
-    if (hours > 0) return `${hours} hours`;
-    return 'Less than an hour';
+    return `${days}d ${hours}h remaining`;
+  };
+
+  const handleUpdateProfile = () => {
+    navigate('/update-profile');
+  };
+
+  const handleFileUpload = async (event) => {
+    const files = Array.from(event.target.files);
+    if (files.length > 0) {
+      try {
+        setUploadingReports(true);
+        
+        // Create previews for all selected files
+        const newPreviews = files.map(file => ({
+          id: Math.random().toString(36).substr(2, 9),
+          file,
+          previewUrl: URL.createObjectURL(file)
+        }));
+        
+        setPreviews(prev => [...prev, ...newPreviews]);
+
+        // Upload all files
+        await Promise.all(files.map(file => onUploadReport(file)));
+        
+        // Clean up previews after successful upload
+        newPreviews.forEach(preview => URL.revokeObjectURL(preview.previewUrl));
+        setPreviews([]);
+        
+      } catch (error) {
+        console.error('Error uploading reports:', error);
+      } finally {
+        setUploadingReports(false);
+        // Reset file input
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const cancelUpload = (previewId) => {
+    setPreviews(prev => {
+      const previewToRemove = prev.find(p => p.id === previewId);
+      if (previewToRemove) {
+        URL.revokeObjectURL(previewToRemove.previewUrl);
+      }
+      return prev.filter(p => p.id !== previewId);
+    });
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current.click();
   };
 
   return (
     <div className={styles.dashboard}>
       <div className={styles.header}>
-        <div className={styles.headerContent}>
-          <h1>Patient Dashboard</h1>
-          <button onClick={handleUpdateProfile} className={styles.updateButton}>
-            <Edit3 size={16} />
-            Update Profile
-          </button>
-        </div>
-        <div className={styles.patientCard}>
-          <div className={styles.avatarContainer}>
-            <User size={48} className={styles.avatarIcon} />
-          </div>
-          <div className={styles.patientInfo}>
-            <h2>{data.personalDetails.name}</h2>
-            <div className={styles.patientMeta}>
-              <span><Mail size={14} /> patient@example.com</span>
-              <span><Calendar size={14} /> {data.personalDetails.age} years</span>
-              <span><Activity size={14} /> Active Patient</span>
-            </div>
-          </div>
-        </div>
+        <h1>Patient Dashboard</h1>
+        <button 
+          className={styles.updateButton}
+          onClick={handleUpdateProfile}
+        >
+          <Edit size={20} />
+          Update Profile
+        </button>
       </div>
 
-      <div className={styles.gridContainer}>
-        {/* Upcoming Appointments Card */}
-        <section className={`${styles.card} ${styles.appointmentsCard}`}>
-          <h3><CalendarClock /> Upcoming Appointments</h3>
-          <div className={styles.cardContent}>
-            <div className={styles.appointmentsList}>
-              {data.appointments.map((appointment, index) => (
-                <div key={index} className={styles.appointmentItem}>
-                  <div className={styles.appointmentHeader}>
-                    <div className={styles.doctorInfo}>
-                      <h4>{appointment.doctor}</h4>
-                      <span>{appointment.department}</span>
-                    </div>
-                    <span className={styles.appointmentType}>{appointment.type}</span>
+      <div className={styles.content}>
+        <div className={styles.mainInfo}>
+          <div className={styles.tabs}>
+            <button 
+              className={`${styles.tab} ${activeTab === 'personal' ? styles.active : ''}`}
+              onClick={() => setActiveTab('personal')}
+            >
+              Personal Details
+            </button>
+            <button 
+              className={`${styles.tab} ${activeTab === 'medical' ? styles.active : ''}`}
+              onClick={() => setActiveTab('medical')}
+            >
+              Medical Information
+            </button>
+            <button 
+              className={`${styles.tab} ${activeTab === 'reports' ? styles.active : ''}`}
+              onClick={() => setActiveTab('reports')}
+            >
+              Reports
+            </button>
+            <button 
+              className={`${styles.tab} ${activeTab === 'orders' ? styles.active : ''}`}
+              onClick={() => setActiveTab('orders')}
+            >
+              Orders
+            </button>
+          </div>
+
+          {activeTab === 'personal' && (
+            <div className={styles.detailsCard}>
+              <div className={styles.personalInfo}>
+                <div className={styles.infoGroup}>
+                  <User className={styles.icon} />
+                  <div>
+                    <h3>Name</h3>
+                    <p>{patientData?.personalDetails?.name || 'Not provided'}</p>
                   </div>
-                  <div className={styles.appointmentDetails}>
-                    <div className={styles.appointmentTime}>
-                      <Calendar size={16} />
-                      <span>{new Date(appointment.date).toLocaleDateString()}</span>
-                      <Clock size={16} />
-                      <span>{appointment.time}</span>
-                    </div>
-                    <div className={styles.timeRemaining}>
-                      <span>Time Remaining:</span>
-                      <strong>{getTimeRemaining(`${appointment.date} ${appointment.time}`)}</strong>
-                    </div>
-                  </div>
-                  <button className={styles.viewDetailsButton}>
-                    View Details
-                    <ChevronRight size={16} />
-                  </button>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
-        <section className={styles.card}>
-          <h3><User /> Personal Information</h3>
-          <div className={styles.cardContent}>
-            <div className={styles.infoItem}>
-              <Phone size={20} />
-              <span>{data.personalDetails.phone}</span>
-            </div>
-            <div className={styles.infoItem}>
-              <Calendar size={20} />
-              <span>{new Date(data.personalDetails.dob).toLocaleDateString()}</span>
-            </div>
-            <div className={styles.infoItem}>
-              <User size={20} />
-              <span>{data.personalDetails.gender}</span>
-            </div>
-          </div>
-        </section>
+                <div className={styles.infoGroup}>
+                  <Phone className={styles.icon} />
+                  <div>
+                    <h3>Phone</h3>
+                    <p>{patientData?.personalDetails?.phone || 'Not provided'}</p>
+                  </div>
+                </div>
 
-        {/* Rest of the existing cards... */}
-        {/* ... */}
+                <div className={styles.infoGroup}>
+                  <Calendar className={styles.icon} />
+                  <div>
+                    <h3>Date of Birth</h3>
+                    <p>{patientData?.personalDetails?.dob ? new Date(patientData.personalDetails.dob).toLocaleDateString() : 'Not provided'}</p>
+                  </div>
+                </div>
+
+                <div className={styles.infoGroup}>
+                  <MapPin className={styles.icon} />
+                  <div>
+                    <h3>Address</h3>
+                    <p>
+                      {patientData?.personalDetails?.address ? 
+                        `${patientData.personalDetails.address.city}, ${patientData.personalDetails.address.state} - ${patientData.personalDetails.address.pincode}` 
+                        : 'Not provided'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.emergencyContact}>
+                <h3><AlertCircle className={styles.icon} /> Emergency Contact</h3>
+                <div className={styles.emergencyInfo}>
+                  <p><strong>Name:</strong> {patientData?.personalDetails?.emergencyContact?.name || 'Not provided'}</p>
+                  <p><strong>Phone:</strong> {patientData?.personalDetails?.emergencyContact?.phone || 'Not provided'}</p>
+                  <p><strong>Relation:</strong> {patientData?.personalDetails?.emergencyContact?.relation || 'Not provided'}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'medical' && (
+            <div className={styles.detailsCard}>
+              <div className={styles.medicalInfo}>
+                <div className={styles.infoGroup}>
+                  <Heart className={styles.icon} />
+                  <div>
+                    <h3>Blood Group</h3>
+                    <p>{patientData?.medicalDetails?.bloodGroup || 'Not provided'}</p>
+                  </div>
+                </div>
+
+                <div className={styles.infoGroup}>
+                  <Activity className={styles.icon} />
+                  <div>
+                    <h3>Physical Details</h3>
+                    <p>Height: {patientData?.medicalDetails?.height || 'N/A'} cm</p>
+                    <p>Weight: {patientData?.medicalDetails?.weight || 'N/A'} kg</p>
+                  </div>
+                </div>
+
+                <div className={styles.infoGroup}>
+                  <AlertCircle className={styles.icon} />
+                  <div>
+                    <h3>Allergies</h3>
+                    <div className={styles.tagList}>
+                      {patientData?.medicalDetails?.allergies?.map((allergy, index) => (
+                        <span key={index} className={styles.tag}>{allergy}</span>
+                      )) || 'None reported'}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.infoGroup}>
+                  <FileText className={styles.icon} />
+                  <div>
+                    <h3>Diseases</h3>
+                    <div className={styles.tagList}>
+                      {patientData?.medicalDetails?.diseases?.map((disease, index) => (
+                        <span key={index} className={styles.tag}>{disease}</span>
+                      )) || 'None reported'}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.medicationSection}>
+                  <h3><Pills className={styles.icon} /> Current Medication</h3>
+                  <div className={styles.medicationList}>
+                    {patientData?.medicalDetails?.currentMedication?.map((med, index) => (
+                      <div key={index} className={styles.medicationItem}>
+                        <h4>{med.tabletName}</h4>
+                        <p>Dosage: {med.dosage}</p>
+                        <p>Duration: {med.duration}</p>
+                      </div>
+                    )) || 'No current medications'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'reports' && (
+            <div className={styles.detailsCard}>
+              <div className={styles.reportsSection}>
+                <div className={styles.reportsHeader}>
+                  <h3><ImageIcon className={styles.icon} /> Medical Reports</h3>
+                  <button 
+                    className={`${styles.uploadButton} ${uploadingReports ? styles.uploading : ''}`}
+                    onClick={triggerFileInput}
+                    disabled={uploadingReports}
+                  >
+                    <Upload size={20} />
+                    {uploadingReports ? 'Uploading...' : 'Upload Reports'}
+                  </button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    accept="image/*"
+                    multiple
+                    className={styles.hiddenInput}
+                  />
+                </div>
+
+                {previews.length > 0 && (
+                  <div className={styles.previewsContainer}>
+                    <div className={styles.previewHeader}>
+                      <h4>Previews</h4>
+                    </div>
+                    <div className={styles.previewsGrid}>
+                      {previews.map(preview => (
+                        <div key={preview.id} className={styles.previewCard}>
+                          <button 
+                            className={styles.cancelButton} 
+                            onClick={() => cancelUpload(preview.id)}
+                          >
+                            <X size={20} />
+                          </button>
+                          <img 
+                            src={preview.previewUrl} 
+                            alt="Report Preview" 
+                            className={styles.previewImage}
+                          />
+                          <p className={styles.fileName}>{preview.file.name}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                <div className={styles.reportsGrid}>
+                  {patientData?.reports?.map((report, index) => (
+                    <div key={report.id || index} className={styles.reportCard}>
+                      <div className={styles.reportImageContainer}>
+                        <img 
+                          src={report.url} 
+                          alt={`Medical Report ${index + 1}`} 
+                          className={styles.reportImage}
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className={styles.reportInfo}>
+                        <p className={styles.reportDate}>
+                          {new Date(report.uploadDate).toLocaleDateString()}
+                        </p>
+                        <div className={styles.reportActions}>
+                          <a 
+                            href={report.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className={styles.viewButton}
+                          >
+                            View Full Size
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {patientData?.reports?.length === 0 && !previews.length && (
+                  <div className={styles.noReports}>
+                    <ImageIcon size={48} className={styles.noReportsIcon} />
+                    <p>No reports uploaded yet</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'orders' && (
+            <div className={styles.detailsCard}>
+              <div className={styles.ordersSection}>
+                <div className={styles.orderCategory}>
+                  <h3><Package className={styles.icon} /> Upcoming Orders</h3>
+                  <div className={styles.ordersList}>
+                    {medicineOrders.upcoming.map(order => (
+                      <div key={order.id} className={styles.orderCard}>
+                        <div className={styles.orderHeader}>
+                          <div>
+                            <h4>{order.medicalName}</h4>
+                            <p className={styles.orderDate}>
+                              Ordered on {new Date(order.orderDate).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <span className={`${styles.orderStatus} ${styles[order.status]}`}>
+                            {order.status}
+                          </span>
+                        </div>
+                        <div className={styles.orderItems}>
+                          {order.items.map((item, index) => (
+                            <div key={index} className={styles.orderItem}>
+                              <p>{item.name} x {item.quantity}</p>
+                              <p>₹{item.price.toFixed(2)}</p>
+                            </div>
+                          ))}
+                        </div>
+                        <div className={styles.orderTotal}>
+                          <p>Total Amount</p>
+                          <p>₹{order.total.toFixed(2)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className={styles.orderCategory}>
+                  <h3><ShoppingBag className={styles.icon} /> Previous Orders</h3>
+                  <div className={styles.ordersList}>
+                    {medicineOrders.previous.map(order => (
+                      <div key={order.id} className={styles.orderCard}>
+                        <div className={styles.orderHeader}>
+                          <div>
+                            <h4>{order.medicalName}</h4>
+                            <p className={styles.orderDate}>
+                              Delivered on {new Date(order.deliveryDate).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <span className={`${styles.orderStatus} ${styles[order.status]}`}>
+                            {order.status}
+                          </span>
+                        </div>
+                        <div className={styles.orderItems}>
+                          {order.items.map((item, index) => (
+                            <div key={index} className={styles.orderItem}>
+                              <p>{item.name} x {item.quantity}</p>
+                              <p>₹{item.price.toFixed(2)}</p>
+                            </div>
+                          ))}
+                        </div>
+                        <div className={styles.orderTotal}>
+                          <p>Total Amount</p>
+                          <p>₹{order.total.toFixed(2)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className={styles.appointmentsSection}>
+          <h2>Upcoming Appointments</h2>
+          <div className={styles.appointmentsList}>
+            {upcomingAppointments.map(appointment => (
+              <div key={appointment.id} className={styles.appointmentCard}>
+                <div className={styles.appointmentHeader}>
+                  <h3>{appointment.doctorName}</h3>
+                  <span className={styles[appointment.status]}>{appointment.status}</span>
+                </div>
+                <p className={styles.specialization}>{appointment.specialization}</p>
+                <div className={styles.appointmentTime}>
+                  <Clock className={styles.icon} />
+                  <span>{new Date(`${appointment.date}T${appointment.time}`).toLocaleString()}</span>
+                </div>
+                <div className={styles.timeRemaining}>
+                  {calculateTimeRemaining(appointment.date, appointment.time)}
+                </div>
+                <button className={styles.viewDetails}>
+                  View Details <ChevronRight size={16} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
