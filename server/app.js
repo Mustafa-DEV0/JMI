@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import patientRoutes from "./routes/patientRoutes.js";
 import doctorRoutes from "./routes/doctorRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
+import docterListRoutes from "./routes/doctorListRoutes.js";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use(morgan("dev"));
 app.use("/api/auth", authRoutes);
 app.use("/api", patientRoutes);
 app.use("/api", doctorRoutes);
-app.use("/api", appointmentRoutes);
+app.use("/appointment", appointmentRoutes);
+app.use("/doctorList", docterListRoutes);
 
 export default app;

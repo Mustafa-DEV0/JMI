@@ -17,6 +17,7 @@ const Signup = () => {
     setError("");
     setSuccess("");
     setLoading(true);
+    
 
     try {
       const response = await axios.post(
@@ -96,6 +97,7 @@ const Signup = () => {
           {/* Submit Button */}
           <button type="submit" className={styles.submitBtn} disabled={loading}>
             {loading ? "Signing Up..." : "Sign Up"}
+
           </button>
         </form>
 

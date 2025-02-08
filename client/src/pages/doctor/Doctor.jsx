@@ -16,11 +16,17 @@ const Doctor = () => {
       consultingFees: "",
       medicalLicenseId: "",
     },
-    availability: { days: [], time: "" },
+    availability: { 
+      days: [], 
+      startTime: "09:00",
+      endTime: "17:00",
+      startPeriod: "AM",
+      endPeriod: "PM"
+    },
     clinicOrHospital: { address: "", officeNumber: "" },
   });
 
-  const { id } = useParams(); // Move useParams() here, inside the component
+  const { id } = useParams();
 
   const handleInputChange = (section, field, value) => {
     setFormData((prev) => ({
@@ -51,11 +57,34 @@ const Doctor = () => {
     "Sunday",
   ];
 
+  const hours = Array.from({ length: 12 }, (_, i) => {
+    const hour = i + 1;
+    return hour.toString().padStart(2, '0');
+  });
+
+  const minutes = ["00", "15", "30", "45"];
+
+  const generateTimeOptions = () => {
+    return hours.flatMap(hour => 
+      minutes.map(minute => `${hour}:${minute}`)
+    );
+  };
+
+  const timeOptions = generateTimeOptions();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    const formattedTime = `${formData.availability.startTime} ${formData.availability.startPeriod} - ${formData.availability.endTime} ${formData.availability.endPeriod}`;
+    const submissionData = {
+      ...formData,
+      availability: {
+        ...formData.availability,
+        time: formattedTime
+      }
+    };
+    
     try {
-      await axios.put(`http://localhost:5000/api/doctor/${id}`, formData);
+      await axios.put(`http://localhost:5000/api/doctor/${id}`, submissionData);
       console.log("Doctor details updated");
     } catch (error) {
       console.error("Error submitting doctor details:", error);
@@ -272,15 +301,64 @@ const Doctor = () => {
                   </button>
                 ))}
               </div>
-              <input
-                type="text"
-                placeholder="Working Hours (e.g., 10:00 AM - 5:00 PM)"
-                value={formData.availability.time}
-                onChange={(e) =>
-                  handleInputChange("availability", "time", e.target.value)
-                }
-                required
-              />
+              <div className={styles.timeSelector}>
+                <div className={styles.timeGroup}>
+                  <label>Start Time</label>
+                  <div className={styles.timeInputGroup}>
+                    <select
+                      value={formData.availability.startTime}
+                      onChange={(e) =>
+                        handleInputChange("availability", "startTime", e.target.value)
+                      }
+                      required
+                    >
+                      {timeOptions.map((time) => (
+                        <option key={`start-${time}`} value={time}>
+                          {time}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={formData.availability.startPeriod}
+                      onChange={(e) =>
+                        handleInputChange("availability", "startPeriod", e.target.value)
+                      }
+                      required
+                    >
+                      <option value="AM">AM</option>
+                      <option value="PM">PM</option>
+                    </select>
+                  </div>
+                </div>
+                <div className={styles.timeGroup}>
+                  <label>End Time</label>
+                  <div className={styles.timeInputGroup}>
+                    <select
+                      value={formData.availability.endTime}
+                      onChange={(e) =>
+                        handleInputChange("availability", "endTime", e.target.value)
+                      }
+                      required
+                    >
+                      {timeOptions.map((time) => (
+                        <option key={`end-${time}`} value={time}>
+                          {time}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={formData.availability.endPeriod}
+                      onChange={(e) =>
+                        handleInputChange("availability", "endPeriod", e.target.value)
+                      }
+                      required
+                    >
+                      <option value="AM">AM</option>
+                      <option value="PM">PM</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
               <input
                 type="text"
                 placeholder="Clinic/Hospital Address"
