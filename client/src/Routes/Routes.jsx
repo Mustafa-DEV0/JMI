@@ -9,6 +9,7 @@ import DoctorList from "../pages/doctorlist/DoctorList.jsx";
 import MyAppointment from "../pages/myappointment/Myappointment.jsx"; // Ensure filename matches exactly
 import MedicalStore from "../pages/medicalstore/MedicalStore.jsx";
 import Appointment from "../pages/appointment/Appointment.jsx"; // Ensure filename matches exactly
+import UserDashboard from "../pages/userdashboard/UserDashboard.jsx";
 
 const AppRoutes = () => {
   return (
@@ -23,6 +24,7 @@ const AppRoutes = () => {
       <Route path="/myappointment" element={<MyAppointment />} />
       <Route path="/medicalstore" element={<MedicalStore />} />
       <Route path="/appointment" element={<Appointment />} />
+      <Route path="/userdashboard" element={<UserDashboard />} />
       
     </Routes>
   );
