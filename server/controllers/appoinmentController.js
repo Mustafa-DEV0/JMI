@@ -25,7 +25,6 @@ const saveAppointmentDetails = async (req, res) => {
     }
 
     const patientId = getUserIdFromJwt(token);
-    console.log(patientId);
     if (!patientId) {
       return res.status(401).json({ message: "Invalid token" });
     }
@@ -37,9 +36,9 @@ const saveAppointmentDetails = async (req, res) => {
       scheduledAt,
       mode,
     };
-
     const newAppointment = new Appointment(appointmentData);
     await newAppointment.save();
+    console.log(newAppointment);
 
     res.status(200).json({ message: "Appointment saved successfully" });
   } catch (error) {
