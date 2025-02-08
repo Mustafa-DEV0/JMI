@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Search, MapPin, Clock, Phone, Globe, CreditCard, Truck, Wallet, AlertCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Search, MapPin, Clock, Phone, Globe, CreditCard, Truck, AlertCircle } from 'lucide-react';
 import styles from './MedicalStore.module.css';
 
 const medicalStores = [
@@ -117,6 +118,7 @@ const cities = ["All Cities", "Boston", "Cambridge", "Somerville", "Brookline"];
 const states = ["All States", "Massachusetts", "New York", "California"];
 
 function MedicalStore() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCity, setSelectedCity] = useState('All Cities');
   const [selectedState, setSelectedState] = useState('All States');
@@ -128,6 +130,10 @@ function MedicalStore() {
   const daysOfWeek = [
     'All Days', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
   ];
+
+  const handleSelectStore = (storeId) => {
+    navigate("/medicalprescription");
+  };
 
   const filteredStores = medicalStores.filter(store => {
     const matchesSearch = 
@@ -293,6 +299,13 @@ function MedicalStore() {
                     ))}
                   </div>
                 </div>
+
+                <button
+                  onClick={() => handleSelectStore(store.id)}
+                  className={styles.selectButton}
+                >
+                  Upload Prescription & Order Medicines
+                </button>
               </div>
             </div>
           ))}
