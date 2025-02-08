@@ -1,61 +1,50 @@
-import  { useState, useEffect } from 'react';
-import { Check, Calendar, Clock, AlertCircle } from 'lucide-react';
-import styles from './Appointment.module.css';
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+
+import { Calendar, Clock, AlertCircle } from "lucide-react";
+import styles from "./Appointment.module.css";
 
 const Appointment = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    doctor: '',
-    date: '',
-    time: '',
-    mode: '',
-    concerns: ''
+    doctor: "",
+    date: "",
+    time: "",
+    mode: "",
+    concerns: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showPending, setShowPending] = useState(false);
-  const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [availableDates, setAvailableDates] = useState([]);
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
+  const [doctor, setDoctor] = useState(null);
 
-  // Mock data - replace with actual API calls
-  const doctorsAvailability = {
-    'Dr. Sarah Wilson - Cardiologist': {
-      id: 'DOC001',
-      availableDays: ['Monday', 'Wednesday', 'Friday'],
-      timeSlots: {
-        'Monday': ['09:00 AM - 10:00 AM', '02:00 PM - 03:00 PM'],
-        'Wednesday': ['10:00 AM - 11:00 AM', '03:00 PM - 04:00 PM'],
-        'Friday': ['11:00 AM - 12:00 PM', '04:00 PM - 05:00 PM']
-      }
-    },
-    'Dr. James Chen - General Physician': {
-      id: 'DOC002',
-      availableDays: ['Tuesday', 'Thursday', 'Saturday'],
-      timeSlots: {
-        'Tuesday': ['09:00 AM - 10:00 AM', '02:00 PM - 03:00 PM'],
-        'Thursday': ['10:00 AM - 11:00 AM', '03:00 PM - 04:00 PM'],
-        'Saturday': ['11:00 AM - 12:00 PM', '04:00 PM - 05:00 PM']
-      }
-    }
-  };
-
-  const appointmentModes = [
-    'Online Consultation',
-    'In-Person Visit'
-  ];
+  const { id } = useParams();
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const doctorFromUrl = urlParams.get('doctor');
-    
-    if (doctorFromUrl && doctorsAvailability[doctorFromUrl]) {
-      setSelectedDoctor(doctorFromUrl);
-      setFormData(prev => ({ ...prev, doctor: doctorFromUrl }));
-      generateAvailableDates(doctorFromUrl);
-    }
-  }, []);
+    const fetchDoctor = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/appointment/${id}`
+        );
+        if (response.data) {
+          setDoctor(response.data);
+          setFormData((prev) => ({
+            ...prev,
+            doctor: response.data.personalDetails.name,
+          }));
+          generateAvailableDates(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching doctor:", error);
+      }
+    };
 
-  const generateAvailableDates = (doctorName) => {
-    const doctor = doctorsAvailability[doctorName];
+    fetchDoctor();
+  }, [id]);
+
+  const generateAvailableDates = (doctor) => {
     if (!doctor) return;
 
     const dates = [];
@@ -64,59 +53,55 @@ const Appointment = () => {
     next30Days.setDate(today.getDate() + 30);
 
     for (let d = new Date(today); d <= next30Days; d.setDate(d.getDate() + 1)) {
-      const dayName = d.toLocaleDateString('en-US', { weekday: 'long' });
-      if (doctor.availableDays.includes(dayName)) {
-        dates.push(new Date(d).toISOString().split('T')[0]);
+      const dayName = d.toLocaleDateString("en-US", { weekday: "long" });
+      if (doctor.availability.days.includes(dayName)) {
+        dates.push(new Date(d).toISOString().split("T")[0]);
       }
     }
     setAvailableDates(dates);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitted(true);
     setShowPending(true);
-    
-    // Simulate API call to create appointment
-    const appointmentData = {
-      ...formData,
-      doctorId: doctorsAvailability[formData.doctor].id,
-      status: 'pending',
-      appointmentId: `APT${Math.random().toString(36).substr(2, 9).toUpperCase()}`
-    };
-    
-    console.log('Appointment Data:', appointmentData);
-    
-    // In a real application, you would make an API call here
-    // and handle the response accordingly
+    const token = localStorage.getItem("token");
+
+    try {
+      await axios.post("http://localhost:5000/api/appointment", {
+        doctor: id,
+        concerns: formData.concerns,
+        scheduledAt: formData.date + " " + formData.time,
+        mode: formData.mode,
+        token,
+      });
+    } catch (error) {
+      console.error("Error sending appointment request:", error);
+    }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
-    if (name === 'doctor') {
-      setSelectedDoctor(value);
-      generateAvailableDates(value);
-      setFormData(prev => ({
+
+    if (name === "date") {
+      setFormData((prev) => ({
         ...prev,
         [name]: value,
-        date: '',
-        time: ''
+        time: "",
       }));
-    } else if (name === 'date') {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value,
-        time: ''
-      }));
-      if (selectedDoctor && value) {
-        const dayName = new Date(value).toLocaleDateString('en-US', { weekday: 'long' });
-        setAvailableTimeSlots(doctorsAvailability[selectedDoctor].timeSlots[dayName] || []);
+
+      if (doctor && value) {
+        const dayName = new Date(value).toLocaleDateString("en-US", {
+          weekday: "long",
+        });
+
+        const doctorTimeSlots = doctor.timeSlots?.[dayName] || [];
+        setAvailableTimeSlots(doctorTimeSlots);
       }
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
@@ -138,7 +123,8 @@ const Appointment = () => {
               <strong>Doctor:</strong> {formData.doctor}
             </div>
             <div className={styles.pendingInfo}>
-              <strong>Date:</strong> {new Date(formData.date).toLocaleDateString()}
+              <strong>Date:</strong>{" "}
+              {new Date(formData.date).toLocaleDateString()}
             </div>
             <div className={styles.pendingInfo}>
               <strong>Time:</strong> {formData.time}
@@ -149,24 +135,17 @@ const Appointment = () => {
           </div>
           <div className={styles.pendingMessage}>
             <AlertCircle size={20} />
-            <p>Your appointment request has been sent to the doctor for approval. You will be notified once it's confirmed.</p>
+            <p>
+              Your appointment request has been sent to the doctor for approval.
+              You will be notified once it's confirmed.
+            </p>
           </div>
           <div className={styles.pendingActions}>
-            <button 
-              onClick={() => {
-                setShowPending(false);
-                setIsSubmitted(false);
-                setFormData({
-                  doctor: '',
-                  date: '',
-                  time: '',
-                  mode: '',
-                  concerns: ''
-                });
-              }}
+            <button
               className={styles.newAppointmentButton}
+              onClick={() => navigate("/dashboard")}
             >
-              Schedule Another Appointment
+              Go to Dashboard
             </button>
           </div>
         </div>
@@ -176,29 +155,25 @@ const Appointment = () => {
 
   return (
     <div className={styles.container}>
-      <div className={`${styles.formCard} ${isSubmitted ? styles.submitted : ''}`}>
+      <div
+        className={`${styles.formCard} ${isSubmitted ? styles.submitted : ""}`}
+      >
         <div className={styles.headerIcon}>
           <Calendar size={32} />
         </div>
         <h1>Schedule Appointment</h1>
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
-            <select 
+            <input
+              type="text"
               name="doctor"
-              value={formData.doctor}
-              onChange={handleChange}
-              required
-              className={formData.doctor ? styles.filled : ''}
-              disabled={selectedDoctor !== null}
-            >
-              <option value="">Choose a doctor</option>
-              {Object.keys(doctorsAvailability).map((doctor) => (
-                <option key={doctor} value={doctor}>{doctor}</option>
-              ))}
-            </select>
-            {selectedDoctor && (
+              value={doctor?.personalDetails.name || ""}
+              disabled
+              className={styles.filled}
+            />
+            {doctor && (
               <div className={styles.availabilityInfo}>
-                Available on: {doctorsAvailability[selectedDoctor].availableDays.join(', ')}
+                Available on: {doctor.availability.days.join(", ")}
               </div>
             )}
           </div>
@@ -208,12 +183,12 @@ const Appointment = () => {
               <input
                 type="date"
                 name="date"
-                value={formData.date}
+                value={formData.date || ""}
                 onChange={handleChange}
                 required
-                className={formData.date ? styles.filled : ''}
-                min={new Date().toISOString().split('T')[0]}
-                disabled={!selectedDoctor}
+                className={formData.date ? styles.filled : ""}
+                min={new Date().toISOString().split("T")[0]}
+                disabled={!doctor}
                 onKeyDown={(e) => e.preventDefault()}
               />
               {formData.date && !isDateAvailable(formData.date) && (
@@ -226,15 +201,16 @@ const Appointment = () => {
             <div className={styles.formGroup}>
               <select
                 name="time"
-                value={formData.time}
+                value={formData.time || ""}
                 onChange={handleChange}
-                required
-                className={formData.time ? styles.filled : ''}
+                className={formData.time ? styles.filled : ""}
                 disabled={!formData.date || !isDateAvailable(formData.date)}
               >
                 <option value="">Select time slot</option>
                 {availableTimeSlots.map((slot) => (
-                  <option key={slot} value={slot}>{slot}</option>
+                  <option key={slot} value={slot}>
+                    {slot}
+                  </option>
                 ))}
               </select>
             </div>
@@ -243,14 +219,16 @@ const Appointment = () => {
           <div className={styles.formGroup}>
             <select
               name="mode"
-              value={formData.mode}
+              value={formData.mode || ""}
               onChange={handleChange}
               required
-              className={formData.mode ? styles.filled : ''}
+              className={formData.mode ? styles.filled : ""}
             >
               <option value="">Mode of Appointment</option>
-              {appointmentModes.map((mode) => (
-                <option key={mode} value={mode}>{mode}</option>
+              {["Online Consultation", "In-Person Visit"].map((mode) => (
+                <option key={mode} value={mode}>
+                  {mode}
+                </option>
               ))}
             </select>
           </div>
@@ -258,16 +236,18 @@ const Appointment = () => {
           <div className={styles.formGroup}>
             <textarea
               name="concerns"
-              value={formData.concerns}
+              value={formData.concerns || ""}
               onChange={handleChange}
               placeholder="Any specific concerns or requirements?"
-              className={formData.concerns ? styles.filled : ''}
+              className={formData.concerns ? styles.filled : ""}
             />
           </div>
 
-          <button 
-            type="submit" 
-            className={`${styles.submitButton} ${isSubmitted ? styles.submitted : ''}`}
+          <button
+            type="submit"
+            className={`${styles.submitButton} ${
+              isSubmitted ? styles.submitted : ""
+            }`}
             disabled={!formData.date || !isDateAvailable(formData.date)}
           >
             Schedule Appointment
