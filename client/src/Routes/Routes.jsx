@@ -8,6 +8,7 @@ import Prescription from "../pages/prescription/Prescription.jsx";
 import DoctorList from "../pages/doctorlist/DoctorList.jsx";
 import MedicalStore from "../pages/medicalstore/MedicalStore.jsx";
 import MedicalPrescription from "../pages/medicalprescription/MedicalPrescription.jsx";
+import Appointment from "../pages/appointment/Appointment.jsx";
 
 const AppRoutes = () => {
   return (
@@ -21,6 +22,8 @@ const AppRoutes = () => {
       <Route path="/doctorlist" element={<DoctorList />} />
       <Route path="/medicalstore" element={<MedicalStore />} />
       <Route path="/medicalprescription" element={<MedicalPrescription />} />
+      <Route path="/appointment" element={<Appointment />} />
+
 
     </Routes>
   );
