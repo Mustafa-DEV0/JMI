@@ -1,45 +1,56 @@
-import { useState } from 'react';
-import axios from 'axios';
-import { User, Phone, Calendar, Heart, Ruler, MapPin, AlertCircle, Weight, Pill as Pills, Trash2 } from 'lucide-react';
-import styles from './PatientDetail.module.css';
-import { useParams } from 'react-router-dom';
+import { useState } from "react";
+import axios from "axios";
+import {
+  User,
+  Phone,
+  Calendar,
+  Heart,
+  Ruler,
+  MapPin,
+  AlertCircle,
+  Weight,
+  Pill as Pills,
+  Trash2,
+} from "lucide-react";
+import styles from "./PatientDetail.module.css";
+import { useParams } from "react-router-dom";
 
 const PatientDetail = () => {
-  const [activeTab, setActiveTab] = useState('personal');
+  const [activeTab, setActiveTab] = useState("personal");
   const [personalDetails, setPersonalDetails] = useState({
-    name: '',
-    phone: '',
-    dob: '',
-    age: '',
-    gender: '',
-    address: { city: '', state: '', pincode: '' },
-    emergencyContact: { name: '', phone: '', relation: '' }
+    name: "",
+    phone: "",
+    dob: "",
+    age: "",
+    gender: "",
+    address: { city: "", state: "", pincode: "" },
+    emergencyContact: { name: "", phone: "", relation: "" },
   });
   const [medicalDetails, setMedicalDetails] = useState({
-    bloodGroup: '',
-    height: '',
-    weight: '',
-    allergies: [''],
-    diseases: [''],
-    currentMedication: [{ tabletName: '', dosage: '', duration: '' }]
+    bloodGroup: "",
+    height: "",
+    weight: "",
+    allergies: [""],
+    diseases: [""],
+    currentMedication: [{ tabletName: "", dosage: "", duration: "" }],
   });
 
   const handlePersonalDetailsChange = (e) => {
     const { name, value } = e.target;
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.');
-      setPersonalDetails(prev => ({
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
+      setPersonalDetails((prev) => ({
         ...prev,
-        [parent]: { ...prev[parent], [child]: value }
+        [parent]: { ...prev[parent], [child]: value },
       }));
     } else {
-      setPersonalDetails(prev => ({ ...prev, [name]: value }));
+      setPersonalDetails((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const handleMedicalDetailsChange = (e) => {
     const { name, value } = e.target;
-    setMedicalDetails(prev => ({ ...prev, [name]: value }));
+    setMedicalDetails((prev) => ({ ...prev, [name]: value }));
   };
 
   const { id } = useParams();
@@ -47,48 +58,56 @@ const PatientDetail = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:5000/api/patient/${id}`, {
-        personalDetails,
-        medicalDetails
-      }, {
-        headers: { 'Content-Type': 'application/json' }
-      });
-    
-      alert('Details saved successfully');
+      await axios.post(
+        `http://localhost:5000/patient/${id}`,
+        {
+          personalDetails,
+          medicalDetails,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      alert("Details saved successfully");
     } catch (error) {
-      alert('Failed to save details');
-      console.error('Error:', error);
+      alert("Failed to save details");
+      console.error("Error:", error);
     }
   };
 
   const handleNext = (e) => {
     e.preventDefault();
-    setActiveTab('medical');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setActiveTab("medical");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDeleteMedication = (index) => {
-    setMedicalDetails(prev => ({
+    setMedicalDetails((prev) => ({
       ...prev,
-      currentMedication: prev.currentMedication.filter((_, i) => i !== index)
+      currentMedication: prev.currentMedication.filter((_, i) => i !== index),
     }));
   };
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Patient Details</h1>
-      
+
       <div className={styles.tabs}>
-        <button 
-          className={`${styles.tab} ${activeTab === 'personal' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('personal')}
+        <button
+          className={`${styles.tab} ${
+            activeTab === "personal" ? styles.activeTab : ""
+          }`}
+          onClick={() => setActiveTab("personal")}
         >
           <User size={20} />
           Personal Details
         </button>
-        <button 
-          className={`${styles.tab} ${activeTab === 'medical' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('medical')}
+        <button
+          className={`${styles.tab} ${
+            activeTab === "medical" ? styles.activeTab : ""
+          }`}
+          onClick={() => setActiveTab("medical")}
         >
           <Heart size={20} />
           Medical Details
@@ -96,7 +115,7 @@ const PatientDetail = () => {
       </div>
 
       <form onSubmit={handleSubmit} className={styles.form}>
-        {activeTab === 'personal' ? (
+        {activeTab === "personal" ? (
           <div className={styles.section}>
             <div className={styles.formGroup}>
               <label>
@@ -235,7 +254,11 @@ const PatientDetail = () => {
             </div>
 
             <div className={styles.formActions}>
-              <button type="button" onClick={handleNext} className={styles.nextButton}>
+              <button
+                type="button"
+                onClick={handleNext}
+                className={styles.nextButton}
+              >
                 Next
               </button>
             </div>
@@ -290,11 +313,15 @@ const PatientDetail = () => {
               <input
                 type="text"
                 placeholder="Enter allergies (comma separated)"
-                value={medicalDetails.allergies.join(', ')}
-                onChange={(e) => setMedicalDetails(prev => ({
-                  ...prev,
-                  allergies: e.target.value.split(',').map(item => item.trim())
-                }))}
+                value={medicalDetails.allergies.join(", ")}
+                onChange={(e) =>
+                  setMedicalDetails((prev) => ({
+                    ...prev,
+                    allergies: e.target.value
+                      .split(",")
+                      .map((item) => item.trim()),
+                  }))
+                }
               />
             </div>
 
@@ -305,11 +332,15 @@ const PatientDetail = () => {
               <input
                 type="text"
                 placeholder="Enter existing conditions (comma separated)"
-                value={medicalDetails.diseases.join(', ')}
-                onChange={(e) => setMedicalDetails(prev => ({
-                  ...prev,
-                  diseases: e.target.value.split(',').map(item => item.trim())
-                }))}
+                value={medicalDetails.diseases.join(", ")}
+                onChange={(e) =>
+                  setMedicalDetails((prev) => ({
+                    ...prev,
+                    diseases: e.target.value
+                      .split(",")
+                      .map((item) => item.trim()),
+                  }))
+                }
               />
             </div>
 
@@ -327,7 +358,10 @@ const PatientDetail = () => {
                     onChange={(e) => {
                       const newMeds = [...medicalDetails.currentMedication];
                       newMeds[index] = { ...med, tabletName: e.target.value };
-                      setMedicalDetails(prev => ({ ...prev, currentMedication: newMeds }));
+                      setMedicalDetails((prev) => ({
+                        ...prev,
+                        currentMedication: newMeds,
+                      }));
                     }}
                   />
                   <input
@@ -337,7 +371,10 @@ const PatientDetail = () => {
                     onChange={(e) => {
                       const newMeds = [...medicalDetails.currentMedication];
                       newMeds[index] = { ...med, dosage: e.target.value };
-                      setMedicalDetails(prev => ({ ...prev, currentMedication: newMeds }));
+                      setMedicalDetails((prev) => ({
+                        ...prev,
+                        currentMedication: newMeds,
+                      }));
                     }}
                   />
                   <input
@@ -347,7 +384,10 @@ const PatientDetail = () => {
                     onChange={(e) => {
                       const newMeds = [...medicalDetails.currentMedication];
                       newMeds[index] = { ...med, duration: e.target.value };
-                      setMedicalDetails(prev => ({ ...prev, currentMedication: newMeds }));
+                      setMedicalDetails((prev) => ({
+                        ...prev,
+                        currentMedication: newMeds,
+                      }));
                     }}
                   />
                   <button
@@ -362,10 +402,15 @@ const PatientDetail = () => {
               <button
                 type="button"
                 className={styles.addButton}
-                onClick={() => setMedicalDetails(prev => ({
-                  ...prev,
-                  currentMedication: [...prev.currentMedication, { tabletName: '', dosage: '', duration: '' }]
-                }))}
+                onClick={() =>
+                  setMedicalDetails((prev) => ({
+                    ...prev,
+                    currentMedication: [
+                      ...prev.currentMedication,
+                      { tabletName: "", dosage: "", duration: "" },
+                    ],
+                  }))
+                }
               >
                 + Add Medication
               </button>
