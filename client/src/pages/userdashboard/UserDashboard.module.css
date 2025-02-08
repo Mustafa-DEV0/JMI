@@ -420,38 +420,6 @@
   .viewDetails:hover {
     gap: 0.75rem;
   }
-  
-  @media (max-width: 768px) {
-    .dashboard {
-      padding: 1rem;
-    }
-  
-    .header {
-      flex-direction: column;
-      gap: 1rem;
-      text-align: center;
-    }
-  
-    .tabs {
-      padding: 0 0.5rem;
-    }
-  
-    .tab {
-      padding: 1rem;
-    }
-  
-    .detailsCard {
-      padding: 1rem;
-    }
-  
-    .personalInfo, .medicalInfo {
-      grid-template-columns: 1fr;
-    }
-  
-    .reportsGrid {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-  }
     
   .previewContainer {
     margin-bottom: 2rem;
