@@ -10,6 +10,7 @@ import MyAppointment from "../pages/myappointment/Myappointment.jsx";
 import MedicalStore from "../pages/medicalstore/MedicalStore.jsx";
 import Appointment from "../pages/appointment/appointment.jsx";
 import UserDashboard from "../pages/userdashboard/UserDashboard.jsx";
+import Payment from "../pages/payment/Payment.jsx";
 
 const AppRoutes = () => {
   return (
@@ -26,6 +27,7 @@ const AppRoutes = () => {
       <Route path="/medicalstore" element={<MedicalStore />} />
       <Route path="/appointment" element={<Appointment />} />
       <Route path="/userdashboard" element={<UserDashboard />} />
+      <Route path="/payment" element={<Payment />} />
     </Routes>
   );
 };
