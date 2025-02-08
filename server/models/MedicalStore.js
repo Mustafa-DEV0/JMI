@@ -11,6 +11,10 @@ const MedicalStoreSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  medicalImage: {
+    type: String, // URL of the uploaded medical image
+    required: true, 
+  },
   licenseNumber: {
     type: String,
     required: true,
