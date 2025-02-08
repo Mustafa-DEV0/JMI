@@ -22,8 +22,8 @@ app.use(morgan("dev"));
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api", patientRoutes);
-app.use("/api", doctorRoutes);
+app.use("/patient", patientRoutes);
+app.use("/doctor", doctorRoutes);
 app.use("/appointment", appointmentRoutes);
 app.use("/doctorList", docterListRoutes);
 
