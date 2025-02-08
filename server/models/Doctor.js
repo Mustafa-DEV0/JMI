@@ -22,8 +22,8 @@ const DoctorSchema = new mongoose.Schema(
     },
 
     availability: {
-      days: { type: [String] }, // e.g., ['Monday', 'Wednesday']
-      time: { type: String }, // e.g., '10:00 AM - 5:00 PM'
+      days: { type: [String] },
+      time: { type: String },
     },
 
     clinicOrHospital: {

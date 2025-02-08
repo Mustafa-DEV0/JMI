@@ -12,7 +12,9 @@ const appointmentSchema = new mongoose.Schema(
       ref: "Doctor",
       required: true,
     },
+    concerns: { type: String },
     requestedAt: { type: Date, default: Date.now }, // When the appointment was requested
+    mode: { type: String },
     scheduledAt: { type: Date }, // When the appointment is actually scheduled
     status: {
       type: String,
