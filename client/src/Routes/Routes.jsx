@@ -6,12 +6,16 @@ import Doctor from "../pages/doctor/Doctor.jsx";
 import Patient from "../pages/patient/Patient.jsx";
 import Prescription from "../pages/prescription/Prescription.jsx";
 import DoctorList from "../pages/doctorlist/DoctorList.jsx";
+<<<<<<< HEAD
+import Appointment from "../pages/Appointment/appointment.jsx";
+=======
 import MyAppointment from "../pages/myappointment/Myappointment.jsx"; // Ensure filename matches exactly
 import MedicalStore from "../pages/medicalstore/MedicalStore.jsx";
 import Appointment from "../pages/Appointment/appointment.jsx";
 import MedicalOrder from "../pages/medicalOrder/Medicalorder.jsx";
 import Medicalowner from "../pages/medicalowner/Medicalowner.jsx";
 
+>>>>>>> edda28b8efeaa64feadd5589d0549ffab87d3ed7
 const AppRoutes = () => {
   return (
     <Routes>
@@ -20,6 +24,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/doctor" element={<Doctor />} />
       <Route path="/patient/:id" element={<Patient />} />
+      <Route path="/appointment/:id" element={<Appointment />} />
       <Route path="/prescription/:id" element={<Prescription />} />
       <Route path="/doctorlist" element={<DoctorList />} />
       <Route path="/myappointment" element={<MyAppointment />} />
