@@ -16,8 +16,9 @@ const PatientAppointmentHistory = () => {
         const response = await axios.get(
           "http://localhost:5000/appointment/history",
           {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+            headers: { "Content-Type": "application/json" },
+          },
+          { token }
         );
         setAppointments(response.data);
       } catch (error) {
