@@ -1,55 +1,45 @@
-import { useState } from "react";
-import axios from "axios";
-import {
-  User,
-  Phone,
-  Calendar,
-  Heart,
-  Ruler,
-  MapPin,
-  AlertCircle,
-  Weight,
-  Pill as Pills,
-} from "lucide-react";
-import styles from "./PatientDetails.module.css";
-import { useParams } from "react-router-dom";
+import { useState } from 'react';
+import axios from 'axios';
+import { User, Phone, Calendar, Heart, Ruler, MapPin, AlertCircle, Weight, Pill as Pills, Trash2 } from 'lucide-react';
+import styles from './PatientDetail.module.css';
+import { useParams } from 'react-router-dom';
 
-const PatientDetails = () => {
-  const [activeTab, setActiveTab] = useState("personal");
+const PatientDetail = () => {
+  const [activeTab, setActiveTab] = useState('personal');
   const [personalDetails, setPersonalDetails] = useState({
-    name: "",
-    phone: "",
-    dob: "",
-    age: 0,
-    gender: "",
-    address: { city: "", state: "", pincode: "" },
-    emergencyContact: { name: "", phone: "", relation: "" },
+    name: '',
+    phone: '',
+    dob: '',
+    age: '',
+    gender: '',
+    address: { city: '', state: '', pincode: '' },
+    emergencyContact: { name: '', phone: '', relation: '' }
   });
   const [medicalDetails, setMedicalDetails] = useState({
-    bloodGroup: "",
-    height: 0,
-    weight: 0,
-    allergies: [""],
-    diseases: [""],
-    currentMedication: [{ tabletName: "", dosage: "", duration: "" }],
+    bloodGroup: '',
+    height: '',
+    weight: '',
+    allergies: [''],
+    diseases: [''],
+    currentMedication: [{ tabletName: '', dosage: '', duration: '' }]
   });
 
   const handlePersonalDetailsChange = (e) => {
     const { name, value } = e.target;
-    if (name.includes(".")) {
-      const [parent, child] = name.split(".");
-      setPersonalDetails((prev) => ({
+    if (name.includes('.')) {
+      const [parent, child] = name.split('.');
+      setPersonalDetails(prev => ({
         ...prev,
-        [parent]: { ...prev[parent], [child]: value },
+        [parent]: { ...prev[parent], [child]: value }
       }));
     } else {
-      setPersonalDetails((prev) => ({ ...prev, [name]: value }));
+      setPersonalDetails(prev => ({ ...prev, [name]: value }));
     }
   };
 
   const handleMedicalDetailsChange = (e) => {
     const { name, value } = e.target;
-    setMedicalDetails((prev) => ({ ...prev, [name]: value }));
+    setMedicalDetails(prev => ({ ...prev, [name]: value }));
   };
 
   const { id } = useParams();
@@ -57,43 +47,48 @@ const PatientDetails = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
-        `http://localhost:5000/api/patient/${id}`,
-        {
-          personalDetails,
-          medicalDetails,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      alert("Details saved successfully");
+      await axios.post(`http://localhost:5000/api/patient/${id}`, {
+        personalDetails,
+        medicalDetails
+      }, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    
+      alert('Details saved successfully');
     } catch (error) {
-      alert("Failed to save details");
-      console.error("Error:", error);
+      alert('Failed to save details');
+      console.error('Error:', error);
     }
+  };
+
+  const handleNext = (e) => {
+    e.preventDefault();
+    setActiveTab('medical');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleDeleteMedication = (index) => {
+    setMedicalDetails(prev => ({
+      ...prev,
+      currentMedication: prev.currentMedication.filter((_, i) => i !== index)
+    }));
   };
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Patient Details</h1>
-
+      
       <div className={styles.tabs}>
-        <button
-          className={`${styles.tab} ${
-            activeTab === "personal" ? styles.activeTab : ""
-          }`}
-          onClick={() => setActiveTab("personal")}
+        <button 
+          className={`${styles.tab} ${activeTab === 'personal' ? styles.activeTab : ''}`}
+          onClick={() => setActiveTab('personal')}
         >
           <User size={20} />
           Personal Details
         </button>
-        <button
-          className={`${styles.tab} ${
-            activeTab === "medical" ? styles.activeTab : ""
-          }`}
-          onClick={() => setActiveTab("medical")}
+        <button 
+          className={`${styles.tab} ${activeTab === 'medical' ? styles.activeTab : ''}`}
+          onClick={() => setActiveTab('medical')}
         >
           <Heart size={20} />
           Medical Details
@@ -101,12 +96,11 @@ const PatientDetails = () => {
       </div>
 
       <form onSubmit={handleSubmit} className={styles.form}>
-        {activeTab === "personal" ? (
+        {activeTab === 'personal' ? (
           <div className={styles.section}>
             <div className={styles.formGroup}>
               <label>
                 <User size={18} />
-                Full Name
               </label>
               <input
                 type="text"
@@ -121,7 +115,6 @@ const PatientDetails = () => {
               <div className={styles.formGroup}>
                 <label>
                   <Phone size={18} />
-                  Phone Number
                 </label>
                 <input
                   type="tel"
@@ -135,7 +128,6 @@ const PatientDetails = () => {
               <div className={styles.formGroup}>
                 <label>
                   <Calendar size={18} />
-                  Date of Birth
                 </label>
                 <input
                   type="date"
@@ -148,9 +140,9 @@ const PatientDetails = () => {
 
             <div className={styles.formRow}>
               <div className={styles.formGroup}>
-                <label>Age</label>
+                <label></label>
                 <input
-                  type="number"
+                  type="text"
                   name="age"
                   value={personalDetails.age}
                   onChange={handlePersonalDetailsChange}
@@ -159,7 +151,7 @@ const PatientDetails = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label>Gender</label>
+                <label></label>
                 <select
                   name="gender"
                   value={personalDetails.gender}
@@ -241,6 +233,12 @@ const PatientDetails = () => {
                 </div>
               </div>
             </div>
+
+            <div className={styles.formActions}>
+              <button type="button" onClick={handleNext} className={styles.nextButton}>
+                Next
+              </button>
+            </div>
           </div>
         ) : (
           <div className={styles.section}>
@@ -248,7 +246,6 @@ const PatientDetails = () => {
               <div className={styles.formGroup}>
                 <label>
                   <Heart size={18} />
-                  Blood Group
                 </label>
                 <input
                   type="text"
@@ -262,28 +259,26 @@ const PatientDetails = () => {
               <div className={styles.formGroup}>
                 <label>
                   <Ruler size={18} />
-                  Height (cm)
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   name="height"
                   value={medicalDetails.height}
                   onChange={handleMedicalDetailsChange}
-                  placeholder="Enter height"
+                  placeholder="Enter height (cm)"
                 />
               </div>
 
               <div className={styles.formGroup}>
                 <label>
                   <Weight size={18} />
-                  Weight (kg)
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   name="weight"
                   value={medicalDetails.weight}
                   onChange={handleMedicalDetailsChange}
-                  placeholder="Enter weight"
+                  placeholder="Enter weight (kg)"
                 />
               </div>
             </div>
@@ -291,40 +286,30 @@ const PatientDetails = () => {
             <div className={styles.formGroup}>
               <label>
                 <AlertCircle size={18} />
-                Allergies
               </label>
               <input
                 type="text"
                 placeholder="Enter allergies (comma separated)"
-                value={medicalDetails.allergies.join(", ")}
-                onChange={(e) =>
-                  setMedicalDetails((prev) => ({
-                    ...prev,
-                    allergies: e.target.value
-                      .split(",")
-                      .map((item) => item.trim()),
-                  }))
-                }
+                value={medicalDetails.allergies.join(', ')}
+                onChange={(e) => setMedicalDetails(prev => ({
+                  ...prev,
+                  allergies: e.target.value.split(',').map(item => item.trim())
+                }))}
               />
             </div>
 
             <div className={styles.formGroup}>
               <label>
                 <AlertCircle size={18} />
-                Existing Conditions
               </label>
               <input
                 type="text"
                 placeholder="Enter existing conditions (comma separated)"
-                value={medicalDetails.diseases.join(", ")}
-                onChange={(e) =>
-                  setMedicalDetails((prev) => ({
-                    ...prev,
-                    diseases: e.target.value
-                      .split(",")
-                      .map((item) => item.trim()),
-                  }))
-                }
+                value={medicalDetails.diseases.join(', ')}
+                onChange={(e) => setMedicalDetails(prev => ({
+                  ...prev,
+                  diseases: e.target.value.split(',').map(item => item.trim())
+                }))}
               />
             </div>
 
@@ -342,10 +327,7 @@ const PatientDetails = () => {
                     onChange={(e) => {
                       const newMeds = [...medicalDetails.currentMedication];
                       newMeds[index] = { ...med, tabletName: e.target.value };
-                      setMedicalDetails((prev) => ({
-                        ...prev,
-                        currentMedication: newMeds,
-                      }));
+                      setMedicalDetails(prev => ({ ...prev, currentMedication: newMeds }));
                     }}
                   />
                   <input
@@ -355,10 +337,7 @@ const PatientDetails = () => {
                     onChange={(e) => {
                       const newMeds = [...medicalDetails.currentMedication];
                       newMeds[index] = { ...med, dosage: e.target.value };
-                      setMedicalDetails((prev) => ({
-                        ...prev,
-                        currentMedication: newMeds,
-                      }));
+                      setMedicalDetails(prev => ({ ...prev, currentMedication: newMeds }));
                     }}
                   />
                   <input
@@ -368,41 +347,40 @@ const PatientDetails = () => {
                     onChange={(e) => {
                       const newMeds = [...medicalDetails.currentMedication];
                       newMeds[index] = { ...med, duration: e.target.value };
-                      setMedicalDetails((prev) => ({
-                        ...prev,
-                        currentMedication: newMeds,
-                      }));
+                      setMedicalDetails(prev => ({ ...prev, currentMedication: newMeds }));
                     }}
                   />
+                  <button
+                    type="button"
+                    className={styles.deleteButton}
+                    onClick={() => handleDeleteMedication(index)}
+                  >
+                    <Trash2 size={18} />
+                  </button>
                 </div>
               ))}
               <button
                 type="button"
                 className={styles.addButton}
-                onClick={() =>
-                  setMedicalDetails((prev) => ({
-                    ...prev,
-                    currentMedication: [
-                      ...prev.currentMedication,
-                      { tabletName: "", dosage: "", duration: "" },
-                    ],
-                  }))
-                }
+                onClick={() => setMedicalDetails(prev => ({
+                  ...prev,
+                  currentMedication: [...prev.currentMedication, { tabletName: '', dosage: '', duration: '' }]
+                }))}
               >
                 + Add Medication
               </button>
             </div>
+
+            <div className={styles.formActions}>
+              <button type="submit" className={styles.submitButton}>
+                Save Details
+              </button>
+            </div>
           </div>
         )}
-
-        <div className={styles.formActions}>
-          <button type="submit" className={styles.submitButton}>
-            Save Details
-          </button>
-        </div>
       </form>
     </div>
   );
 };
 
-export default PatientDetails;
+export default PatientDetail;
