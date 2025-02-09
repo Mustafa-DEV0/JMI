@@ -56,7 +56,7 @@ const Home = () => {
           className={styles.backgroundVideo}
         >
           <source
-            src="https://player.vimeo.com/external/474128497.sd.mp4?s=1f6d31809d31fa3f1a7e102f29944a524b59d88f&profile_id=164&oauth2_token_id=57447761"
+            src="https://video-previews.elements.envatousercontent.com/files/54c6d5d2-1be4-4ffe-a57d-2ec5efd4d18f/video_preview_h264.mp4"
             type="video/mp4"
           />
         </video>
