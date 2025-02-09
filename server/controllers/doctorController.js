@@ -1,48 +1,58 @@
-import Doctor from '../models/Doctor.js';
-import Appointment from '../models/Appointment.js';
-import Prescription from '../models/Prescription.js';
+import Doctor from "../models/Doctor.js";
+import Appointment from "../models/Appointment.js";
+import Prescription from "../models/Prescription.js";
 
 export const getDoctorDashboard = async (req, res) => {
   try {
     const { id } = req.params;
 
     const [doctor, appointments, prescriptions] = await Promise.all([
-      Doctor.findById(id).select('-password'),
-      Appointment.find({ doctor: id }).populate('patient'),
-      Prescription.find({ doctor: id }).populate('patient')
+      Doctor.findById(id).select("-password"),
+      Appointment.find({ doctor: id }).populate("patient"),
+      Prescription.find({ doctor: id }).populate("patient"),
     ]);
 
     if (!doctor) {
-      return res.status(404).json({ message: 'Doctor not found' });
+      return res.status(404).json({ message: "Doctor not found" });
     }
 
     // Categorize appointments
-    const pendingAppointments = appointments.filter(app => app.status === 'pending');
-    const upcomingAppointments = appointments.filter(app => app.status === 'scheduled');
-    const completedAppointments = appointments.filter(app => app.status === 'completed');
+    const pendingAppointments = appointments.filter(
+      (app) => app.status === "pending"
+    );
+    const upcomingAppointments = appointments.filter(
+      (app) => app.status === "scheduled"
+    );
+    const completedAppointments = appointments.filter(
+      (app) => app.status === "completed"
+    );
 
     res.json({
       doctor,
       appointments: {
         pending: pendingAppointments,
         upcoming: upcomingAppointments,
-        completed: completedAppointments
+        completed: completedAppointments,
       },
-      prescriptions
+      prescriptions,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const updateDoctorProfile = async (req, res) => {
+export const postDoctorProfile = async (req, res) => {
   try {
     const { id } = req.params;
-    const updates = req.body;
-
-    const doctor = await Doctor.findByIdAndUpdate(id, updates, { new: true });
+    const { submissionData } = req.body;
+    const doctor = await Doctor.findByIdAndUpdate(id, {
+      personalDetails: submissionData.personalDetails,
+      professionalDetails: submissionData.professionalDetails,
+      availability: submissionData.availability,
+      clinicOrHospital: submissionData.clinicOrHospital,
+    });
     if (!doctor) {
-      return res.status(404).json({ message: 'Doctor not found' });
+      return res.status(404).json({ message: "Doctor not found" });
     }
 
     res.json(doctor);
@@ -55,7 +65,7 @@ export const getDoctorAppointments = async (req, res) => {
   try {
     const { id } = req.params;
     const appointments = await Appointment.find({ doctor: id })
-      .populate('patient')
+      .populate("patient")
       .sort({ scheduledAt: -1 });
 
     res.json(appointments);
@@ -73,10 +83,10 @@ export const updateAppointmentStatus = async (req, res) => {
       appointmentId,
       { status },
       { new: true }
-    ).populate('patient');
+    ).populate("patient");
 
     if (!appointment) {
-      return res.status(404).json({ message: 'Appointment not found' });
+      return res.status(404).json({ message: "Appointment not found" });
     }
 
     res.json(appointment);
@@ -89,7 +99,7 @@ export const getDoctorPrescriptions = async (req, res) => {
   try {
     const { id } = req.params;
     const prescriptions = await Prescription.find({ doctor: id })
-      .populate('patient')
+      .populate("patient")
       .sort({ issuedAt: -1 });
 
     res.json(prescriptions);

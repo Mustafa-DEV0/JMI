@@ -85,10 +85,14 @@ const DoctorDetails = () => {
     console.log(submissionData);
 
     try {
-      const response = await axios.put(
-        `http://localhost:5000/doctor/${id}`,
-        submissionData
+      const response = await axios.post(
+        `http://localhost:5000/doctor/details/${id}`,
+        { submissionData },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
       );
+      console.log("Response:", response.data);
     } catch (error) {
       console.error("Error submitting doctor details:", error);
     }

@@ -1,20 +1,20 @@
 // Home.jsx
-import React, { useEffect, useRef } from 'react';
-import styles from './Home.module.css';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useRef } from "react";
+import styles from "./Home.module.css";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const videoRef = useRef(null);
-  
+
   useEffect(() => {
     // Handle hash navigation when coming from another page
     const hash = window.location.hash;
     if (hash) {
-      const id = hash.replace('#', '');
+      const id = hash.replace("#", "");
       const element = document.getElementById(id);
       if (element) {
         setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth' });
+          element.scrollIntoView({ behavior: "smooth" });
         }, 100);
       }
     }
@@ -33,7 +33,8 @@ const Home = () => {
             Empowering Your Health Journey with Smart Healthcare Solutions
           </h1>
           <p className={styles.heroSubtitle}>
-            Seamless healthcare management, better patient outcomes, and optimized workflows
+            Seamless healthcare management, better patient outcomes, and
+            optimized workflows
           </p>
           <button className={styles.ctaButton}>Get Started</button>
         </div>
@@ -179,8 +180,12 @@ const Home = () => {
       <section className={styles.cta}>
         <div className={styles.ctaContent}>
           <h2>Ready to Get Started?</h2>
-          <p>Join thousands of satisfied users managing their healthcare journey</p>
-            <a href='/register' className={styles.ctaButton}>Start Your Free Trial</a>
+          <p>
+            Join thousands of satisfied users managing their healthcare journey
+          </p>
+          <a href="/register" className={styles.ctaButton}>
+            Get Started Now
+          </a>
         </div>
       </section>
     </div>
