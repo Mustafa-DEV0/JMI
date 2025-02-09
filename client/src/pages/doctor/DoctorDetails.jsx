@@ -82,10 +82,13 @@ const DoctorDetails = () => {
         time: formattedTime,
       },
     };
+    console.log(submissionData);
 
     try {
-      await axios.put(`http://localhost:5000/api/doctor/${id}`, submissionData);
-      console.log("Doctor details updated");
+      const response = await axios.put(
+        `http://localhost:5000/doctor/${id}`,
+        submissionData
+      );
     } catch (error) {
       console.error("Error submitting doctor details:", error);
     }
@@ -180,7 +183,7 @@ const DoctorDetails = () => {
             <div className={styles.inputGroup}>
               <input
                 type="text"
-                placeholder="Specialization"
+                placeholder="Specialization (Caps)"
                 value={formData.professionalDetails.specialization}
                 onChange={(e) =>
                   handleInputChange(
@@ -193,7 +196,7 @@ const DoctorDetails = () => {
               />
               <input
                 type="text"
-                placeholder="Qualification"
+                placeholder="Qualification (Caps)"
                 value={formData.professionalDetails.qualification}
                 onChange={(e) =>
                   handleInputChange(
@@ -377,7 +380,7 @@ const DoctorDetails = () => {
               </div>
               <input
                 type="text"
-                placeholder="Clinic/Hospital Address"
+                placeholder="Clinic/Hospital Address(Name,City,Pincode)"
                 value={formData.clinicOrHospital.address}
                 onChange={(e) =>
                   handleInputChange(
