@@ -1,12 +1,24 @@
+// Home.jsx
 import React, { useEffect, useRef } from 'react';
 import styles from './Home.module.css';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { Link } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const videoRef = useRef(null);
-
+  
   useEffect(() => {
+    // Handle hash navigation when coming from another page
+    const hash = window.location.hash;
+    if (hash) {
+      const id = hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }
+
     if (videoRef.current) {
       videoRef.current.playbackRate = 0.75;
     }
@@ -54,37 +66,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* About Section */}
-      <section className={styles.about}>
-        <div className={styles.aboutContent}>
-          <h2>About Us</h2>
-          <p>
-            We're revolutionizing healthcare management through innovative technology
-            and patient-centered solutions. Our platform streamlines healthcare
-            processes while improving patient outcomes.
-          </p>
-          <div className={styles.values}>
-            <div className={styles.valueCard}>
-              <div className={styles.valueIcon}>🎯</div>
-              <h3>Mission</h3>
-              <p>To make healthcare accessible and efficient for everyone</p>
-            </div>
-            <div className={styles.valueCard}>
-              <div className={styles.valueIcon}>👥</div>
-              <h3>Vision</h3>
-              <p>Transform healthcare through technology and innovation</p>
-            </div>
-            <div className={styles.valueCard}>
-              <div className={styles.valueIcon}>⭐</div>
-              <h3>Values</h3>
-              <p>Patient-first, Innovation, Excellence</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className={styles.features}>
+      {/* Features Section - Added ID for scroll targeting */}
+      <section id="features" className={styles.features}>
         <h2>Our Features</h2>
         <div className={styles.featureGrid}>
           <div className={styles.featureCard}>

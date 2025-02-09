@@ -1,3 +1,4 @@
+// Navbar.jsx
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Navbar.module.css";
 
@@ -8,6 +9,20 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
+  };
+
+  const scrollToSection = (sectionId) => (e) => {
+    e.preventDefault();
+    if (window.location.pathname !== '/') {
+      // If not on home page, navigate to home page first
+      navigate(`/#${sectionId}`);
+    } else {
+      // If already on home page, just scroll to section
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   };
 
   return (
@@ -30,7 +45,9 @@ const Navbar = () => {
             </Link>
           </li>
           <li className={styles.navItem}>
-            <Link to="#" >Features</Link>
+            <a href="#features" onClick={scrollToSection('features')}>
+              Features
+            </a>
           </li>
 
           <li className={`${styles.navItem} ${styles.dropdown}`}>
@@ -48,7 +65,6 @@ const Navbar = () => {
                     <li>
                       <Link to="/medical-store">Medicine Store</Link>
                     </li>
-                    
                   </ul>
                 </div>
                 <div className={styles.dropdownSection}>
