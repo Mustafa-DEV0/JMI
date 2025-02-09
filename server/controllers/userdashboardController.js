@@ -46,7 +46,6 @@ export const getUserDashboard = async (req, res) => {
     // ✅ Extract values, handling errors gracefully
     const patient = results[0].status === "fulfilled" ? results[0].value : null;
     const orders = results[1].status === "fulfilled" ? results[1].value : [];
-    console.log(orders);
     const appointments =
       results[2].status === "fulfilled" ? results[2].value : [];
 

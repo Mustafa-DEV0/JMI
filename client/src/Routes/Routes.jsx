@@ -11,13 +11,8 @@ import PatientDetail from "../pages/patient/PatientDetail.jsx";
 import DoctorDetails from "../pages/doctor/DoctorDetails.jsx";
 import Dashboard from "../pages/userdashboard/Dashboard.jsx";
 import Appointment from "../pages/Appointment/appointment.jsx";
-<<<<<<< HEAD
-import DoctorDashboard from "../pages/doctordashbord/Doctordashbord.jsx"
-import MedicalDashboard from "../pages/medicalownerdashboard/MedicalDashboard.jsx";
-=======
 import AdminDashboard from "../pages/admindashboard/AdminDashboard.jsx";
-import DoctorDashboard from "../pages/doctordashbord/Doctordashboard.jsx";
->>>>>>> c51b07ddd3f87598eed40f83d8e9d9df41fd5e7d
+import DoctorDashboard from "../pages/doctordashbord/Doctordashbord.jsx";
 
 const AppRoutes = () => {
   return (
@@ -29,18 +24,13 @@ const AppRoutes = () => {
       <Route path="/patient/:id" element={<PatientDetail />} />
       <Route path="/prescription/:id" element={<Prescription />} />
       <Route path="/appointment/:id" element={<Appointment />} />
+      <Route path="/dashboard/patient/:id" element={<Dashboard />} />
       <Route path="/doctorlist" element={<DoctorList />} />
       <Route path="/medical-store" element={<MedicalStore />} />
       <Route path="/history" element={<PatientAppointmentHistory />} />
-      <Route path="/dashboard/:id" element={<Dashboard />} />
+      <Route path="/dashboard/doctor/:id" element={<DoctorDashboard />} />
       <Route path="/payment" element={<Payment />} />
-<<<<<<< HEAD
-=======
-      <Route path="/admindashboard" element={<AdminDashboard />} />
->>>>>>> c51b07ddd3f87598eed40f83d8e9d9df41fd5e7d
-      <Route path="/doctordashboard" element={<DoctorDashboard />} />
-      <Route path="/medicaldashboard" element={<MedicalDashboard />} />
-
+      <Route path="/dashboard/admin/:id" element={<AdminDashboard />} />
     </Routes>
   );
 };
