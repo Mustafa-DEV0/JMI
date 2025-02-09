@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import {
   User,
   Phone,
@@ -55,10 +56,12 @@ const PatientDetail = () => {
 
   const { id } = useParams();
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
+      const response = await axios.post(
         `http://localhost:5000/patient/${id}`,
         {
           personalDetails,
@@ -68,8 +71,10 @@ const PatientDetail = () => {
           headers: { "Content-Type": "application/json" },
         }
       );
-
-      alert("Details saved successfully");
+      console.log(response.data);
+      setTimeout(() => {
+        navigate(`/dashboard/patient/${id}`);
+      }, 2000);
     } catch (error) {
       alert("Failed to save details");
       console.error("Error:", error);
@@ -366,7 +371,7 @@ const PatientDetail = () => {
                   />
                   <input
                     type="text"
-                    placeholder="Dosage"
+                    placeholder="Dosage (in mg)"
                     value={med.dosage}
                     onChange={(e) => {
                       const newMeds = [...medicalDetails.currentMedication];
@@ -379,7 +384,7 @@ const PatientDetail = () => {
                   />
                   <input
                     type="text"
-                    placeholder="Duration"
+                    placeholder="Duration (in weeks)"
                     value={med.duration}
                     onChange={(e) => {
                       const newMeds = [...medicalDetails.currentMedication];
