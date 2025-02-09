@@ -29,11 +29,10 @@ const AppRoutes = () => {
       <Route path="/doctorlist" element={<DoctorList />} />
       <Route path="/medicalstore" element={<MedicalStore />} />
       <Route path="/history" element={<PatientAppointmentHistory />} />
-      <Route path="/dashboard/doctor/:id" element={<DoctorDashboard />} />
+      <Route path="/doctor/dashboard/:id" element={<DoctorDashboard />} />
       <Route path="/payment" element={<Payment />} />
-      <Route path="/dashboard/admin/:id" element={<AdminDashboard />} />
+      <Route path="/admin/dashboard/:id" element={<AdminDashboard />} />
       <Route path="/medicaldetails" element={<MedicalDetails />} />
-
     </Routes>
   );
 };

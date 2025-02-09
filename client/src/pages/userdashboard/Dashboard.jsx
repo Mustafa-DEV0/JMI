@@ -106,7 +106,7 @@ const Dashboard = () => {
   };
 
   const handleUpdateProfile = () => {
-    navigate("/update-profile");
+    alert("Update Profile Not yet Implemented");
   };
 
   const handleFileUpload = async (event) => {
@@ -159,7 +159,9 @@ const Dashboard = () => {
   return (
     <div className={styles.dashboard}>
       <div className={styles.header}>
-        <h1>{patientData.patient.personalDetails.name}</h1>
+        <h1>
+          Welcome <span>{patientData.patient.personalDetails.name}</span>
+        </h1>
         <button className={styles.updateButton} onClick={handleUpdateProfile}>
           <Edit size={20} />
           Update Profile
@@ -349,15 +351,31 @@ const Dashboard = () => {
                     <Pills className={styles.icon} /> Current Medication
                   </h3>
                   <div className={styles.medicationList}>
-                    {patientData?.patient.medicalDetails?.currentMedication?.map(
-                      (med, index) => (
-                        <div key={index} className={styles.medicationItem}>
-                          <h4>{med.tabletName}</h4>
-                          <p>Dosage: {med.dosage}</p>
-                          <p>Duration: {med.duration}</p>
-                        </div>
+                    {patientData.patient.medicalDetails.currentMedication
+                      .length > 0 ? (
+                      patientData.patient.medicalDetails.currentMedication.map(
+                        (med, index) => (
+                          <div key={index} className={styles.medicationItem}>
+                            <h4>{med.name || med.tabletName}</h4>
+                            <p>
+                              Dosage: <span>{med.dosage}</span>
+                            </p>
+                            <p>
+                              Duration: <span>{med.duration}</span>
+                            </p>
+                            {med.timing && (
+                              <p>
+                                Timing: <span>{med.timing}</span>
+                              </p>
+                            )}
+                          </div>
+                        )
                       )
-                    ) || "No current medications"}
+                    ) : (
+                      <div className={styles.medicationItem}>
+                        <p>No current medications</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -589,7 +607,7 @@ const Dashboard = () => {
               </div>
             </>
           ) : (
-            <>suck my cock</>
+            <></>
           )}
         </div>
       </div>

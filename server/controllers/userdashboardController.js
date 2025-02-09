@@ -6,27 +6,25 @@ const getPatientDetails = async (_id) => {
   try {
     return await Patient.findOne({ _id });
   } catch (error) {
-    console.error("❌ Error fetching patient:", error);
+    console.error("Error fetching patient:", error);
     return null;
   }
 };
 
-// ✅ Function to Get Medical Orders
 const getMedicalOrders = async (_id) => {
   try {
     return await MedicalOrder.find({ _id });
   } catch (error) {
-    console.error("❌ Error fetching medical orders:", error);
+    console.error("Error fetching medical orders:", error);
     return []; // Return empty array if error occurs
   }
 };
 
-// ✅ Function to Get Scheduled Appointments Only
 const getAppointments = async (_id) => {
   try {
     return await Appointment.find({ _id, status: "scheduled" });
   } catch (error) {
-    console.error("❌ Error fetching appointments:", error);
+    console.error(" Error fetching appointments:", error);
     return []; // Return empty array if error occurs
   }
 };
@@ -51,7 +49,7 @@ export const getUserDashboard = async (req, res) => {
 
     res.json({ patient, orders, appointments });
   } catch (error) {
-    console.error("❌ Error fetching user dashboard data:", error);
+    console.error(" Error fetching user dashboard data:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
