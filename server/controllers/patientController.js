@@ -94,7 +94,6 @@ export const postPatientDetails = async (req, res) => {
   try {
     const { id } = req.params;
     const { personalDetails, medicalDetails } = req.body;
-    console.log(id);
     console.log(req.body);
     const patient = await Patient.findByIdAndUpdate(id, {
       personalDetails,

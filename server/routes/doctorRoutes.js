@@ -9,10 +9,10 @@ import {
 
 const router = express.Router();
 
-router.get("/dashboard/doctor/:id", getDoctorDashboard);
+router.get("/dashboard/:id", getDoctorDashboard);
 router.post("/details/:id", postDoctorProfile);
-router.get("/dashboard/doctor/:id/appointment", getDoctorAppointments);
+router.get("/dashboard/:id/appointment", getDoctorAppointments);
 router.put("/appointments/:appointmentId", updateAppointmentStatus);
-router.get("/dashboard/doctor/:id/prescription", getDoctorPrescriptions);
+router.get("/dashboard/:id/prescription", getDoctorPrescriptions);
 
 export default router;

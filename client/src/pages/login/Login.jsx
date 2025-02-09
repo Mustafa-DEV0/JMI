@@ -29,7 +29,7 @@ const Login = () => {
       );
       localStorage.setItem("token", response.data.token);
       setTimeout(() => {
-        navigate(`/${userType}/${response.data.id}`);
+        navigate(`/${userType}/dashboard/${response.data.id}`);
       }, 2000);
     } catch (error) {
       setError("Invalid username or password");

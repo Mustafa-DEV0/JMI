@@ -73,7 +73,7 @@ const PatientDetail = () => {
       );
       console.log(response.data);
       setTimeout(() => {
-        navigate(`/dashboard/patient/${id}`);
+        navigate(`/patient/dashboard/${id}`);
       }, 2000);
     } catch (error) {
       alert("Failed to save details");
