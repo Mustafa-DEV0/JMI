@@ -35,7 +35,7 @@ const Navbar = () => {
               alt="Prescripto Logo"
             />
           </div>
-          <span className={styles.logoText}>Prescripto</span>
+          <span className={styles.logoText}>MediSure</span>
         </Link>
 
         <ul className={styles.navLinks}>
