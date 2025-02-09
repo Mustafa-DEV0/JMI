@@ -25,9 +25,7 @@ const MedicalStoreSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    medicalImage: {
-      type: String, // URL of the uploaded medical image
-    },
+   
     licenseNumber: {
       type: String,
 
@@ -98,13 +96,6 @@ const MedicalStoreSchema = new mongoose.Schema(
         default: true,
       },
       acceptsUPI: {
-        type: Boolean,
-        default: false,
-      },
-    },
-
-    emergencyServices: {
-      open24Hours: {
         type: Boolean,
         default: false,
       },
