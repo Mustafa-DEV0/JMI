@@ -1,55 +1,99 @@
-import Doctor from "../models/Doctor.js";
+import Doctor from '../models/Doctor.js';
+import Appointment from '../models/Appointment.js';
+import Prescription from '../models/Prescription.js';
 
-const putDoctorDetails = async (req, res) => {
+export const getDoctorDashboard = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const {
-      personalDetails: { name, age, phone, gender } = {},
-      professionalDetails: {
-        specialization,
-        qualification,
-        experience,
-        mobileNumber,
-        consultingFees,
-        medicalLicenseId,
-      } = {},
-      availability: { days, time } = {},
-      clinicOrHospital: { address, officeNumber } = {},
-    } = req.body;
+    const [doctor, appointments, prescriptions] = await Promise.all([
+      Doctor.findById(id).select('-password'),
+      Appointment.find({ doctor: id }).populate('patient'),
+      Prescription.find({ doctor: id }).populate('patient')
+    ]);
 
-    // Check if the doctor exists first
-    const doctor = await Doctor.findById(id);
     if (!doctor) {
-      return res.status(404).json({ message: "Doctor not found" });
+      return res.status(404).json({ message: 'Doctor not found' });
     }
 
-    // Proceed with updating the doctor's details
-    doctor.personalDetails = {
-      name: name || "",
-      age: age || "",
-      phone: phone || "",
-      gender: gender || "",
-    };
-    doctor.professionalDetails = {
-      specialization: specialization || "",
-      qualification: qualification || "",
-      experience: experience || "",
-      mobileNumber: mobileNumber || "",
-      consultingFees: consultingFees || "",
-      medicalLicenseId: medicalLicenseId || "",
-    };
-    doctor.availability = { days: days || [], time: time || "" };
-    doctor.clinicOrHospital = {
-      address: address || "",
-      officeNumber: officeNumber || "",
-    };
+    // Categorize appointments
+    const pendingAppointments = appointments.filter(app => app.status === 'pending');
+    const upcomingAppointments = appointments.filter(app => app.status === 'scheduled');
+    const completedAppointments = appointments.filter(app => app.status === 'completed');
 
-    // Save the updated doctor details
-    await doctor.save();
+    res.json({
+      doctor,
+      appointments: {
+        pending: pendingAppointments,
+        upcoming: upcomingAppointments,
+        completed: completedAppointments
+      },
+      prescriptions
+    });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error", error });
+    res.status(500).json({ message: error.message });
   }
 };
 
-export { putDoctorDetails };
+export const updateDoctorProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    const doctor = await Doctor.findByIdAndUpdate(id, updates, { new: true });
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+
+    res.json(doctor);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const getDoctorAppointments = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const appointments = await Appointment.find({ doctor: id })
+      .populate('patient')
+      .sort({ scheduledAt: -1 });
+
+    res.json(appointments);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateAppointmentStatus = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const { status } = req.body;
+
+    const appointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      { status },
+      { new: true }
+    ).populate('patient');
+
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+
+    res.json(appointment);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const getDoctorPrescriptions = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const prescriptions = await Prescription.find({ doctor: id })
+      .populate('patient')
+      .sort({ issuedAt: -1 });
+
+    res.json(prescriptions);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

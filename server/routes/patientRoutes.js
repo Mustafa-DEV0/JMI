@@ -1,9 +1,18 @@
-import express from "express";
-import { savePatientDetails } from "../controllers/patientController.js";
+import express from 'express';
+import {
+  getPatientDashboard,
+  updatePatientProfile,
+  getPatientAppointments,
+  getPatientPrescriptions,
+  getPatientOrders
+} from '../controllers/patientController.js';
 
 const router = express.Router();
 
-// Route to handle patient details submission
-router.post("/:id", savePatientDetails);
+router.get('/dashboard/:id', getPatientDashboard);
+router.put('/profile/:id', updatePatientProfile);
+router.get('/appointments/:id', getPatientAppointments);
+router.get('/prescriptions/:id', getPatientPrescriptions);
+router.get('/orders/:id', getPatientOrders);
 
 export default router;

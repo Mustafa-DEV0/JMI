@@ -13,13 +13,10 @@ const Footer = () => {
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-H527dHvLVlfePT33KaYtu0YPXiOqLP.png"
                 alt="Prescripto Logo"
               />
-              <span>Prescripto</span>
+              <span>MediSure</span>
             </Link>
             <p className={styles.footerDescription}>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an unknown printer took a galley of
-              type and scrambled it to make a type specimen book.
+            We are dedicated to providing exceptional healthcare management solutions to improve patient outcomes and streamline operations. Our platform is designed to help you manage your health and wellness with ease.
             </p>
           </div>
 

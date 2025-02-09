@@ -75,7 +75,7 @@ const Dashboard = () => {
     const fetchPatientData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/dashboard/${id}`,
+          `http://localhost:5000/patient/dashboard/${id}`,
           {
             headers: {
               "Content-Type": "application/json",
