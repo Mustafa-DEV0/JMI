@@ -13,6 +13,7 @@ import Dashboard from "../pages/userdashboard/Dashboard.jsx";
 import Appointment from "../pages/Appointment/appointment.jsx";
 import AdminDashboard from "../pages/admindashboard/AdminDashboard.jsx";
 import DoctorDashboard from "../pages/doctordashbord/Doctordashbord.jsx";
+import MedicalDetails from "../pages/medicaldetails/MedicalDetails.jsx";
 
 const AppRoutes = () => {
   return (
@@ -31,6 +32,8 @@ const AppRoutes = () => {
       <Route path="/dashboard/doctor/:id" element={<DoctorDashboard />} />
       <Route path="/payment" element={<Payment />} />
       <Route path="/dashboard/admin/:id" element={<AdminDashboard />} />
+      <Route path="/medicaldetails" element={<MedicalDetails />} />
+
     </Routes>
   );
 };
