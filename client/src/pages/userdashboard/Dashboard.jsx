@@ -29,64 +29,66 @@ const Dashboard = () => {
   const fileInputRef = useRef(null);
   const [previews, setPreviews] = useState([]);
   const [uploadingReports, setUploadingReports] = useState(false);
-  
 
   const [patientData, setPatientData] = useState({
     patient: {
       personalDetails: {
         address: {
-          city: '',
-          state: '',
-          pincode: ''
+          city: "",
+          state: "",
+          pincode: "",
         },
         emergencyContact: {
-          name: '',
-          phone: '',
-          relation: ''
+          name: "",
+          phone: "",
+          relation: "",
         },
-        name: '',
-        phone: '',
-        dob: '',
+        name: "",
+        phone: "",
+        dob: "",
         age: null,
-        gender: ''
+        gender: "",
       },
       medicalDetails: {
-        bloodGroup: '',
+        bloodGroup: "",
         height: null,
         weight: null,
         allergies: [],
         diseases: [],
-        currentMedication: []
+        currentMedication: [],
       },
-      _id: '',
-      email: '',
-      password: '',
+      _id: "",
+      email: "",
+      password: "",
       isAdmin: false,
       reports: [],
-      createdAt: '',
-      updatedAt: ''
+      createdAt: "",
+      updatedAt: "",
     },
     orders: [],
-    upcomingAppointments: []
-  });clearInterval
-  
-const {id} = useParams();
+    upcomingAppointments: [],
+  });
+  clearInterval;
+
+  const { id } = useParams();
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/dashboard/${id}`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        
-        });
-  
+        const response = await axios.get(
+          `http://localhost:5000/dashboard/${id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
         setPatientData(response.data);
       } catch (error) {
-        console.error('Error fetching patient data:', error);
+        console.error("Error fetching patient data:", error);
       }
     };
-  
+
     fetchPatientData();
   }, []);
 
@@ -194,7 +196,11 @@ const {id} = useParams();
             <button
               className={`${styles.tab} ${
                 activeTab === "orders" ? styles.active : ""
-              } ${!(patientData.orders && patientData.orders.length) ? styles.disabled : ""}`}
+              } ${
+                !(patientData.orders && patientData.orders.length)
+                  ? styles.disabled
+                  : ""
+              }`}
               onClick={() => {
                 if (patientData.orders && patientData.orders.length) {
                   setActiveTab("orders");
@@ -213,9 +219,7 @@ const {id} = useParams();
                   <User className={styles.icon} />
                   <div>
                     <h3>Name</h3>
-                    <p>
-                      {patientData.patient.personalDetails.name}
-                    </p>
+                    <p>{patientData.patient.personalDetails.name}</p>
                   </div>
                 </div>
 
@@ -223,9 +227,7 @@ const {id} = useParams();
                   <Phone className={styles.icon} />
                   <div>
                     <h3>Phone</h3>
-                    <p>
-                      {patientData.patient.personalDetails.phone} 
-                    </p>
+                    <p>{patientData.patient.personalDetails.phone}</p>
                   </div>
                 </div>
 
@@ -263,18 +265,18 @@ const {id} = useParams();
                 <div className={styles.emergencyInfo}>
                   <p>
                     <strong>Name:</strong>{" "}
-                    {patientData?.patient.personalDetails?.emergencyContact?.name ||
-                      "Not provided"}
+                    {patientData?.patient.personalDetails?.emergencyContact
+                      ?.name || "Not provided"}
                   </p>
                   <p>
                     <strong>Phone:</strong>{" "}
-                    {patientData?.patient.personalDetails?.emergencyContact?.phone ||
-                      "Not provided"}
+                    {patientData?.patient.personalDetails?.emergencyContact
+                      ?.phone || "Not provided"}
                   </p>
                   <p>
                     <strong>Relation:</strong>{" "}
-                    {patientData?.patient.personalDetails?.emergencyContact?.relation ||
-                      "Not provided"}
+                    {patientData?.patient.personalDetails?.emergencyContact
+                      ?.relation || "Not provided"}
                   </p>
                 </div>
               </div>
@@ -300,10 +302,12 @@ const {id} = useParams();
                   <div>
                     <h3>Physical Details</h3>
                     <p>
-                      Height: {patientData?.patient.medicalDetails?.height || "N/A"} cm
+                      Height:{" "}
+                      {patientData?.patient.medicalDetails?.height || "N/A"} cm
                     </p>
                     <p>
-                      Weight: {patientData?.patient.medicalDetails?.weight || "N/A"} kg
+                      Weight:{" "}
+                      {patientData?.patient.medicalDetails?.weight || "N/A"} kg
                     </p>
                   </div>
                 </div>
@@ -454,16 +458,14 @@ const {id} = useParams();
           )}
 
           {activeTab === "orders" && (
-            
             <div className={styles.detailsCard}>
               <div className={styles.ordersSection}>
                 <div className={styles.orderCategory}>
                   <h3>
                     <Package className={styles.icon} /> Upcoming Orders
                   </h3>
-                  
+
                   <div className={styles.ordersList}>
-                    
                     {medicineOrders.upcoming.map((order) => (
                       <div key={order.id} className={styles.orderCard}>
                         <div className={styles.orderHeader}>
@@ -546,44 +548,49 @@ const {id} = useParams();
                 </div>
               </div>
             </div>
-            
           )}
         </div>
 
         <div className={styles.appointmentsSection}>
           <h2>Upcoming Appointments</h2>
-          {patientData.upcomingAppointments?<>
-          <div className={styles.appointmentsList}>
-            
-            {patientData.upcomingAppointments.map((appointment) => (
-              <div key={appointment.id} className={styles.appointmentCard}>
-                <div className={styles.appointmentHeader}>
-                  <h3>{appointment.doctorName}</h3>
-                  <span className={styles[appointment.status]}>
-                    {appointment.status}
-                  </span>
-                </div>
-                <p className={styles.specialization}>
-                  {appointment.specialization}
-                </p>
-                <div className={styles.appointmentTime}>
-                  <Clock className={styles.icon} />
-                  <span>
-                    {new Date(
-                      `${appointment.date}T${appointment.time}`
-                    ).toLocaleString()}
-                  </span>
-                </div>
-                <div className={styles.timeRemaining}>
-                  {calculateTimeRemaining(appointment.date, appointment.time)}
-                </div>
-                <button className={styles.viewDetails}>
-                  View Details <ChevronRight size={16} />
-                </button>
+          {patientData.upcomingAppointments ? (
+            <>
+              <div className={styles.appointmentsList}>
+                {patientData.upcomingAppointments.map((appointment) => (
+                  <div key={appointment.id} className={styles.appointmentCard}>
+                    <div className={styles.appointmentHeader}>
+                      <h3>{appointment.doctorName}</h3>
+                      <span className={styles[appointment.status]}>
+                        {appointment.status}
+                      </span>
+                    </div>
+                    <p className={styles.specialization}>
+                      {appointment.specialization}
+                    </p>
+                    <div className={styles.appointmentTime}>
+                      <Clock className={styles.icon} />
+                      <span>
+                        {new Date(
+                          `${appointment.date}T${appointment.time}`
+                        ).toLocaleString()}
+                      </span>
+                    </div>
+                    <div className={styles.timeRemaining}>
+                      {calculateTimeRemaining(
+                        appointment.date,
+                        appointment.time
+                      )}
+                    </div>
+                    <button className={styles.viewDetails}>
+                      View Details <ChevronRight size={16} />
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          </>:<>suck my cock</>}
+            </>
+          ) : (
+            <>suck my cock</>
+          )}
         </div>
       </div>
     </div>
