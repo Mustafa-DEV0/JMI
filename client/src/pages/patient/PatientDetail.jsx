@@ -62,7 +62,7 @@ const PatientDetail = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `http://localhost:5000/patient/${id}`,
+        `http://localhost:5000/patient/details/${id}`,
         {
           personalDetails,
           medicalDetails,

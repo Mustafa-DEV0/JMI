@@ -25,10 +25,7 @@ const MedicalStoreSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-<<<<<<< HEAD
-=======
-   
->>>>>>> ca7b55506f82be12f794d9259573f9030809902b
+
     licenseNumber: {
       type: String,
 
