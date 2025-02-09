@@ -17,7 +17,6 @@ const Signup = () => {
     setError("");
     setSuccess("");
     setLoading(true);
-    
 
     try {
       const response = await axios.post(
@@ -29,10 +28,9 @@ const Signup = () => {
         }
       );
       localStorage.setItem("token", response.data.token);
-      const id = response.data.user.id;
-      const typeUser = response.data.user.userType;
+      const id = response.data.id;
       setSuccess(response.data.message || "Registration successful!");
-      setTimeout(() => navigate(`/${typeUser}/${id}`), 2000);
+      setTimeout(() => navigate(`/${userType}/${id}`), 2000);
     } catch (error) {
       setError(
         error.response?.data?.message || "Registration failed. Try again."
@@ -61,6 +59,7 @@ const Signup = () => {
               <option value="admin">Admin</option>
               <option value="patient">Patient</option>
               <option value="doctor">Doctor</option>
+              <option value="medicalowner">Medical Store Owner</option>
             </select>
           </div>
 
@@ -97,7 +96,6 @@ const Signup = () => {
           {/* Submit Button */}
           <button type="submit" className={styles.submitBtn} disabled={loading}>
             {loading ? "Signing Up..." : "Sign Up"}
-
           </button>
         </form>
 
