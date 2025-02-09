@@ -1,136 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Users, Calendar, FileText, Bell, Settings, LogOut, X, Check, Plus, ChevronRight } from 'lucide-react';
-import styles from "./Doctordashboard.module.css";
+import styles from "./DoctorDashboard.module.css";
+import { data, useParams } from "react-router-dom";
+import axios from 'axios';
 
-// Mock data for initial state
-const initialPatients = [
-  {
-    id: 1,
-    name: 'Ralph Edwards',
-    age: 35,
-    gender: 'Male',
-    phone: '+1 212 456 7890',
-    email: 'ralphed@gmail.com',
-    reason: 'Wrist Fracture Surgery',
-    date: 'Tue, 19 Mar 2024',
-    time: '3:00 PM',
-    image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=150',
-    status: 'Current',
-    vitals: {
-      bloodPressure: '132/87 mmHg',
-      temperature: '100.4 °F',
-      oxygenSaturation: '96%',
-      weight: '74 kg',
-      heartRate: '82.79 bpm',
-      height: '5.10 inch'
-    },
-    emergency: {
-      name: 'Gia Edwards',
-      relation: 'Spouse',
-      phone: '+1 212 456 2345'
+// Updated helper functions
+const getPatientName = (patient) =>
+  patient?.personalDetails?.name ||
+  patient?.email?.split('@')[0] ||
+  'Unknown';
+
+const getPatientAge = (patient) => {
+  if (patient?.personalDetails) {
+    // Use age if directly provided; otherwise, compute from dob.
+    if (patient.personalDetails.age) return patient.personalDetails.age;
+    if (patient.personalDetails.dob) {
+      const dob = new Date(patient.personalDetails.dob);
+      const diffMs = Date.now() - dob.getTime();
+      const ageDate = new Date(diffMs); // miliseconds from epoch
+      return Math.abs(ageDate.getUTCFullYear() - 1970);
     }
-  },
-  {
-    id: 2,
-    name: 'John Smith',
-    age: 37,
-    gender: 'Male',
-    reason: 'Hypertension and Asthma',
-    date: 'Mon, 18 Mar 2024',
-    time: '2:00 PM',
-    image: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150',
-    status: 'Current'
-  },
-  {
-    id: 3,
-    name: 'Robert Brown',
-    age: 87,
-    gender: 'Male',
-    reason: 'Diagnosis Test for Diabetes Type 2',
-    date: 'Sat, 16 Mar 2024',
-    time: '11:00 AM',
-    image: 'https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=150',
-    status: 'New'
-  },
-  {
-    id: 4,
-    name: 'Mary Jones',
-    age: 40,
-    gender: 'Female',
-    reason: 'Kidney Stone',
-    date: 'Fri, 15 Mar 2024',
-    time: '7:00 PM',
-    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150',
-    status: 'Current'
-  },
-  {
-    id: 5,
-    name: 'William Taylor',
-    age: 28,
-    gender: 'Male',
-    reason: 'Hand Fracture',
-    date: 'Mon, 11 Mar 2024',
-    time: '8:00 PM',
-    image: 'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=150',
-    status: 'Discharged'
   }
-];
+  return '';
+};
 
-const initialAppointments = {
-  pending: [
-    {
-      id: 1,
-      patientName: 'John Smith',
-      reason: 'Hypertension and Asthma',
-      date: 'Mon, 18 Mar 2024',
-      time: '2:00 PM',
-      image: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150'
-    },
-    {
-      id: 2,
-      patientName: 'Sarah Wilson',
-      reason: 'Annual Checkup',
-      date: 'Wed, 20 Mar 2024',
-      time: '10:00 AM',
-      image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150'
-    }
-  ],
-  upcoming: [
-    {
-      id: 3,
-      patientName: 'Robert Brown',
-      reason: 'Diabetes Follow-up',
-      date: 'Thu, 21 Mar 2024',
-      time: '3:30 PM',
-      image: 'https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=150'
-    },
-    {
-      id: 4,
-      patientName: 'Emily Davis',
-      reason: 'Blood Pressure Check',
-      date: 'Fri, 22 Mar 2024',
-      time: '11:00 AM',
-      image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150'
-    }
-  ],
-  completed: [
-    {
-      id: 5,
-      patientName: 'William Taylor',
-      reason: 'Post-surgery Review',
-      date: 'Mon, 11 Mar 2024',
-      time: '9:00 AM',
-      image: 'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=150'
-    }
-  ]
+const getPatientGender = (patient) =>
+  patient?.personalDetails?.gender || '';
+
+const getPatientReason = (patient) =>
+  patient?.concerns || 'N/A';
+
+const getPatientDate = (appointment) => {
+  if (!appointment?.scheduledAt) return 'Not scheduled';
+  return new Date(appointment.scheduledAt).toLocaleDateString();
+};
+
+const getPatientTime = (appointment) => {
+  if (!appointment?.scheduledAt) return 'Not scheduled';
+  return new Date(appointment.scheduledAt).toLocaleTimeString();
 };
 
 function DoctorDashboard() {
   const [activeTab, setActiveTab] = useState('patients');
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [appointments, setAppointments] = useState(initialAppointments);
-  const [patients, setPatients] = useState(initialPatients);
+  const [appointments, setAppointments] = useState({ pending: [], upcoming: [], completed: [] });
+  const [patients, setPatients] = useState([]);
   const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [activePatientFilter, setActivePatientFilter] = useState('All Patients');
@@ -140,44 +55,105 @@ function DoctorDashboard() {
     medications: [{ name: '', dosage: '', duration: '' }],
     notes: ''
   });
+  const { id } = useParams();
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/dashboard/doctor/${id}`);
+        // Destructure response data
+        const {
+          allPatients = [],
+          newPatients = [],
+          currentPatients = [],
+          dischargedPatients = [],
+          appointments: backendAppointments = {}
+        } = response.data;
+
+        // Update each patient with a 'status' property based on membership
+        const patientsWithStatus = allPatients.map((patient) => {
+          if (newPatients.some((p) => p._id === patient._id)) {
+            return { ...patient, status: 'New' };
+          } else if (currentPatients.some((p) => p._id === patient._id)) {
+            return { ...patient, status: 'Current' };
+          } else if (dischargedPatients.some((p) => p._id === patient._id)) {
+            return { ...patient, status: 'Discharged' };
+          }
+          return { ...patient, status: 'Unknown' };
+        });
+
+        setPatients(patientsWithStatus);
+        setAppointments(backendAppointments);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchDashboardData();
+  }, [id]);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
   };
 
-  const filteredPatients = patients.filter(patient => {
-    const matchesSearch = patient.name.toLowerCase().includes(searchTerm) ||
-                         patient.reason.toLowerCase().includes(searchTerm);
+  const filteredPatients = patients.filter((patient) => {
+    const name = getPatientName(patient);
+    const matchesSearch =
+      name.toLowerCase().includes(searchTerm) ||
+      (patient.concerns && patient.concerns.toLowerCase().includes(searchTerm));
     if (activePatientFilter === 'All Patients') return matchesSearch;
     return matchesSearch && patient.status === activePatientFilter;
   });
 
-  const handleAppointmentAction = (appointmentId, type, action) => {
-    setAppointments(prev => {
-      const appointment = prev[type].find(app => app.id === appointmentId);
-      const newAppointments = {
-        ...prev,
-        [type]: prev[type].filter(app => app.id !== appointmentId)
-      };
-      
-      if (action === 'accept') {
-        newAppointments.upcoming = [...newAppointments.upcoming, appointment];
-        // Show success message
+  const handleAppointmentAction = async (appointmentId, type, action) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/dashboard/doctor/${id}/appointment`,
+        { appointmentId, action }
+      );
+
+      if (response.data && response.data.updatedAppointment) {
+        const updatedAppointment = response.data.updatedAppointment;
+
+        // Update local state based on the updated appointment status from DB
+        setAppointments((prev) => {
+          // Remove the appointment from its old category
+          const newState = { ...prev };
+          newState[type] = prev[type].filter((app) => app._id !== appointmentId);
+
+          // Add the updated appointment to the correct category based on its status
+          if (updatedAppointment.status === 'scheduled') {
+            newState.upcoming = [...prev.upcoming, updatedAppointment];
+          } else if (updatedAppointment.status === 'completed') {
+            newState.completed = [...prev.completed, updatedAppointment];
+          } else if (updatedAppointment.status === 'pending') {
+            newState.pending = [...prev.pending, updatedAppointment];
+          }
+          return newState;
+        });
+
         setShowSuccessMessage(true);
         setTimeout(() => setShowSuccessMessage(false), 3000);
-      } else if (action === 'complete') {
-        newAppointments.completed = [...newAppointments.completed, appointment];
       }
-      
-      return newAppointments;
-    });
+    } catch (error) {
+      console.error("Error updating appointment:", error);
+    }
   };
 
-  const handleAddPrescription = (e) => {
+  const handleAddPrescription = async (e) => {
     e.preventDefault();
-    setShowPrescriptionModal(false);
-    setShowSuccessMessage(true);
-    setTimeout(() => setShowSuccessMessage(false), 3000);
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/dashboard/doctor/${id}/prescription`,
+        newPrescription
+      );
+      // If prescription was successfully created:
+      setShowPrescriptionModal(false);
+      setShowSuccessMessage(true);
+      setTimeout(() => setShowSuccessMessage(false), 3000);
+    } catch (error) {
+      console.error("Error adding prescription:", error);
+    }
   };
 
   const renderPatientsList = () => (
@@ -187,25 +163,25 @@ function DoctorDashboard() {
           className={`${styles.filterButton} ${activePatientFilter === 'All Patients' ? styles.active : ''}`}
           onClick={() => setActivePatientFilter('All Patients')}
         >
-          All Patients <span>120</span>
+          All Patients <span>{patients.length}</span>
         </button>
         <button
           className={`${styles.filterButton} ${activePatientFilter === 'Current' ? styles.active : ''}`}
           onClick={() => setActivePatientFilter('Current')}
         >
-          Current Patients <span>80</span>
+          Current Patients <span>{patients.filter(p => p.status === 'Current').length}</span>
         </button>
         <button
           className={`${styles.filterButton} ${activePatientFilter === 'New' ? styles.active : ''}`}
           onClick={() => setActivePatientFilter('New')}
         >
-          New Patients <span>20</span>
+          New Patients <span>{patients.filter(p => p.status === 'New').length}</span>
         </button>
         <button
           className={`${styles.filterButton} ${activePatientFilter === 'Discharged' ? styles.active : ''}`}
           onClick={() => setActivePatientFilter('Discharged')}
         >
-          Discharged Patients <span>40</span>
+          Discharged Patients <span>{patients.filter(p => p.status === 'Discharged').length}</span>
         </button>
       </div>
 
@@ -228,31 +204,44 @@ function DoctorDashboard() {
           <div className={styles.headerCheckbox}></div>
           <div>Patient Name</div>
           <div>Reason</div>
-          <div>Schedule Time & Date</div>
+          <div>Status</div> {/* Changed header from Schedule Time & Date to Status */}
         </div>
-        {filteredPatients.map(patient => (
-          <div
-            key={patient.id}
-            className={styles.patientRow}
-            onClick={() => setSelectedPatient(patient)}
-          >
-            <div className={styles.checkbox}>
-              <input type="checkbox" />
-            </div>
-            <div className={styles.patientInfo}>
-              <img src={patient.image} alt={patient.name} className={styles.patientImage} />
-              <div>
-                <h3>{patient.name}</h3>
-                <p>{patient.age} Y, {patient.gender}</p>
+        {filteredPatients.map((patient) => {
+          // Find the appointment for the current patient
+          const upcomingAppointment = appointments.upcoming.find(app => app.patient?._id === patient._id);
+          const pendingAppointment = appointments.pending.find(app => app.patient?._id === patient._id);
+          const completedAppointment = appointments.completed.find(app => app.patient?._id === patient._id);
+          const appointmentFound = upcomingAppointment || pendingAppointment || completedAppointment;
+          // Destructure the status from the appointmentFound (defaults to 'Not scheduled')
+          const { status = 'Not scheduled' } = appointmentFound || {};
+        
+          return (
+            <div
+              key={patient._id}
+              className={styles.patientRow}
+              onClick={() => setSelectedPatient(patient)}
+            >
+              <div className={styles.checkbox}>
+                <input type="checkbox" />
+              </div>
+              <div className={styles.patientInfo}>
+                <img 
+                  src={patient.personalDetails?.profileImg || "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=50"} 
+                  alt={getPatientName(patient)} 
+                  className={styles.patientImage} 
+                />
+                <div>
+                  <h3>{getPatientName(patient)}</h3>
+                  <p>{getPatientAge(patient)} Y, {getPatientGender(patient)}</p>
+                </div>
+              </div>
+              <div className={styles.reason}>{getPatientReason(patient)}</div>
+              <div className={styles.schedule}>
+                <div>{status}</div>
               </div>
             </div>
-            <div className={styles.reason}>{patient.reason}</div>
-            <div className={styles.schedule}>
-              <div>{patient.date}</div>
-              <div>{patient.time}</div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {selectedPatient && (
@@ -265,14 +254,17 @@ function DoctorDashboard() {
           </div>
           <div className={styles.detailsContent}>
             <div className={styles.patientHeader}>
-              <img src={selectedPatient.image} alt={selectedPatient.name} />
+              <img 
+                src={selectedPatient.personalDetails?.profileImg || "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=50"} 
+                alt={getPatientName(selectedPatient)} 
+              />
               <div className={styles.patientContact}>
-                <h3>{selectedPatient.name}</h3>
-                <p>{selectedPatient.age} Y, {selectedPatient.gender}</p>
+                <h3>{getPatientName(selectedPatient)}</h3>
+                <p>{getPatientAge(selectedPatient)} Y, {getPatientGender(selectedPatient)}</p>
                 <div className={styles.contactInfo}>
                   <div>
                     <span className={styles.icon}>📞</span>
-                    {selectedPatient.phone}
+                    {selectedPatient.personalDetails?.phone || 'N/A'}
                   </div>
                   <div>
                     <span className={styles.icon}>✉️</span>
@@ -283,41 +275,49 @@ function DoctorDashboard() {
             </div>
 
             <div className={styles.visitInfo}>
-              <h4>Visit Info</h4>
+              <h4>Medical Details</h4>
               <div className={styles.visitDetails}>
                 <div>
-                  <span>Scheduled Time & Date</span>
-                  <p>{selectedPatient.date}, {selectedPatient.time}</p>
+                  <span>Blood Group</span>
+                  <p>{selectedPatient.medicalDetails?.bloodGroup || 'N/A'}</p>
                 </div>
                 <div>
-                  <span>Reason</span>
-                  <p>{selectedPatient.reason}</p>
+                  <span>Height</span>
+                  <p>{selectedPatient.medicalDetails?.height || 'N/A'} cm</p>
+                </div>
+                <div>
+                  <span>Weight</span>
+                  <p>{selectedPatient.medicalDetails?.weight || 'N/A'} kg</p>
                 </div>
               </div>
             </div>
 
-            <div className={styles.vitalsGrid}>
-              {Object.entries(selectedPatient.vitals).map(([key, value]) => (
-                <div key={key} className={styles.vitalCard}>
-                  <h4>{key.replace(/([A-Z])/g, ' $1').trim()}</h4>
-                  <p>{value}</p>
+            {selectedPatient.medicalDetails?.allergies && (
+              <div className={styles.allergiesSection}>
+                <h4>Allergies</h4>
+                <div className={styles.allergiesList}>
+                  {selectedPatient.medicalDetails.allergies.map((allergy, index) => (
+                    <span key={index} className={styles.allergyTag}>{allergy}</span>
+                  ))}
                 </div>
-              ))}
-            </div>
-
-            <div className={styles.emergencyContact}>
-              <h4>Emergency Contact</h4>
-              <div className={styles.emergencyInfo}>
-                <div className={styles.contactPerson}>
-                  <span>{selectedPatient.emergency.name}</span>
-                  <p>{selectedPatient.emergency.relation}</p>
-                </div>
-                <button className={styles.callButton}>
-                  <span className={styles.icon}>📞</span>
-                  {selectedPatient.emergency.phone}
-                </button>
               </div>
-            </div>
+            )}
+
+            {selectedPatient.personalDetails?.emergencyContact && (
+              <div className={styles.emergencyContact}>
+                <h4>Emergency Contact</h4>
+                <div className={styles.emergencyInfo}>
+                  <div className={styles.contactPerson}>
+                    <span>{selectedPatient.personalDetails.emergencyContact.name}</span>
+                    <p>{selectedPatient.personalDetails.emergencyContact.relation}</p>
+                  </div>
+                  <button className={styles.callButton}>
+                    <span className={styles.icon}>📞</span>
+                    {selectedPatient.personalDetails.emergencyContact.phone}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -348,35 +348,49 @@ function DoctorDashboard() {
       </div>
 
       <div className={styles.appointmentsList}>
-        {appointments[appointmentTab]?.map(appointment => (
-          <div key={appointment.id} className={styles.appointmentCard}>
+        {appointments[appointmentTab]?.map((appointment) => (
+          <div key={appointment._id} className={styles.appointmentCard}>
             <div className={styles.appointmentInfo}>
-              <img src={appointment.image} alt={appointment.patientName} className={styles.patientImage} />
+              <img
+                src={appointment.patient?.personalDetails?.profileImg || "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=50"}
+                alt={getPatientName(appointment.patient)}
+                className={styles.patientImage}
+              />
               <div>
-                <h3>{appointment.patientName}</h3>
-                <p className={styles.reason}>{appointment.reason}</p>
+                <h3>{getPatientName(appointment.patient)}</h3>
+                <p className={styles.reason}>{appointment.concerns}</p>
                 <p className={styles.datetime}>
-                  <span className={styles.date}>{appointment.date}</span>
-                  <span className={styles.time}>{appointment.time}</span>
+                  <span className={styles.date}>{getPatientDate(appointment)}</span>
+                  <span className={styles.time}>{getPatientTime(appointment)}</span>
                 </p>
               </div>
             </div>
-            {appointmentTab === 'pending' && (
-              <div className={styles.appointmentActions}>
+            <div className={styles.appointmentActions}>
+              {appointmentTab === 'pending' && (
+                <>
+                  <button
+                    className={styles.acceptButton}
+                    onClick={() => handleAppointmentAction(appointment._id, 'pending', 'accept')}
+                  >
+                    <Check size={20} />
+                  </button>
+                  <button
+                    className={styles.declineButton}
+                    onClick={() => handleAppointmentAction(appointment._id, 'pending', 'decline')}
+                  >
+                    <X size={20} />
+                  </button>
+                </>
+              )}
+              {appointmentTab === 'upcoming' && (
                 <button
-                  className={styles.acceptButton}
-                  onClick={() => handleAppointmentAction(appointment.id, 'pending', 'accept')}
+                  className={styles.completeButton}
+                  onClick={() => handleAppointmentAction(appointment._id, 'upcoming', 'complete')}
                 >
-                  <Check size={20} />
+                  Mark as Completed
                 </button>
-                <button
-                  className={styles.declineButton}
-                  onClick={() => handleAppointmentAction(appointment.id, 'pending', 'decline')}
-                >
-                  <X size={20} />
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -406,15 +420,14 @@ function DoctorDashboard() {
                 <label>Select Patient</label>
                 <select
                   value={newPrescription.patientId}
-                  onChange={(e) => setNewPrescription({
-                    ...newPrescription,
-                    patientId: e.target.value
-                  })}
+                  onChange={(e) =>
+                    setNewPrescription({ ...newPrescription, patientId: e.target.value })
+                  }
                 >
                   <option value="">Select a patient</option>
-                  {patients.map(patient => (
-                    <option key={patient.id} value={patient.id}>
-                      {patient.name}
+                  {patients.map((patient) => (
+                    <option key={patient._id} value={patient._id}>
+                      {getPatientName(patient)}
                     </option>
                   ))}
                 </select>
@@ -429,10 +442,7 @@ function DoctorDashboard() {
                     onChange={(e) => {
                       const newMeds = [...newPrescription.medications];
                       newMeds[index].name = e.target.value;
-                      setNewPrescription({
-                        ...newPrescription,
-                        medications: newMeds
-                      });
+                      setNewPrescription({ ...newPrescription, medications: newMeds });
                     }}
                   />
                   <input
@@ -442,10 +452,7 @@ function DoctorDashboard() {
                     onChange={(e) => {
                       const newMeds = [...newPrescription.medications];
                       newMeds[index].dosage = e.target.value;
-                      setNewPrescription({
-                        ...newPrescription,
-                        medications: newMeds
-                      });
+                      setNewPrescription({ ...newPrescription, medications: newMeds });
                     }}
                   />
                   <input
@@ -455,10 +462,7 @@ function DoctorDashboard() {
                     onChange={(e) => {
                       const newMeds = [...newPrescription.medications];
                       newMeds[index].duration = e.target.value;
-                      setNewPrescription({
-                        ...newPrescription,
-                        medications: newMeds
-                      });
+                      setNewPrescription({ ...newPrescription, medications: newMeds });
                     }}
                   />
                 </div>
@@ -467,10 +471,12 @@ function DoctorDashboard() {
               <button
                 type="button"
                 className={styles.addMedicationButton}
-                onClick={() => setNewPrescription({
-                  ...newPrescription,
-                  medications: [...newPrescription.medications, { name: '', dosage: '', duration: '' }]
-                })}
+                onClick={() =>
+                  setNewPrescription({
+                    ...newPrescription,
+                    medications: [...newPrescription.medications, { name: '', dosage: '', duration: '' }]
+                  })
+                }
               >
                 <Plus size={20} /> Add Medication
               </button>
@@ -479,10 +485,9 @@ function DoctorDashboard() {
                 <label>Notes</label>
                 <textarea
                   value={newPrescription.notes}
-                  onChange={(e) => setNewPrescription({
-                    ...newPrescription,
-                    notes: e.target.value
-                  })}
+                  onChange={(e) =>
+                    setNewPrescription({ ...newPrescription, notes: e.target.value })
+                  }
                   placeholder="Add any additional notes or remarks"
                 />
               </div>
@@ -575,3 +580,4 @@ function DoctorDashboard() {
 }
 
 export default DoctorDashboard;
+
