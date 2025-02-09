@@ -37,15 +37,13 @@ const Footer = () => {
             <h3>GET IN TOUCH</h3>
             <div className={styles.footerLinks}>
               <a href="tel:+0-000-000-000">+0-000-000-000</a>
-              <a href="mailto:greatstackdev@gmail.com">
-                greatstackdev@gmail.com
-              </a>
+              <a href="mailto:samrod625@gmail.com">medicare@gmail.org</a>
             </div>
           </div>
         </div>
 
         <div className={styles.footerCopyright}>
-          Copyright 2024 @ Greatstack.dev - All Right Reserved.
+          Copyright 2024 @ Medisure - All Right Reserved.
         </div>
       </footer>
     </div>
