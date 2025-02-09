@@ -2,14 +2,16 @@ import { useState } from "react";
 import axios from "axios";
 import styles from "./Login.module.css";
 import { Link, useNavigate } from "react-router-dom";
+import { IdCardIcon } from "lucide-react";
 
 const Login = () => {
+  const [userType, setUserType] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  const [id, setId] = useState("");
   const togglePassword = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -17,82 +19,88 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
-        email,
-        password,
-      });
-      // Assuming the response contains a token and user data
-      const { token } = response.data;
-      // Save the token and user data to local storage or context
-      localStorage.setItem("token", token);
-
-      
-     
-      // Redirect to the home page or dashboard
-      navigate("/");
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        {
+          userType,
+          email,
+          password,
+        }
+      );
+      localStorage.setItem("token", response.data.token);
+      setTimeout(() => {
+        navigate(`/${userType}/${response.data.id}`);
+      }, 2000);
     } catch (error) {
       setError("Invalid username or password");
-      console.log(error)
     }
   };
 
   return (
     <div className={styles.formpage}>
-      <div className={`${styles.formCard} ${styles.slideIn}`} id="loginForm">
-        <h2>Login</h2>
+      <div className={styles.formCard}>
+        <h2 className={styles.heading}>Login</h2>
         <form onSubmit={handleSubmit}>
+          {/* User Type Selection */}
+          <div className={styles.userTypeSelection}>
+            <label>Select User Type</label>
+            <select
+              value={userType}
+              onChange={(e) => setUserType(e.target.value)}
+              className={styles.userTypeDropdown}
+              required
+            >
+              <option value="">Choose a user type</option>
+              <option value="admin">Admin</option>
+              <option value="patient">Patient</option>
+              <option value="doctor">Doctor</option>
+              <option value="medicalstore">Medical Store Ownwer</option>
+            </select>
+          </div>
+
+          {/* Email Input */}
           <div className={styles.inputGroup}>
+            <label htmlFor="email">Email</label>
             <input
-              type="text"
-              id="username"
-              placeholder=" "
+              type="email"
+              id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <label htmlFor="username">Username</label>
           </div>
+
+          {/* Password Input */}
           <div className={styles.inputGroup}>
+            <label htmlFor="password">Password</label>
             <input
               type={passwordVisible ? "text" : "password"}
               id="password"
-              placeholder=" "
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <label htmlFor="password">Password</label>
             <button
               type="button"
               className={styles.togglePassword}
               onClick={togglePassword}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={styles.eyeIcon}
-              >
-                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
+              {passwordVisible ? "Hide" : "Show"}
             </button>
           </div>
+
+          {/* Error Message */}
           {error && <p className={styles.error}>{error}</p>}
+
+          {/* Submit Button */}
           <button type="submit" className={styles.submitBtn}>
-            <span className={styles.btnText}>Login</span>
-            <div className={styles.loadingSpinner} style={{ display: "none" }}></div>
+            Login
           </button>
         </form>
+
+        {/* Switch Form Link */}
         <p className={styles.switchForm}>
-          Don't have an account?
-          <Link to="/register">Register</Link>
+          Don't have an account? <Link to="/register">Register</Link>
         </p>
       </div>
     </div>

@@ -2,14 +2,23 @@ import mongoose from "mongoose";
 
 const MedicalStoreSchema = new mongoose.Schema(
   {
+    email: {
+      type: String,
+
+      unique: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+    },
     name: {
       type: String,
-      required: true,
+
       trim: true,
     },
     owner: {
       type: String,
-      required: true,
+
       trim: true,
     },
     isverified: {
@@ -18,18 +27,17 @@ const MedicalStoreSchema = new mongoose.Schema(
     },
     medicalImage: {
       type: String, // URL of the uploaded medical image
-      required: true,
     },
     licenseNumber: {
       type: String,
-      required: true,
+
       unique: true,
       trim: true,
     },
     contactDetails: {
       phone: {
         type: String,
-        required: true,
+
         trim: true,
       },
       email: {
@@ -44,37 +52,29 @@ const MedicalStoreSchema = new mongoose.Schema(
     address: {
       street: {
         type: String,
-        required: true,
       },
       city: {
         type: String,
-        required: true,
       },
       state: {
         type: String,
-        required: true,
       },
       pinCode: {
         type: String,
-        required: true,
       },
       country: {
         type: String,
-        required: true,
       },
     },
     workingHours: {
       openTime: {
         type: String,
-        required: true,
       },
       closeTime: {
         type: String,
-        required: true,
       },
       daysOpen: {
         type: [String], //["Monday", "Tuesday", "Wednesday"]
-        required: true,
       },
     },
 

@@ -2,67 +2,58 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Patient from "../models/Patient.js";
 import Doctor from "../models/Doctor.js";
+import MedicalStore from "../models/MedicalStore.js";
 
 export const registerController = async (req, res) => {
   try {
     const { email, password, userType } = req.body;
 
-    // Validate required fields
     if (!email || !password || !userType) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Check if the user already exists (Doctor or Patient)
-    const existingUser = await (userType === "doctor"
-      ? Doctor.findOne({ email })
-      : Patient.findOne({ email }));
+    let userModel;
+    switch (userType) {
+      case "patient":
+        userModel = Patient;
+        break;
+      case "doctor":
+        userModel = Doctor;
+        break;
+      case "admin":
+        userModel = Patient;
+        break;
+      case "medicalowner":
+        userModel = MedicalStore;
+        break;
+      default:
+        return res.status(400).json({ message: "Invalid user type" });
+    }
 
+    const existingUser = await userModel.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new userModel({ email, password: hashedPassword });
+    console.log(newUser);
+    await newUser.save();
 
-    // Create user data
-    const userData = { email, password: hashedPassword };
+    const token = jwt.sign(
+      { id: newUser._id, userType },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
-    // Create a new Doctor or Patient based on userType
-    if (userType === "doctor") {
-      const newUser = new Doctor({
-        ...userData,
-      });
-      await newUser.save();
-
-      // Generate JWT token for doctor
-      const token = jwt.sign(
-        { id: newUser._id, userType },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" }
-      );
-
-      res.status(201).json({
-        message: "Doctor registered successfully",
-        token,
-        user: { id: newUser._id, email, userType },
-      });
-    } else if (userType === "patient") {
-      const newUser = new Patient(userData);
-      await newUser.save();
-
-      // Generate JWT token for patient
-      const token = jwt.sign(
-        { id: newUser._id, userType },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" }
-      );
-
-      res.status(201).json({
-        message: "Patient registration successful",
-        token,
-        user: { id: newUser._id, email, userType },
-      });
-    }
+    res.status(201).json({
+      message: `${
+        userType.charAt(0).toUpperCase() + userType.slice(1)
+      } registered successfully`,
+      token,
+      id: newUser._id,
+      userType,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

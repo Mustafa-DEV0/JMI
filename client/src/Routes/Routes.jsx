@@ -11,8 +11,8 @@ import PatientDetail from "../pages/patient/PatientDetail.jsx";
 import DoctorDetails from "../pages/doctor/DoctorDetails.jsx";
 import Dashboard from "../pages/userdashboard/Dashboard.jsx";
 import Appointment from "../pages/Appointment/appointment.jsx";
-// import AdminDashboard from "../pages/admindashboard/AdminDashboard.jsx";
-import DoctorDashboard from "../pages/doctordashbord/Doctordashboard.jsx";
+import AdminDashboard from "../pages/admindashboard/AdminDashboard.jsx";
+import DoctorDashboard from "../pages/doctordashbord/Doctordashbord.jsx";
 
 const AppRoutes = () => {
   return (
@@ -24,16 +24,15 @@ const AppRoutes = () => {
       <Route path="/patient/:id" element={<PatientDetail />} />
       <Route path="/prescription/:id" element={<Prescription />} />
       <Route path="/appointment/:id" element={<Appointment />} />
+      <Route path="/dashboard/patient/:id" element={<Dashboard />} />
       <Route path="/doctorlist" element={<DoctorList />} />
       <Route path="/medical-store" element={<MedicalStore />} />
       <Route path="/history" element={<PatientAppointmentHistory />} />
       <Route path="/dashboard/doctor/:id" element={<DoctorDashboard />} />
       <Route path="/payment" element={<Payment />} />
-      {/* <Route path="/admindashboard" element={<AdminDashboard />} /> */}
-      <Route path="/doctordashboard/:id" element={<DoctorDashboard />} />
+      <Route path="/dashboard/admin/:id" element={<AdminDashboard />} />
     </Routes>
   );
 };
 
 export default AppRoutes;
-
