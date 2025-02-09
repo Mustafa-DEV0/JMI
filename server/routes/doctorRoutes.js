@@ -3,6 +3,6 @@ import { putDoctorDetails } from "../controllers/doctorController.js";
 
 const router = express.Router();
 
-router.put("/doctor/:id", putDoctorDetails);
+router.put("/:id", putDoctorDetails);
 
 export default router;

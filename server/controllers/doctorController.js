@@ -17,7 +17,6 @@ const putDoctorDetails = async (req, res) => {
       availability: { days, time } = {},
       clinicOrHospital: { address, officeNumber } = {},
     } = req.body;
-
     // Check if the doctor exists first
     const doctor = await Doctor.findById(id);
     if (!doctor) {
@@ -46,7 +45,13 @@ const putDoctorDetails = async (req, res) => {
     };
 
     // Save the updated doctor details
-    await doctor.save();
+    const saved = await doctor.save();
+
+    if (saved) {
+      window.location.href = `/dashboard/doctor/${id}`;
+    } else {
+      console.log("cant navigate");
+    }
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error });
   }

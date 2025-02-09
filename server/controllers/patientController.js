@@ -11,7 +11,11 @@ export const savePatientDetails = async (req, res) => {
         age,
         gender,
         address: { city, state, pincode } = {},
-        emergencyContact: { name: contactName, phone: contactPhone, relation } = {},
+        emergencyContact: {
+          name: contactName,
+          phone: contactPhone,
+          relation,
+        } = {},
       } = {},
       medicalDetails: {
         bloodGroup,
@@ -22,7 +26,6 @@ export const savePatientDetails = async (req, res) => {
         currentMedication = [],
       } = {},
     } = req.body;
-
     // Find the patient by userId
     const patient = await Patient.findById(id);
     if (!patient) {
@@ -63,7 +66,9 @@ export const savePatientDetails = async (req, res) => {
 
     // Save the updated patient details
     await patient.save();
-    res.status(200).json({ message: "Patient details saved successfully", patient });
+    res
+      .status(200)
+      .json({ message: "Patient details saved successfully", patient });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
