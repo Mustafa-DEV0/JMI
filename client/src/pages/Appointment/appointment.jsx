@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-
 import { Calendar, Clock, AlertCircle } from "lucide-react";
 import styles from "./Appointment.module.css";
 
@@ -19,8 +18,8 @@ const Appointment = () => {
   const [availableDates, setAvailableDates] = useState([]);
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
   const [doctor, setDoctor] = useState(null);
-
   const { id } = useParams();
+  const [patientId, setPatientId] = useState(null);
 
   useEffect(() => {
     const fetchDoctor = async () => {
@@ -40,12 +39,48 @@ const Appointment = () => {
         console.error("Error fetching doctor:", error);
       }
     };
-
     fetchDoctor();
   }, [id]);
 
-  const generateAvailableDates = (doctor) => {
-    if (!doctor) return;
+  const generateTimeSlots = (startTime, endTime) => {
+    const slots = [];
+    const parseTime = (timeStr) => {
+      const [time, period] = timeStr.split(" ");
+      let [hours, minutes] = time.split(":").map(Number);
+      if (period === "PM" && hours !== 12) hours += 12;
+      if (period === "AM" && hours === 12) hours = 0;
+      return { hours, minutes };
+    };
+
+    const start = parseTime(startTime);
+    const end = parseTime(endTime);
+
+    let currentHours = start.hours;
+    let currentMinutes = start.minutes;
+
+    while (
+      currentHours < end.hours ||
+      (currentHours === end.hours && currentMinutes <= end.minutes)
+    ) {
+      const period = currentHours >= 12 ? "PM" : "AM";
+      const displayHours = currentHours % 12 || 12;
+      const timeSlot = `${displayHours}:${currentMinutes
+        .toString()
+        .padStart(2, "0")} ${period}`;
+      slots.push(timeSlot);
+
+      currentMinutes += 30;
+      if (currentMinutes >= 60) {
+        currentHours++;
+        currentMinutes = 0;
+      }
+    }
+
+    return slots;
+  };
+
+  const generateAvailableDates = (doctorData) => {
+    if (!doctorData) return;
 
     const dates = [];
     const today = new Date();
@@ -54,7 +89,7 @@ const Appointment = () => {
 
     for (let d = new Date(today); d <= next30Days; d.setDate(d.getDate() + 1)) {
       const dayName = d.toLocaleDateString("en-US", { weekday: "long" });
-      if (doctor.availability.days.includes(dayName)) {
+      if (doctorData.availability.days.includes(dayName)) {
         dates.push(new Date(d).toISOString().split("T")[0]);
       }
     }
@@ -67,34 +102,28 @@ const Appointment = () => {
     setShowPending(true);
 
     const token = localStorage.getItem("token");
-    const selectedDate = formData.date;
-    const selectedTimeSlot = availableTimeSlots.find(
-      (slot) => slot === formData.time
-    );
-
-    if (!selectedDate) {
-      console.error("Invalid appointment details.");
-      return;
-    }
-
     const data = {
       doctor: id,
       doctorName: doctor.personalDetails.name,
       concerns: formData.concerns,
-      scheduledAt: selectedDate,
+      scheduledAt: formData.date,
+      time: formData.time,
       specialization: doctor.professionalDetails.specialization,
       mode: formData.mode,
     };
 
-    console.log("Sending appointment:", data);
-
     try {
-      await axios.post("http://localhost:5000/appointment/save", data, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:5000/appointment/save",
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setPatientId(response.data.id);
     } catch (error) {
       console.error("Error sending appointment request:", error);
     }
@@ -111,12 +140,9 @@ const Appointment = () => {
       }));
 
       if (doctor && value) {
-        const dayName = new Date(value).toLocaleDateString("en-US", {
-          weekday: "long",
-        });
-
-        const doctorTimeSlots = doctor.timeSlots?.[dayName] || [];
-        setAvailableTimeSlots(doctorTimeSlots);
+        const [startTime, endTime] = doctor.availability.time.split(" - ");
+        const slots = generateTimeSlots(startTime, endTime);
+        setAvailableTimeSlots(slots);
       }
     } else {
       setFormData((prev) => ({
@@ -163,7 +189,7 @@ const Appointment = () => {
           <div className={styles.pendingActions}>
             <button
               className={styles.newAppointmentButton}
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate(`/patient/dashboard/${patientId}`)}
             >
               Go to Dashboard
             </button>
@@ -175,29 +201,23 @@ const Appointment = () => {
 
   return (
     <div className={styles.container}>
-      <div
-        className={`${styles.formCard} ${isSubmitted ? styles.submitted : ""}`}
-      >
+      <div className={styles.formCard}>
         <div className={styles.headerIcon}>
           <Calendar size={32} />
         </div>
         <h1>Schedule Appointment</h1>
+        <div className={styles.doctorInfo}>
+          <h3>{doctor?.personalDetails.name}</h3>
+          <p className={styles.specialization}>
+            {doctor?.professionalDetails.specialization}
+          </p>
+          <p className={styles.availability}>
+            Available on: {doctor?.availability.days.join(", ")}
+            <br />
+            Timing: {doctor?.availability.time}
+          </p>
+        </div>
         <form onSubmit={handleSubmit}>
-          <div className={styles.formGroup}>
-            <input
-              type="text"
-              name="doctor"
-              value={doctor?.personalDetails.name || ""}
-              disabled
-              className={styles.filled}
-            />
-            {doctor && (
-              <div className={styles.availabilityInfo}>
-                Available on: {doctor.availability.days.join(", ")}
-              </div>
-            )}
-          </div>
-
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
               <input
@@ -219,20 +239,25 @@ const Appointment = () => {
             </div>
 
             <div className={styles.formGroup}>
-              <select
-                name="time"
-                value={formData.time || ""}
-                onChange={handleChange}
-                className={formData.time ? styles.filled : ""}
-                disabled={!formData.date || !isDateAvailable(formData.date)}
-              >
-                <option value="">Select time slot</option>
-                {availableTimeSlots.map((slot) => (
-                  <option key={slot} value={slot.time}>
-                    {slot.time}
-                  </option>
-                ))}
-              </select>
+              <div className={styles.timeSlotWrapper}>
+                <select
+                  name="time"
+                  value={formData.time || ""}
+                  onChange={handleChange}
+                  className={`${styles.timeSelect} ${
+                    formData.time ? styles.filled : ""
+                  }`}
+                  disabled={!formData.date || !isDateAvailable(formData.date)}
+                  required
+                >
+                  <option value="">Select time slot</option>
+                  {availableTimeSlots.map((slot) => (
+                    <option key={slot} value={slot}>
+                      {slot}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
@@ -256,7 +281,12 @@ const Appointment = () => {
           <button
             type="submit"
             className={styles.submitButton}
-            disabled={!formData.date || !isDateAvailable(formData.date)}
+            disabled={
+              !formData.date ||
+              !isDateAvailable(formData.date) ||
+              !formData.time ||
+              !formData.mode
+            }
           >
             Schedule Appointment
           </button>
