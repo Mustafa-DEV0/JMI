@@ -26,7 +26,6 @@ app.use("/api/auth", authRoutes);
 app.use("/patient", patientRoutes);
 app.use("/doctor", doctorRoutes);
 app.use("/appointment", appointmentRoutes);
-app.use("/doctorList", docterListRoutes);
 app.use("/dashboard", dashboardRoutes);
 
 export default app;

@@ -12,7 +12,7 @@ import DoctorDetails from "../pages/doctor/DoctorDetails.jsx";
 import Dashboard from "../pages/userdashboard/Dashboard.jsx";
 import Appointment from "../pages/Appointment/appointment.jsx";
 import AdminDashboard from "../pages/admindashboard/AdminDashboard.jsx";
-import DoctorDashboard from "../pages/doctordashbord/Doctordashbord.jsx";
+import DoctorDashboard from "../pages/doctordashboard/Doctordashboard.jsx";
 import MedicalDetails from "../pages/medicaldetails/MedicalDetails.jsx";
 
 const AppRoutes = () => {
@@ -26,7 +26,7 @@ const AppRoutes = () => {
       <Route path="/prescription/:id" element={<Prescription />} />
       <Route path="/appointment/:id" element={<Appointment />} />
       <Route path="/patient/dashboard/:id" element={<Dashboard />} />
-      <Route path="/doctorlist" element={<DoctorList />} />
+      <Route path="/doctors" element={<DoctorList />} />
       <Route path="/medicalstore" element={<MedicalStore />} />
       <Route path="/history" element={<PatientAppointmentHistory />} />
       <Route path="/doctor/dashboard/:id" element={<DoctorDashboard />} />
