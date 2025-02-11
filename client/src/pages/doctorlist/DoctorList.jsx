@@ -6,7 +6,7 @@ import styles from "./DoctorList.module.css";
 const specializations = [
   "All",
   "Orthodontist",
-  "Dentofacial Orthopedist",
+  "ENT",
   "Periodontist",
   "Endodontist",
 ];
@@ -55,10 +55,8 @@ function DoctorList() {
       queryParams.append("minFee", appliedFilters.priceRange[0]);
       queryParams.append("maxFee", appliedFilters.priceRange[1]);
 
-      const url = `http://localhost:5000/doctorList?${queryParams}`;
-
-      const response = await axios.get(url);
-
+      const response = await axios.get("http://localhost:5000/doctor/list");
+      console.log(response.data);
       setDoctors(response.data);
     } catch (error) {
       console.error("Error fetching doctors:", error);
