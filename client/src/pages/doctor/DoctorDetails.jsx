@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ChevronRight, User, Award, Clock } from "lucide-react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styles from "./DoctorDetails.module.css";
 
 const DoctorDetails = () => {
@@ -71,7 +71,7 @@ const DoctorDetails = () => {
   };
 
   const timeOptions = generateTimeOptions();
-
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formattedTime = `${formData.availability.startTime} ${formData.availability.startPeriod} - ${formData.availability.endTime} ${formData.availability.endPeriod}`;
@@ -85,14 +85,14 @@ const DoctorDetails = () => {
     console.log(submissionData);
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `http://localhost:5000/doctor/details/${id}`,
         { submissionData },
         {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log("Response:", response.data);
+      navigate(`/doctor/dashboard/${id}`);
     } catch (error) {
       console.error("Error submitting doctor details:", error);
     }
@@ -130,11 +130,16 @@ const DoctorDetails = () => {
                 type="text"
                 placeholder="Full Name"
                 value={formData.personalDetails.name}
-                onChange={(e) =>
-                  handleInputChange("personalDetails", "name", e.target.value)
-                }
+                onChange={(e) => {
+                  let name = e.target.value;
+                  if (!name.startsWith("Dr ")) {
+                    name = "Dr " + name.replace(/^Dr\s*/, ""); // Ensure only one "Dr "
+                  }
+                  handleInputChange("personalDetails", "name", name);
+                }}
                 required
               />
+
               <input
                 type="number"
                 placeholder="Age"
