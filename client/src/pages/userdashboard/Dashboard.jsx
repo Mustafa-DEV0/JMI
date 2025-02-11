@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import {
@@ -24,7 +23,6 @@ import {
 import styles from "./Dashboard.module.css";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("personal");
   const fileInputRef = useRef(null);
   const [previews, setPreviews] = useState([]);
@@ -82,7 +80,7 @@ const Dashboard = () => {
             },
           }
         );
-
+        console.log(response.data);
         setPatientData(response.data);
       } catch (error) {
         console.error("Error fetching patient data:", error);
