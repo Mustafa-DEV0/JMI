@@ -21,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 import styles from "./Dashboard.module.css";
+import API from "../../api/axios";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("personal");
@@ -72,14 +73,11 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/patient/dashboard/${id}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await axios.get(API + `/patient/dashboard/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         console.log(response.data);
         setPatientData(response.data);
       } catch (error) {

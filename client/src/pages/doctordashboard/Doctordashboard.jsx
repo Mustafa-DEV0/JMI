@@ -15,7 +15,7 @@ import {
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import styles from "./Doctordashboard.module.css";
-
+import API from "../../api/axios";
 // Helper functions remain the same
 const getPatientName = (patient) =>
   patient?.personalDetails?.name || patient?.email?.split("@")[0] || "Unknown";
@@ -76,9 +76,7 @@ function DoctorDashboard() {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          `http://localhost:5000/doctor/dashboard/${id}`
-        );
+        const response = await axios.get(API + `/doctor/dashboard/${id}`);
         console.log(response.data);
         // Destructure and process response data
         const {
@@ -116,10 +114,9 @@ function DoctorDashboard() {
 
   const handleAppointmentAction = async (appointmentId, type, action) => {
     try {
-      const response = await axios.put(
-        `http://localhost:5000/appointments/${appointmentId}`,
-        { action }
-      );
+      const response = await axios.put(API + `/appointments/${appointmentId}`, {
+        action,
+      });
 
       if (response.data && response.data.updatedAppointment) {
         const updatedAppointment = response.data.updatedAppointment;
@@ -153,7 +150,7 @@ function DoctorDashboard() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `http://localhost:5000/dashboard/doctor/${id}/prescription`,
+        API + `/dashboard/doctor/${id}/prescription`,
         {
           ...newPrescription,
           doctorId: id,

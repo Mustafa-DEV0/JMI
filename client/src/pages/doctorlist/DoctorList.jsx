@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Search, MapPin, Phone, Clock, Calendar } from "lucide-react";
 import styles from "./DoctorList.module.css";
+import API from "../../api/axios";
 
 const DoctorList = () => {
   const [doctors, setDoctors] = useState([]);
@@ -28,7 +29,7 @@ const DoctorList = () => {
   const fetchDoctors = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:5000/doctor/list");
+      const response = await axios.get(API + "/doctor/list");
       setDoctors(response.data);
       setFilteredDoctors(response.data);
       setError(null);

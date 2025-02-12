@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import styles from "./Login.module.css";
 import { Link, useNavigate } from "react-router-dom";
-import { IdCardIcon } from "lucide-react";
+import API from "../../api/axios";
 
 const Login = () => {
   const [userType, setUserType] = useState("");
@@ -19,14 +19,11 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        {
-          userType,
-          email,
-          password,
-        }
-      );
+      const response = await axios.post(API + "/api/auth/login", {
+        userType,
+        email,
+        password,
+      });
       localStorage.setItem("token", response.data.token);
       setTimeout(() => {
         navigate(`/${userType}/dashboard/${response.data.id}`);
