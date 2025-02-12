@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Calendar, Clock, Video, Phone, MapPin, Filter } from "lucide-react";
 import styles from "./PatientAppointmentHistory.module.css";
+import API from "../../api/axios";
 
 const PatientAppointmentHistory = () => {
   const [appointments, setAppointments] = useState([]);
@@ -12,15 +13,12 @@ const PatientAppointmentHistory = () => {
     const fetchAppointments = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "http://localhost:5000/appointment/history",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(API + "/appointment/history", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setAppointments(response.data);
       } catch (error) {
         console.error("Error fetching appointments:", error);

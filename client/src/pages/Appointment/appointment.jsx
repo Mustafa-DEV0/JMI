@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Calendar, Clock, AlertCircle } from "lucide-react";
 import styles from "./Appointment.module.css";
+import API from "../../api/axios";
 
 const Appointment = () => {
   const navigate = useNavigate();
@@ -24,9 +25,7 @@ const Appointment = () => {
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/appointment/get/${id}`
-        );
+        const response = await axios.get(API + `/appointment/get/${id}`);
         if (response.data) {
           setDoctor(response.data);
           setFormData((prev) => ({
@@ -113,16 +112,12 @@ const Appointment = () => {
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/appointment/save",
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.post(API + "/appointment/save", data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setPatientId(response.data.id);
     } catch (error) {
       console.error("Error sending appointment request:", error);

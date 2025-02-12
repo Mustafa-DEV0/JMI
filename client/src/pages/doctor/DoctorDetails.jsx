@@ -3,6 +3,7 @@ import { ChevronRight, User, Award, Clock } from "lucide-react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./DoctorDetails.module.css";
+import API from "../../api/axios";
 
 const DoctorDetails = () => {
   const [activeSection, setActiveSection] = useState("personal");
@@ -86,7 +87,7 @@ const DoctorDetails = () => {
 
     try {
       await axios.post(
-        `http://localhost:5000/doctor/details/${id}`,
+        API + `/doctor/details/${id}`,
         { submissionData },
         {
           headers: { "Content-Type": "application/json" },

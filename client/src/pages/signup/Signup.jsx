@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import styles from "./Signup.module.css";
 import { Link, useNavigate } from "react-router-dom";
+import API from "../../api/axios";
 
 const Signup = () => {
   const [userType, setUserType] = useState("");
@@ -19,14 +20,11 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
-        {
-          userType, // Include user type
-          email,
-          password,
-        }
-      );
+      const response = await axios.post(API + "/api/auth/register", {
+        userType, // Include user type
+        email,
+        password,
+      });
       localStorage.setItem("token", response.data.token);
       const id = response.data.id;
       setSuccess(response.data.message || "Registration successful!");
