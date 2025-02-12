@@ -10,7 +10,7 @@ import PatientAppointmentHistory from "../pages/patient appointment history/Pati
 import PatientDetail from "../pages/patient/PatientDetail.jsx";
 import DoctorDetails from "../pages/doctor/DoctorDetails.jsx";
 import Dashboard from "../pages/userdashboard/Dashboard.jsx";
-import Appointment from "../pages/Appointment/appointment.jsx";
+import Appointment from "../pages/appointment/Appointment.jsx";
 import AdminDashboard from "../pages/admindashboard/AdminDashboard.jsx";
 import DoctorDashboard from "../pages/doctordashboard/Doctordashboard.jsx";
 import MedicalDetails from "../pages/medicaldetails/MedicalDetails.jsx";
