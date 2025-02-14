@@ -20,20 +20,20 @@ git clone https://github.com/Mustafa-DEV0/JMI.git
 
 cd jmi
 
-# Frontend setup
+## Frontend setup
 
 cd client  
 npm install  
 npm run dev
 
-# Backend Setup
+## Backend Setup
 
 cd server  
 npm install  
 node server.js
 
-## 👩🏽‍💻Developed by 
-Naurez(Team lead)
-Samuel
-Mustafa
-Imaad
+# 👩🏽‍💻Developed by 
+**Naurez(Team lead)**
+**Samuel**
+**Mustafa**
+**Imaad**
