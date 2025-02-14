@@ -33,7 +33,7 @@ npm install
 node server.js
 
 # 👩🏽‍💻Developed by 
-**Naurez(Team lead)**
-**Samuel**
-**Mustafa**
+**Naurez(Team lead)**<br>
+**Samuel**<br>
+**Mustafa**<br>
 **Imaad**
