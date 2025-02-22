@@ -12,12 +12,7 @@ const appointmentSchema = new mongoose.Schema(
       ref: "Doctor",
       required: true,
     },
-    doctorName: {
-      type: String,
-    },
-    specialization: {
-      type: String,
-    },
+   
     concerns: { type: String },
     requestedAt: { type: Date, default: Date.now }, // When the appointment was requested
     mode: { type: String },

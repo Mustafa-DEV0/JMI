@@ -25,7 +25,7 @@ const Appointment = () => {
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
-        const response = await axios.get(API + `/appointment/get/${id}`);
+        const response = await axios.get( `http://localhost:5000/appointment/get/${id}`);
         if (response.data) {
           setDoctor(response.data);
           setFormData((prev) => ({
@@ -33,6 +33,9 @@ const Appointment = () => {
             doctor: response.data.personalDetails.name,
           }));
           generateAvailableDates(response.data);
+          console.log(response.data);
+          
+
         }
       } catch (error) {
         console.error("Error fetching doctor:", error);
@@ -53,6 +56,7 @@ const Appointment = () => {
 
     const start = parseTime(startTime);
     const end = parseTime(endTime);
+    console.log("Start time:", start, "End time:", end);
 
     let currentHours = start.hours;
     let currentMinutes = start.minutes;
@@ -74,24 +78,29 @@ const Appointment = () => {
         currentMinutes = 0;
       }
     }
-
+    console.log("Generated time slots:", slots);
     return slots;
   };
 
   const generateAvailableDates = (doctorData) => {
     if (!doctorData) return;
-
     const dates = [];
     const today = new Date();
-    const next30Days = new Date();
-    next30Days.setDate(today.getDate() + 30);
 
-    for (let d = new Date(today); d <= next30Days; d.setDate(d.getDate() + 1)) {
+    // Loop 30 days starting from today
+    let d = new Date(today.getTime());
+    for (let i = 0; i < 30; i++) {
       const dayName = d.toLocaleDateString("en-US", { weekday: "long" });
       if (doctorData.availability.days.includes(dayName)) {
-        dates.push(new Date(d).toISOString().split("T")[0]);
+        // Create a YYYY-MM-DD string based on local time
+        const formattedDate = `${d.getFullYear()}-${(d.getMonth() + 1)
+          .toString()
+          .padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
+        dates.push(formattedDate);
       }
+      d.setDate(d.getDate() + 1);
     }
+    console.log("Generated available dates:", dates);
     setAvailableDates(dates);
   };
 
@@ -103,16 +112,14 @@ const Appointment = () => {
     const token = localStorage.getItem("token");
     const data = {
       doctor: id,
-      doctorName: doctor.personalDetails.name,
       concerns: formData.concerns,
       scheduledAt: formData.date,
       time: formData.time,
-      specialization: doctor.professionalDetails.specialization,
       mode: formData.mode,
     };
 
     try {
-      const response = await axios.post(API + "/appointment/save", data, {
+      const response = await axios.post( "http://localhost:5000/appointment/save", data, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -126,6 +133,7 @@ const Appointment = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log("Changed", name, "to", value);
 
     if (name === "date") {
       setFormData((prev) => ({
@@ -273,6 +281,19 @@ const Appointment = () => {
             </select>
           </div>
 
+          {/* Concerns Input */}
+          <div className={styles.formGroup}>
+            <textarea
+              name="concerns"
+              value={formData.concerns || ""}
+              onChange={handleChange}
+              placeholder="Enter your concerns here..."
+              rows={4}
+              required
+              className={formData.concerns ? styles.filled : ""}
+            />
+          </div>
+
           <button
             type="submit"
             className={styles.submitButton}
@@ -280,7 +301,8 @@ const Appointment = () => {
               !formData.date ||
               !isDateAvailable(formData.date) ||
               !formData.time ||
-              !formData.mode
+              !formData.mode ||
+              !formData.concerns
             }
           >
             Schedule Appointment
