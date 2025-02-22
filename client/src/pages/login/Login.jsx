@@ -10,8 +10,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [id, setId] = useState("");
   const togglePassword = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -25,6 +26,7 @@ const Login = () => {
         password,
       });
       localStorage.setItem("token", response.data.token);
+      setSuccess(response.data.message || "Registration successful!");
       setTimeout(() => {
         navigate(`/${userType}/dashboard/${response.data.id}`);
       }, 2000);
@@ -33,75 +35,80 @@ const Login = () => {
     }
   };
 
-  return (
-    <div className={styles.formpage}>
-      <div className={styles.formCard}>
-        <h2 className={styles.heading}>Login</h2>
-        <form onSubmit={handleSubmit}>
-          {/* User Type Selection */}
-          <div className={styles.userTypeSelection}>
-            <label>Select User Type</label>
-            <select
-              value={userType}
-              onChange={(e) => setUserType(e.target.value)}
-              className={styles.userTypeDropdown}
-              required
-            >
-              <option value="">Choose a user type</option>
-              <option value="admin">Admin</option>
-              <option value="patient">Patient</option>
-              <option value="doctor">Doctor</option>
-              <option value="medicalstore">Medical Store Ownwer</option>
-            </select>
-          </div>
+   return (
+      <div className={styles.formpage}>
+        <div className={styles.formCard}>
+          <h2 className={styles.heading}>Sign Up</h2>
+  
+          <form onSubmit={handleSubmit}>
+            {/* User Type Selection */}
+            <div className={styles.userTypeSelection}>
+              <label>Select User Type</label>
+              <select
+                value={userType}
+                onChange={(e) => setUserType(e.target.value)}
+                className={styles.userTypeDropdown}
+                required
+              >
+                <option value="">Choose a user type</option>
+                <option value="admin">Admin</option>
+                <option value="patient">Patient</option>
+                <option value="doctor">Doctor</option>
+                <option value="medicalowner">Medical Store Owner</option>
+              </select>
+            </div>
+  
+            {/* Email Input */}
+            <div className={styles.inputGroup}>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+               
+                required
+              />
+              <label htmlFor="email">Email</label>
+            </div>
+  
+            {/* Password Input */}
+            <div className={styles.inputGroup}>
+              <input
+                type={passwordVisible ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                
+                required
+              />
+              <label htmlFor="password">Password</label>
 
-          {/* Email Input */}
-          <div className={styles.inputGroup}>
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-
-          {/* Password Input */}
-          <div className={styles.inputGroup}>
-            <label htmlFor="password">Password</label>
-            <input
-              type={passwordVisible ? "text" : "password"}
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button
+              <button
               type="button"
               className={styles.togglePassword}
               onClick={togglePassword}
             >
               {passwordVisible ? "Hide" : "Show"}
             </button>
-          </div>
-
-          {/* Error Message */}
-          {error && <p className={styles.error}>{error}</p>}
-
-          {/* Submit Button */}
-          <button type="submit" className={styles.submitBtn}>
-            Login
-          </button>
-        </form>
-
-        {/* Switch Form Link */}
-        <p className={styles.switchForm}>
-          Don't have an account? <Link to="/register">Register</Link>
-        </p>
+            </div>
+  
+            {/* Error and Success Messages */}
+            {error && <p className={styles.error}>{error}</p>}
+            {success && <p className={styles.success}>{success}</p>}
+  
+            {/* Submit Button */}
+            <button type="submit" className={styles.submitBtn} disabled={loading}>
+              {loading ? "Signing Up..." : "Sign Up"}
+            </button>
+          </form>
+  
+          {/* Switch Form Link */}
+          <p className={styles.switchForm}>
+            Already have an account? <Link to={"/login"}>Login</Link>
+          </p>
+        </div>
       </div>
-    </div>
-  );
+    );
 };
 
 export default Login;

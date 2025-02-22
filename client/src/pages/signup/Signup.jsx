@@ -68,7 +68,7 @@ const Signup = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder=" "
+             
               required
             />
             <label htmlFor="email">Email</label>
@@ -81,7 +81,7 @@ const Signup = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder=" "
+              
               required
             />
             <label htmlFor="password">Password</label>
