@@ -56,10 +56,9 @@ export const getDoctorDashboard = async (req, res) => {
   }
 };
 
-export const getDoctors = async (req, res) => {
+ export const getDoctors = async (req, res) => { 
   try {
-    const { specialization, experience, day, minFee, maxFee, search } =
-      req.query;
+    const { specialization, experience, day, minFee, maxFee, search } = req.query;
     let filter = {};
 
     if (specialization && specialization !== "All") {
@@ -82,21 +81,14 @@ export const getDoctors = async (req, res) => {
 
     if (minFee || maxFee) {
       filter["professionalDetails.consultingFees"] = {};
-      if (minFee)
-        filter["professionalDetails.consultingFees"].$gte = parseInt(minFee);
-      if (maxFee)
-        filter["professionalDetails.consultingFees"].$lte = parseInt(maxFee);
+      if (minFee) filter["professionalDetails.consultingFees"].$gte = parseInt(minFee);
+      if (maxFee) filter["professionalDetails.consultingFees"].$lte = parseInt(maxFee);
     }
 
     if (search) {
       filter.$or = [
         { "personalDetails.name": { $regex: search, $options: "i" } },
-        {
-          "professionalDetails.specialization": {
-            $regex: search,
-            $options: "i",
-          },
-        },
+        { "professionalDetails.specialization": { $regex: search, $options: "i" } },
       ];
     }
 
@@ -106,7 +98,7 @@ export const getDoctors = async (req, res) => {
     const doctors = await Doctor.find(filter).lean();
 
     // ✅ Use Optional Chaining (`?.`) to avoid errors
-    const formattedDoctors = doctors.map((doctor) => ({
+    const formattedDoctors = doctors.map(doctor => ({
       id: doctor._id,
       name: doctor.personalDetails?.name || "N/A",
       qualification: doctor.professionalDetails?.qualification || "N/A",
@@ -116,10 +108,11 @@ export const getDoctors = async (req, res) => {
       experience: doctor.professionalDetails?.experience || "N/A",
       consultationFee: doctor.professionalDetails?.consultingFees || "N/A",
       availability: doctor.availability?.days || [],
-      clinicAddress: doctor.clinicOrHospital?.address || "Not Available",
+      clinicAddress: doctor.clinicOrHospital?.address || "Not Available"
     }));
-
+    
     res.json(formattedDoctors);
+
   } catch (error) {
     console.error("❌ Error fetching doctors:", error);
     res.status(500).json({ message: "Server error", error });
