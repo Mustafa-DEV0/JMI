@@ -663,3 +663,18 @@
   color: #1e293b;
   font-weight: 500;
 }
+
+.appointmentConcerns {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #495057;
+}
+
+
+
+
+

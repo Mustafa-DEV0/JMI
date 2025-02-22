@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   User,
   Phone,
@@ -13,7 +13,6 @@ import {
   AlertCircle,
   Pill as Pills,
   FileText,
-  ChevronRight,
   Upload,
   Image as ImageIcon,
   Package,
@@ -69,6 +68,7 @@ const Dashboard = () => {
   });
   clearInterval;
 
+  
   const { id } = useParams();
   useEffect(() => {
     const fetchPatientData = async () => {
@@ -86,20 +86,33 @@ const Dashboard = () => {
     };
 
     fetchPatientData();
-  }, []);
+  }, [id]);
 
-  const calculateTimeRemaining = (date, time) => {
-    const appointmentDate = new Date(`${date}T${time}`);
-    const now = new Date();
+  const calculateTimeRemaining = (scheduledAt) => {
+    if (!scheduledAt) return "Invalid date/time";
+
+    const appointmentDate = new Date(scheduledAt); // Already in UTC
+    const now = new Date(); // Current local time
+
     const diff = appointmentDate - now;
-
-    if (diff < 0) return "Past";
+    if (diff <= 0) return "Past";
 
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-    return `${days}d ${hours}h remaining`;
-  };
+    return days > 0 ? `${days}d ${hours}h remaining` :
+           hours > 0 ? `${hours}h ${minutes}m remaining` :
+           `${minutes}m remaining`;
+};
+
+
+// Example Test
+
+
+// Example Test
+
+
 
   const handleUpdateProfile = () => {
     alert("Update Profile Not yet Implemented");
@@ -573,31 +586,34 @@ const Dashboard = () => {
                 {patientData.upcomingAppointments.map((appointment) => (
                   <div key={appointment.id} className={styles.appointmentCard}>
                     <div className={styles.appointmentHeader}>
-                      <h3>{appointment.doctorName}</h3>
+                      <h3>{appointment.doctor.personalDetails.name}</h3>
                       <span className={styles[appointment.status]}>
                         {appointment.status}
                       </span>
                     </div>
-                    <p className={styles.specialization}>
-                      {appointment.specialization}
-                    </p>
+                   
                     <div className={styles.appointmentTime}>
-                      <Clock className={styles.icon} />
-                      <span>
-                        {new Date(
-                          `${appointment.date}T${appointment.time}`
-                        ).toLocaleString()}
-                      </span>
+                    <Clock className={styles.icon} />
+<span>
+  {appointment.scheduledAt
+    ? new Date(appointment.scheduledAt).toLocaleString("en-US", {
+        timeZone: "Asia/Kolkata", // Convert UTC to IST or user's local time
+      })
+    : new Date(appointment.createdAt).toLocaleString()}
+</span>
+
                     </div>
                     <div className={styles.timeRemaining}>
-                      {calculateTimeRemaining(
-                        appointment.date,
-                        appointment.time
-                      )}
+                      {calculateTimeRemaining(appointment.scheduledAt)}
                     </div>
-                    <button className={styles.viewDetails}>
-                      View Details <ChevronRight size={16} />
-                    </button>
+
+                    {appointment.concerns && (
+                      <div className={styles.appointmentConcerns}>
+                        <strong>Concerns:</strong> {appointment.concerns}
+                      </div>
+                    )}
+                    
+                    
                   </div>
                 ))}
               </div>
@@ -607,6 +623,8 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+
+      
     </div>
   );
 };
