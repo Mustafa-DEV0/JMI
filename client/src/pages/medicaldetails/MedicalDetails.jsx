@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styles from './MedicalDetails.module.css';
 import { Clock, MapPin, Phone, Mail, CreditCard, Wallet, Smartphone, Truck, ShoppingBag } from 'lucide-react';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 const MedicalDetails = () => {
   const [formData, setFormData] = useState({
@@ -28,8 +30,8 @@ const MedicalDetails = () => {
       onlineOrders: false
     },
     paymentMethods: {
-      acceptsCash: true,
-      acceptsCard: true,
+      acceptsCash: false,
+      acceptsCard: false,
       acceptsUPI: false
     }
   });
@@ -74,9 +76,30 @@ const MedicalDetails = () => {
       }
     }));
   };
+  const { id } = useParams();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/medicalowner/details/${id}`,
+        {
+         formData
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log(response.data);
+      setTimeout(() => {
+        navigate(`/patient/dashboard/${id}`);
+      }, 2000);
+    } catch (error) {
+      alert("Failed to save details");
+      console.error("Error:", error);
+    }
+
     console.log(formData);
   };
 
@@ -249,67 +272,62 @@ const MedicalDetails = () => {
                   <div className={styles.optionsGroup}>
                     <h3>Delivery Services</h3>
                     <div className={styles.optionsGrid}>
-                      <label className={styles.optionCard}>
-                        <input
-                          type="checkbox"
-                          checked={formData.deliveryOptions.homeDelivery}
-                          onChange={() => handleCheckboxChange('deliveryOptions', 'homeDelivery')}
-                        />
+                      <button
+                        type="button"
+                        className={`${styles.optionCard} ${formData.deliveryOptions.homeDelivery ? styles.selected : ''}`}
+                        onClick={() => handleCheckboxChange('deliveryOptions', 'homeDelivery')}
+                      >
                         <span className={styles.optionContent}>
                           <Truck className={styles.optionIcon} />
                           <span>Home Delivery</span>
                         </span>
-                      </label>
-                      <label className={styles.optionCard}>
-                        <input
-                          type="checkbox"
-                          checked={formData.deliveryOptions.onlineOrders}
-                          onChange={() => handleCheckboxChange('deliveryOptions', 'onlineOrders')}
-                        />
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.optionCard} ${formData.deliveryOptions.onlineOrders ? styles.selected : ''}`}
+                        onClick={() => handleCheckboxChange('deliveryOptions', 'onlineOrders')}
+                      >
                         <span className={styles.optionContent}>
                           <ShoppingBag className={styles.optionIcon} />
                           <span>Online Orders</span>
                         </span>
-                      </label>
+                      </button>
                     </div>
                   </div>
 
                   <div className={styles.optionsGroup}>
                     <h3>Payment Methods</h3>
                     <div className={styles.optionsGrid}>
-                      <label className={styles.optionCard}>
-                        <input
-                          type="checkbox"
-                          checked={formData.paymentMethods.acceptsCash}
-                          onChange={() => handleCheckboxChange('paymentMethods', 'acceptsCash')}
-                        />
+                      <button
+                        type="button"
+                        className={`${styles.optionCard} ${formData.paymentMethods.acceptsCash ? styles.selected : ''}`}
+                        onClick={() => handleCheckboxChange('paymentMethods', 'acceptsCash')}
+                      >
                         <span className={styles.optionContent}>
                           <Wallet className={styles.optionIcon} />
                           <span>Cash</span>
                         </span>
-                      </label>
-                      <label className={styles.optionCard}>
-                        <input
-                          type="checkbox"
-                          checked={formData.paymentMethods.acceptsCard}
-                          onChange={() => handleCheckboxChange('paymentMethods', 'acceptsCard')}
-                        />
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.optionCard} ${formData.paymentMethods.acceptsCard ? styles.selected : ''}`}
+                        onClick={() => handleCheckboxChange('paymentMethods', 'acceptsCard')}
+                      >
                         <span className={styles.optionContent}>
                           <CreditCard className={styles.optionIcon} />
                           <span>Card</span>
                         </span>
-                      </label>
-                      <label className={styles.optionCard}>
-                        <input
-                          type="checkbox"
-                          checked={formData.paymentMethods.acceptsUPI}
-                          onChange={() => handleCheckboxChange('paymentMethods', 'acceptsUPI')}
-                        />
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.optionCard} ${formData.paymentMethods.acceptsUPI ? styles.selected : ''}`}
+                        onClick={() => handleCheckboxChange('paymentMethods', 'acceptsUPI')}
+                      >
                         <span className={styles.optionContent}>
                           <Smartphone className={styles.optionIcon} />
                           <span>UPI</span>
                         </span>
-                      </label>
+                      </button>
                     </div>
                   </div>
                 </div>

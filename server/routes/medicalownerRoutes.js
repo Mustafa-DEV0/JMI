@@ -3,6 +3,6 @@ import { saveMedicalStoreDetails } from "../controllers/medicalownerController.j
 const router = express.Router();
 
 // Route to handle patient details submission
-router.post("/medicalowner/:id", saveMedicalStoreDetails);
+router.post("details/:id", saveMedicalStoreDetails);
 
 export default router;
