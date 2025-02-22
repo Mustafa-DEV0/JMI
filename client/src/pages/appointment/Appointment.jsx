@@ -103,21 +103,51 @@ const Appointment = () => {
     console.log("Generated available dates:", dates);
     setAvailableDates(dates);
   };
+  const convertToISO = (timeString, dateString) => {
+    if (!timeString || !dateString) return null; // Ensure both values exist
+
+    // Extract hours, minutes, and period (AM/PM) from time
+    const timeParts = timeString.match(/(\d+):(\d+)\s*(AM|PM)/);
+    if (!timeParts) return null; // Invalid format
+
+    let hours = parseInt(timeParts[1], 10);
+    const minutes = parseInt(timeParts[2], 10);
+    const period = timeParts[3];
+
+    // Convert 12-hour format to 24-hour format
+    if (period === "PM" && hours !== 12) hours += 12;
+    if (period === "AM" && hours === 12) hours = 0;
+
+    // Construct full date-time string
+    const formattedDate = `${dateString}T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`;
+
+    // Return ISO format
+    return new Date(formattedDate).toISOString();
+};
+
+// Example form data
+
+
+// Convert and log
 
   const handleSubmit = async (e) => {
+ 
     e.preventDefault();
     setIsSubmitted(true);
     setShowPending(true);
+    const isoDate = convertToISO(formData.time, formData.date);
+    
 
     const token = localStorage.getItem("token");
     const data = {
       doctor: id,
       concerns: formData.concerns,
-      scheduledAt: formData.date,
-      time: formData.time,
+      scheduledAt: isoDate,
+      
       mode: formData.mode,
+      
     };
-
+   
     try {
       const response = await axios.post( "http://localhost:5000/appointment/save", data, {
         headers: {

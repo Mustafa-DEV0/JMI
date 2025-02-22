@@ -17,7 +17,7 @@ const getDoctorDetails = async (req, res) => {
 
 const saveAppointmentDetails = async (req, res) => {
   try {
-    const { doctorName, doctor, concerns, specialization, scheduledAt, mode } =
+    const {  doctor, concerns, scheduledAt, mode } =
       req.body;
     console.log(req.body);
     const token = req.headers.authorization?.split(" ")[1];
