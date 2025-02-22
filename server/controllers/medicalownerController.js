@@ -1,4 +1,5 @@
 import MedicalStore from "../models/MedicalStore.js";
+import MedicalOrder from "../models/MedicalOrder.js";
 
 export const saveMedicalStoreDetails = async (req, res) => {
   try {
@@ -77,6 +78,68 @@ export const saveMedicalStoreDetails = async (req, res) => {
     
   } catch (error) {
     console.error("Error saving medical store:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+// Get medical store details
+export const getMedicalStoreDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const medicalStore = await MedicalStore.findById(id);
+    
+    if (!medicalStore) {
+      return res.status(404).json({ message: "Medical store not found" });
+    }
+
+    res.status(200).json({ medicalStore });
+  } catch (error) {
+    console.error("Error fetching medical store:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Get medical store orders
+export const getMedicalStoreOrders = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const orders = await MedicalOrder.find({ medical: id })
+      .populate('patient', 'name')
+      .sort({ orderedAt: -1 });
+
+    res.status(200).json({ orders });
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Update order status
+export const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+    
+    const order = await MedicalOrder.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    order.status = status;
+    
+    // If bill image is uploaded (for delivered status)
+    if (req.file && status === 'Delivered') {
+      // Assuming you have image upload middleware that saves the file
+      // and provides the URL in req.file.path
+      order.billImage = req.file.path;
+    }
+
+    await order.save();
+
+    res.status(200).json({ message: "Order status updated successfully", order });
+  } catch (error) {
+    console.error("Error updating order status:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

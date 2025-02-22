@@ -1,120 +1,124 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 import styles from './MedicalDashboard.module.css';
+import { useParams } from 'react-router-dom';
 
-const DUMMY_MEDICAL_STORE = {
-  name: "HealthCare Pharmacy",
-  owner: "Dr. John Smith",
-  medicalImage: "https://placehold.co/1200x400/67B7D1/ffffff?text=HealthCare+Pharmacy",
-  licenseNumber: "MED123456",
-  contactDetails: {
-    phone: "+1 234-567-8900",
-    email: "contact@healthcarepharmacy.com",
-    website: "www.healthcarepharmacy.com"
-  },
-  address: {
-    street: "123 Medical Avenue",
-    city: "New York",
-    state: "NY",
-    pinCode: "10001",
-    country: "USA"
-  },
-  workingHours: {
-    openTime: "09:00",
-    closeTime: "21:00",
-    daysOpen: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-  },
-  deliveryOptions: {
-    homeDelivery: true,
-    onlineOrders: true
-  },
-  paymentMethods: {
-    acceptsCash: true,
-    acceptsCard: true,
-    acceptsUPI: true
-  },
-  emergencyServices: {
-    open24Hours: false
-  }
-};
-
-const INITIAL_ORDERS = [
-  {
-    id: 1,
-    patientName: "Alice Johnson",
-    prescription: "prescription1.pdf",
-    status: "new",
-    items: ["Paracetamol", "Vitamin C"],
-    date: "2024-03-15",
-    billImage: null
-  },
-  {
-    id: 2,
-    patientName: "Bob Wilson",
-    prescription: "prescription2.pdf",
-    status: "processing",
-    items: ["Antibiotics", "Cough Syrup"],
-    date: "2024-03-14",
-    billImage: null
-  },
-  {
-    id: 3,
-    patientName: "Carol Smith",
-    prescription: "prescription3.pdf",
-    status: "completed",
-    items: ["Pain Relief Gel", "Bandages"],
-    date: "2024-03-13",
-    billImage: "bill3.jpg"
-  }
-];
-
-function MedicalDashboard() {
-  const [store] = useState(DUMMY_MEDICAL_STORE);
-  const [orders, setOrders] = useState(INITIAL_ORDERS);
+function App() {
+  const [store, setStore] = useState(null);
+  const [orders, setOrders] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const handleOrderStatusChange = (orderId, newStatus) => {
-    if (newStatus === 'processing') {
-      setOrders(prevOrders =>
-        prevOrders.map(order =>
-          order.id === orderId ? { ...order, status: newStatus } : order
-        )
-      );
-    } else if (newStatus === 'completed') {
-      setSelectedOrder(orders.find(order => order.id === orderId));
-      setShowUploadModal(true);
+  const { id } = useParams();
+  // Fetch medical store details and orders
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // In a real app, you'd get this ID from auth context or route params
+        
+  // Replace with actual store ID
+        const [storeResponse, ordersResponse] = await Promise.all([
+          axios.get(`http://localhost:5000/medicalowner/details/${id}`),
+          axios.get(`http://localhost:5000/medicalowner/orders/${id}`)
+        ]);
+        setStore(storeResponse.data.medicalStore);
+        setOrders(ordersResponse.data.orders);
+      } catch (error) {
+        // toast.error('Failed to load data');
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleOrderStatusChange = async (orderId, newStatus) => {
+    try {
+      if (newStatus === 'Confirmed') {
+        const formData = new FormData();
+        formData.append('status', newStatus);
+        
+        await axios.patch(
+          `${API_URL}/medical/orders/${orderId}/status`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+
+        setOrders(prevOrders =>
+          prevOrders.map(order =>
+            order._id === orderId ? { ...order, status: 'Confirmed' } : order
+          )
+        );
+        toast.success('Order confirmed successfully');
+      } else if (newStatus === 'Delivered') {
+        const order = orders.find(o => o._id === orderId);
+        if (order) {
+          setSelectedOrder(order);
+          setShowUploadModal(true);
+        }
+      }
+    } catch (error) {
+      toast.error('Failed to update order status');
+      console.error('Error updating order status:', error);
     }
   };
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
+  const handleFileUpload = async (event) => {
+    const file = event.target.files?.[0];
     if (file && selectedOrder) {
-      const imageUrl = URL.createObjectURL(file);
-      setOrders(prevOrders =>
-        prevOrders.map(order =>
-          order.id === selectedOrder.id 
-            ? { ...order, status: 'completed', billImage: imageUrl }
-            : order
-        )
-      );
-      setShowUploadModal(false);
-      setSelectedOrder(null);
+      try {
+        const formData = new FormData();
+        formData.append('status', 'Delivered');
+        formData.append('billImage', file);
+
+        await axios.patch(
+          `${API_URL}/medical/orders/${selectedOrder._id}/status`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+
+        setOrders(prevOrders =>
+          prevOrders.map(order =>
+            order._id === selectedOrder._id
+              ? { ...order, status: 'Delivered', billImage: URL.createObjectURL(file) }
+              : order
+          )
+        );
+        setShowUploadModal(false);
+        setSelectedOrder(null);
+        toast.success('Order completed successfully');
+      } catch (error) {
+        toast.error('Failed to upload bill');
+        console.error('Error uploading bill:', error);
+      }
     }
   };
 
-  const filteredOrders = selectedStatus === 'all' 
-    ? orders 
-    : orders.filter(order => order.status === selectedStatus);
+  const filteredOrders = selectedStatus === 'all'
+    ? orders
+    : orders.filter(order => order.status.toLowerCase() === selectedStatus.toLowerCase());
 
-  const getStatusColor = (status) => {
-    switch(status) {
-      case 'new': return styles.statusNew;
-      case 'processing': return styles.statusProcessing;
-      case 'completed': return styles.statusCompleted;
-      default: return '';
-    }
-  };
+  if (loading) {
+    return <div className={styles.loading}>Loading...</div>;
+  }
+
+  if (!store) {
+    return <div className={styles.error}>Failed to load medical store data</div>;
+  }
 
   return (
     <div className={styles.dashboard}>
@@ -126,16 +130,22 @@ function MedicalDashboard() {
           </div>
           <div className={styles.quickInfo}>
             <div className={styles.infoItem}>
-              <span className={styles.label}>New Orders</span>
-              <span className={styles.value}>{orders.filter(o => o.status === 'new').length}</span>
+              <span className={styles.label}>Pending</span>
+              <span className={styles.value}>
+                {orders.filter(o => o.status === 'Pending').length}
+              </span>
             </div>
             <div className={styles.infoItem}>
-              <span className={styles.label}>Processing</span>
-              <span className={styles.value}>{orders.filter(o => o.status === 'processing').length}</span>
+              <span className={styles.label}>Confirmed</span>
+              <span className={styles.value}>
+                {orders.filter(o => o.status === 'Confirmed').length}
+              </span>
             </div>
             <div className={styles.infoItem}>
-              <span className={styles.label}>Completed</span>
-              <span className={styles.value}>{orders.filter(o => o.status === 'completed').length}</span>
+              <span className={styles.label}>Delivered</span>
+              <span className={styles.value}>
+                {orders.filter(o => o.status === 'Delivered').length}
+              </span>
             </div>
           </div>
         </div>
@@ -193,60 +203,74 @@ function MedicalDashboard() {
               className={styles.statusFilter}
             >
               <option value="all">All Orders</option>
-              <option value="new">New Orders</option>
-              <option value="processing">Processing</option>
-              <option value="completed">Completed</option>
+              <option value="pending">Pending Orders</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="delivered">Delivered</option>
             </select>
           </div>
 
           <div className={styles.ordersList}>
             {filteredOrders.map(order => (
-              <div key={order.id} className={styles.orderCard}>
+              <div key={order._id} className={styles.orderCard}>
                 <div className={styles.orderTop}>
-                  <span className={`${styles.status} ${getStatusColor(order.status)}`}>
+                  <span className={`${styles.status} ${styles[`status${order.status}`]}`}>
                     {order.status}
                   </span>
-                  <span className={styles.orderDate}>{order.date}</span>
+                  <span className={styles.orderDate}>
+                    {new Date(order.orderedAt).toLocaleDateString()}
+                  </span>
                 </div>
 
                 <div className={styles.orderContent}>
                   <div className={styles.orderPatient}>
-                    <h4>{order.patientName}</h4>
-                    <p>Order #{order.id}</p>
+                    <h4>{order.patient.name}</h4>
+                    <p>Order #{order._id.slice(-6)}</p>
                   </div>
 
                   <div className={styles.orderItems}>
-                    {order.items.map((item, index) => (
-                      <span key={index} className={styles.item}>{item}</span>
+                    {order.medicines.map((med, index) => (
+                      <span key={index} className={styles.item}>
+                        {med.name} (x{med.quantity})
+                      </span>
                     ))}
                   </div>
 
                   <div className={styles.orderDocs}>
-                    <a href="#" className={styles.docLink}>
+                    <a 
+                      href={order.prescriptionImage} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className={styles.docLink}
+                    >
                       View Prescription
                     </a>
                     {order.billImage && (
-                      <a href="#" className={styles.docLink}>
+                      <a 
+                        href={order.billImage}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.docLink}
+                      >
                         View Bill
                       </a>
                     )}
                   </div>
 
                   <div className={styles.orderActions}>
-                    {order.status === 'new' && (
+                    {order.status === 'Pending' && (
                       <button 
-                        onClick={() => handleOrderStatusChange(order.id, 'processing')}
+                        onClick={() => handleOrderStatusChange(order._id, 'Confirmed')}
                         className={styles.actionButton}
                       >
-                        Accept Order
+                        Confirm Order
                       </button>
                     )}
-                    {order.status === 'processing' && (
+                    {order.status === 'Confirmed' && (
                       <button 
-                        onClick={() => handleOrderStatusChange(order.id, 'completed')}
+                        onClick={() => handleOrderStatusChange(order._id, 'Delivered')}
                         className={styles.actionButton}
                       >
-                        Complete Order
+                        Mark as Delivered
                       </button>
                     )}
                   </div>
@@ -282,8 +306,10 @@ function MedicalDashboard() {
           </div>
         </div>
       )}
+      
+      <ToastContainer position="bottom-right" />
     </div>
   );
 }
 
-export default MedicalDashboard;
+export default App;

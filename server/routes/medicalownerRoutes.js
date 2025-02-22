@@ -1,8 +1,18 @@
 import express from "express";
-import { saveMedicalStoreDetails } from "../controllers/medicalownerController.js";
+import { saveMedicalStoreDetails, getMedicalStoreDetails,
+    getMedicalStoreOrders,
+    updateOrderStatus } from "../controllers/medicalownerController.js";
 const router = express.Router();
 
-// Route to handle patient details submission
+
+// Routes
+router.get("/details/:id", getMedicalStoreDetails);
+router.get("/orders/:id", getMedicalStoreOrders);
+
+
+
+
 router.post("/details/:id", saveMedicalStoreDetails);
 
 export default router;
+    
