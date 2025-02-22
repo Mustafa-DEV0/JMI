@@ -20,23 +20,31 @@ const Signup = () => {
     setLoading(true);
 
     try {
+      console.log("🚀 Sending Register Request:", { userType, email, password }); // ✅ Debugging request data
+  
       const response = await axios.post(`http://localhost:5000/api/auth/register`, {
-        userType, // Include user type
-        email,
-        password,
+          userType, // Include user type
+          email,
+          password,
       });
+  
+      console.log("✅ Registration Response:", response.data); // ✅ Debugging response data
+  
       localStorage.setItem("token", response.data.token);
       const id = response.data.id;
       setSuccess(response.data.message || "Registration successful!");
       setTimeout(() => navigate(`/${userType}/${id}`), 2000);
-    } catch (error) {
+  
+  } catch (error) {
+      console.error("❌ Registration Error:", error.response?.data || error.message); // ✅ Debugging error response
+  
       setError(
-        error.response?.data?.message || "Registration failed. Try again."
+          error.response?.data?.message || "Registration failed. Try again."
       );
-    } finally {
+  } finally {
       setLoading(false);
-    }
-  };
+  }
+}  
 
   return (
     <div className={styles.formpage}>

@@ -14,6 +14,7 @@ import Appointment from "../pages/appointment/Appointment.jsx";
 import AdminDashboard from "../pages/admindashboard/AdminDashboard.jsx";
 import DoctorDashboard from "../pages/doctordashboard/Doctordashboard.jsx";
 import MedicalDetails from "../pages/medicaldetails/MedicalDetails.jsx";
+import MedicalDashboard from "../pages/medicalownerdashboard/MedicalDashboard.jsx";
 
 const AppRoutes = () => {
   return (
@@ -33,6 +34,7 @@ const AppRoutes = () => {
       <Route path="/payment" element={<Payment />} />
       <Route path="/admin/dashboard/:id" element={<AdminDashboard />} />
       <Route path="/medicalowner/:id" element={<MedicalDetails />} />
+      <Route path="/medicalowner/dashboard/:id" element={<MedicalDashboard />} />
       
     </Routes>
   );

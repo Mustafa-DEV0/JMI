@@ -37,9 +37,9 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       setError("");
-      const response = await axios.get(API + "/dashboard/admin");
+      const response = await axios.get("http://localhost:5000/dashboard/admin");
       const data = response.data;
-
+      console.log(data)
       setStats(data.stats);
       setPatients(data.patients);
       setVerifiedDoctors(data.verifiedDoctors);
@@ -60,7 +60,7 @@ const AdminDashboard = () => {
 
   const handleDeletePatient = async (id) => {
     try {
-      await axios.delete(API + `/dashboard/patient/${id}`);
+      await axios.delete(`http://localhost:5000/dashboard/patient/${id}`);
       setPatients(patients.filter((patient) => patient._id !== id));
       fetchDashboardData();
     } catch (error) {
@@ -70,7 +70,7 @@ const AdminDashboard = () => {
 
   const handleDeleteDoctor = async (id) => {
     try {
-      await axios.delete(API + `/dashboard/doctor/${id}`);
+      await axios.delete(`http://localhost:5000/dashboard/doctor/${id}`);
       setVerifiedDoctors(verifiedDoctors.filter((doctor) => doctor._id !== id));
       fetchDashboardData();
     } catch (error) {
@@ -80,7 +80,7 @@ const AdminDashboard = () => {
 
   const handleDeleteStore = async (id) => {
     try {
-      await axios.delete(API + `/dashboard/store/${id}`);
+      await axios.delete(`http://localhost:5000/dashboard/store/${id}`);
       setMedicalStores(medicalStores.filter((store) => store._id !== id));
       fetchDashboardData();
     } catch (error) {
@@ -90,7 +90,7 @@ const AdminDashboard = () => {
 
   const handleVerifyDoctor = async (doctor) => {
     try {
-      await axios.put(API + `/dashboard/doctor/verify/${doctor._id}`);
+      await axios.put(`http://localhost:5000/dashboard/doctor/verify/${doctor._id}`);
       setPendingDoctors(pendingDoctors.filter((d) => d._id !== doctor._id));
       setVerifiedDoctors([...verifiedDoctors, { ...doctor, isVerified: true }]);
       fetchDashboardData();
@@ -101,7 +101,7 @@ const AdminDashboard = () => {
 
   const handleVerifyStore = async (store) => {
     try {
-      await axios.put(API + `/dashboard/store/verify/${store._id}`);
+      await axios.put(`http://localhost:5000/dashboard/store/verify/${store._id}`);
       setPendingStores(pendingStores.filter((s) => s._id !== store._id));
       setMedicalStores([...medicalStores, { ...store, isverified: true }]);
       fetchDashboardData();
