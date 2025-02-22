@@ -32,7 +32,8 @@ const AppRoutes = () => {
       <Route path="/doctor/dashboard/:id" element={<DoctorDashboard />} />
       <Route path="/payment" element={<Payment />} />
       <Route path="/admin/dashboard/:id" element={<AdminDashboard />} />
-      <Route path="/medicaldetails" element={<MedicalDetails />} />
+      <Route path="/medicalowner/:id" element={<MedicalDetails />} />
+      
     </Routes>
   );
 };
