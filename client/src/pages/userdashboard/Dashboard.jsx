@@ -73,7 +73,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
-        const response = await axios.get(API + `/patient/dashboard/${id}`, {
+        const response = await axios.get( `http://localhost:5000/patient/dashboard/${id}`, {
           headers: {
             "Content-Type": "application/json",
           },

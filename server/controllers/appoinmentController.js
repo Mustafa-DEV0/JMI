@@ -32,11 +32,9 @@ const saveAppointmentDetails = async (req, res) => {
 
     const appointmentData = {
       doctor,
-      doctorName,
       patient: patientId,
       concerns,
       scheduledAt,
-      specialization,
       mode,
     };
     const newAppointment = new Appointment(appointmentData);
