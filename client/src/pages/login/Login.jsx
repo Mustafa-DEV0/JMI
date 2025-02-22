@@ -38,7 +38,7 @@ const Login = () => {
    return (
       <div className={styles.formpage}>
         <div className={styles.formCard}>
-          <h2 className={styles.heading}>Sign Up</h2>
+          <h2 className={styles.heading}>Login</h2>
   
           <form onSubmit={handleSubmit}>
             {/* User Type Selection */}
@@ -98,13 +98,13 @@ const Login = () => {
   
             {/* Submit Button */}
             <button type="submit" className={styles.submitBtn} disabled={loading}>
-              {loading ? "Signing Up..." : "Sign Up"}
+              {loading ? "Authenticating..." : "Login"}
             </button>
           </form>
   
           {/* Switch Form Link */}
           <p className={styles.switchForm}>
-            Already have an account? <Link to={"/login"}>Login</Link>
+            Don't Have An Account? <Link to={"/register"}>Sign Up</Link>
           </p>
         </div>
       </div>
