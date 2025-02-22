@@ -79,7 +79,6 @@ input:focus {
     border-color: #008ba3;
     box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2);
 }
-
 label {
     position: absolute;
     left: 1rem;
@@ -92,14 +91,23 @@ label {
     background: transparent;
 }
 
-input:focus + label,
-input:not(:placeholder-shown) + label {
-    top: -0.5rem;
+.inputGroup label {
+    
+    top: -0.7rem;
     left: 0.5rem;
-    font-size: 0.875rem;
+    font-size: 1rem;
     color: #008ba3;
-    background-color: white;
+    background-color: transparent;
+    
 }
+
+input:hover + label {
+    top: -1.3rem;
+}
+
+
+
+
 
 /* Submit button styles */
 .submitBtn {
@@ -112,7 +120,7 @@ input:not(:placeholder-shown) + label {
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 3s ease;
+    
     position: relative;
     overflow: hidden;
 }
