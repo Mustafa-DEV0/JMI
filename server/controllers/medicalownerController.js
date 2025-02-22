@@ -2,6 +2,7 @@ import MedicalStore from "../models/MedicalStore.js";
 
 export const saveMedicalStoreDetails = async (req, res) => {
   try {
+    
     const { id } = req.params; // Extract user ID
     const {
       formData: {
@@ -14,7 +15,7 @@ export const saveMedicalStoreDetails = async (req, res) => {
         workingHours = {},
         deliveryOptions = {},
         paymentMethods = {},
-        emergencyServices = {},
+       
       },
     } = req.body;
 
@@ -25,7 +26,7 @@ export const saveMedicalStoreDetails = async (req, res) => {
     const { openTime, closeTime, daysOpen } = workingHours;
     const { homeDelivery, onlineOrders } = deliveryOptions;
     const { acceptsCash, acceptsCard, acceptsUPI } = paymentMethods;
-    const { open24Hours } = emergencyServices;
+    
 
     // Find the existing medical store
     const medicalStore = await MedicalStore.findById(id);
@@ -64,9 +65,7 @@ export const saveMedicalStoreDetails = async (req, res) => {
       acceptsCard: acceptsCard !== undefined ? acceptsCard : medicalStore.paymentMethods.acceptsCard,
       acceptsUPI: acceptsUPI !== undefined ? acceptsUPI : medicalStore.paymentMethods.acceptsUPI,
     };
-    medicalStore.emergencyServices = {
-      open24Hours: open24Hours !== undefined ? open24Hours : medicalStore.emergencyServices.open24Hours,
-    };
+   
 
     await medicalStore.save();
 

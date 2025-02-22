@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import styles from './MedicalDetails.module.css';
 import { Clock, MapPin, Phone, Mail, CreditCard, Wallet, Smartphone, Truck, ShoppingBag } from 'lucide-react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams , useNavigate } from 'react-router-dom';   
+
 
 const MedicalDetails = () => {
   const [formData, setFormData] = useState({
@@ -77,7 +78,7 @@ const MedicalDetails = () => {
     }));
   };
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     
