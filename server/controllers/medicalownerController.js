@@ -104,9 +104,13 @@ export const getMedicalStoreDetails = async (req, res) => {
 export const getMedicalStoreOrders = async (req, res) => {
   try {
     const { id } = req.params;
-    const orders = await MedicalOrder.find({ medical: id })
-      .populate('patient', 'name')
+    console.log("Received Medical Store ID:", id, "Type:", typeof id); 
+
+    const orders = await MedicalOrder.find({ medical: id })  // No need for `id.toString()`
+      .populate("patient", "name")  
       .sort({ orderedAt: -1 });
+
+    console.log("Fetched Orders from DB:", orders);
 
     res.status(200).json({ orders });
   } catch (error) {
@@ -115,29 +119,42 @@ export const getMedicalStoreOrders = async (req, res) => {
   }
 };
 
+
+
 // Update order status
 export const updateOrderStatus = async (req, res) => {
   try {
     const { orderId } = req.params;
     const { status } = req.body;
-    
-    const order = await MedicalOrder.findById(orderId);
-    if (!order) {
+
+    // Validate status
+    const validStatuses = ["Pending", "Confirmed", "Rejected", "Delivered"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status update" });
+    }
+
+    // Handle bill image (if uploaded for 'Delivered' status)
+    const billImagePath = req.file ? req.file.path : null;
+    const updateFields = { status };
+    if (billImagePath && status === "Delivered") {
+      updateFields.billImage = billImagePath;
+    }
+
+    // Update order
+    const updatedOrder = await MedicalOrder.findByIdAndUpdate(
+      orderId,
+      { $set: updateFields },
+      { new: true } // Return updated document
+    );
+
+    if (!updatedOrder) {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    order.status = status;
-    
-    // If bill image is uploaded (for delivered status)
-    if (req.file && status === 'Delivered') {
-      // Assuming you have image upload middleware that saves the file
-      // and provides the URL in req.file.path
-      order.billImage = req.file.path;
-    }
-
-    await order.save();
-
-    res.status(200).json({ message: "Order status updated successfully", order });
+    res.status(200).json({
+      message: "Order status updated successfully",
+      order: updatedOrder,
+    });
   } catch (error) {
     console.error("Error updating order status:", error);
     res.status(500).json({ message: "Server error", error: error.message });
