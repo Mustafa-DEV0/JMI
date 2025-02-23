@@ -2,6 +2,7 @@ import Patient from "../models/Patient.js";
 import Appointment from "../models/Appointment.js";
 import Prescription from "../models/Prescription.js";
 import MedicalOrder from "../models/MedicalOrder.js";
+import mongoose from "mongoose";
 
 export const getPatientDashboard = async (req, res) => {
   try {
@@ -108,3 +109,38 @@ export const postPatientDetails = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+
+
+
+
+
+export const createMedicalOrder = async (req, res) => {
+  try {
+    const orderData = req.body;
+
+    // Validate required fields
+    if (!orderData.patient || !orderData.medical || !orderData.medicines || !orderData.prescriptionImage) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    // Ensure that patient and medical are valid ObjectIds
+    if (!mongoose.Types.ObjectId.isValid(orderData.patient) || !mongoose.Types.ObjectId.isValid(orderData.medical)) {
+      return res.status(400).json({ message: 'Invalid patient or medical ID' });
+    }
+
+    const newOrder = new MedicalOrder({
+      patient: orderData.patient,
+      medical: orderData.medical,
+      medicines: orderData.medicines,
+      prescriptionImage: orderData.prescriptionImage,
+    });
+
+    await newOrder.save();
+    res.status(201).json({ message: 'Order placed successfully!', orderId: newOrder._id });
+  } catch (error) {
+    console.error('Error placing order:', error);
+    res.status(500).json({ message: 'Failed to place order', error: error.message });
+  }
+};
+

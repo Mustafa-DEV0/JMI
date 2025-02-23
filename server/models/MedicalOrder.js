@@ -4,12 +4,12 @@ const MedicalOrderSchema = new mongoose.Schema(
   {
     patient: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Reference to the User model
+      ref: "Patient", // Reference to the User model
       required: true,
     },
     medical: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Medical", // Reference to the Medical model
+      ref: "MedicalStore", // Reference to the Medical model
       required: true,
     },
     medicines: [

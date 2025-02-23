@@ -18,61 +18,64 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // In a real app, you'd get this ID from auth context or route params
-        
-  // Replace with actual store ID
+        console.log("Fetching orders for Medical Store ID:", id);
+  
         const [storeResponse, ordersResponse] = await Promise.all([
           axios.get(`http://localhost:5000/medicalowner/details/${id}`),
           axios.get(`http://localhost:5000/medicalowner/orders/${id}`)
         ]);
+  
+        console.log("Store Response:", storeResponse.data);
+        console.log("Orders Response:", ordersResponse.data);
+  
         setStore(storeResponse.data.medicalStore);
         setOrders(ordersResponse.data.orders);
       } catch (error) {
-        // toast.error('Failed to load data');
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchData();
-  }, []);
+  }, [id]);  // Ensure `id` is added as a dependency  
+  
 
-  const handleOrderStatusChange = async (orderId, newStatus) => {
+  const handleOrderStatusChange = async (orderId, newStatus, billImage = null) => {
     try {
+      let requestData;
+      let headers = { 'Content-Type': 'application/json' };
+  
       if (newStatus === 'Confirmed') {
-        const formData = new FormData();
-        formData.append('status', newStatus);
-        
-        await axios.patch(
-          `${API_URL}/medical/orders/${orderId}/status`,
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }
-        );
-
-        setOrders(prevOrders =>
-          prevOrders.map(order =>
-            order._id === orderId ? { ...order, status: 'Confirmed' } : order
-          )
-        );
-        toast.success('Order confirmed successfully');
-      } else if (newStatus === 'Delivered') {
-        const order = orders.find(o => o._id === orderId);
-        if (order) {
-          setSelectedOrder(order);
-          setShowUploadModal(true);
-        }
+        requestData = { status: newStatus };
+      } else if (newStatus === 'Delivered' && billImage) {
+        // If updating to "Delivered" and an image is provided, use FormData
+        requestData = new FormData();
+        requestData.append('status', newStatus);
+        requestData.append('billImage', billImage);
+        headers = { 'Content-Type': 'multipart/form-data' };
       }
+  
+      const response = await axios.patch(
+        `http://localhost:5000/medicalowner/orders/${orderId}/status`,
+        requestData,
+        { headers }
+      );
+  
+      // Update the UI
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order._id === orderId ? { ...order, status: newStatus } : order
+        )
+      );
+  
+      toast.success(`Order ${newStatus.toLowerCase()} successfully`);
     } catch (error) {
       toast.error('Failed to update order status');
       console.error('Error updating order status:', error);
     }
   };
-
+  
   const handleFileUpload = async (event) => {
     const file = event.target.files?.[0];
     if (file && selectedOrder) {

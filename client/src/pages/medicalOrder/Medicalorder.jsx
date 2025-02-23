@@ -1,15 +1,10 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Plus, Minus, Upload, Search, Check, AlertCircle, Trash2, ShoppingCart } from 'lucide-react';
 import styles from './MedicalOrder.module.css';
+import axios from 'axios';
+import {useParams} from 'react-router-dom';
 
-const MedicineEntry = ({ 
-  medicine, 
-  onUpdate, 
-  onRemove, 
-  index,
-  isLast,
-  onAddMore 
-}) => {
+const MedicineEntry = ({ medicine, onUpdate, onRemove, index, isLast, onAddMore }) => {
   return (
     <div className={`${styles.medicineEntry} ${styles.slideIn}`}>
       <div className={styles.medicineHeader}>
@@ -71,87 +66,77 @@ const MedicineEntry = ({
 };
 
 const MedicalOrder = () => {
-  const [medicines, setMedicines] = useState([
-    { id: Date.now(), name: '', quantity: 1 }
-  ]);
+  const [medicines, setMedicines] = useState([{ name: '', quantity: 1 }]);
   const [prescription, setPrescription] = useState(null);
-  const [searchResults, setSearchResults] = useState(null);
-  const [orderPlaced, setOrderPlaced] = useState(false);
+  const [prescriptionUrl, setPrescriptionUrl] = useState('');
   const [showError, setShowError] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
-  const [cartTotal, setCartTotal] = useState(0);
-
-  const handlePrescriptionUpload = useCallback((e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      setPrescription(file);
-      setShowError(false);
-    } else {
-      setShowError(true);
-    }
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   const addMedicine = useCallback(() => {
-    setMedicines(prev => [
-      ...prev,
-      { id: Date.now(), name: '', quantity: 1 }
-    ]);
+    setMedicines(prev => [...prev, { name: '', quantity: 1 }]);
   }, []);
 
   const updateMedicine = useCallback((index, updatedMedicine) => {
-    setMedicines(prev => prev.map((medicine, i) => 
-      i === index ? updatedMedicine : medicine
-    ));
+    setMedicines(prev => prev.map((medicine, i) => i === index ? updatedMedicine : medicine));
   }, []);
 
   const removeMedicine = useCallback((index) => {
     setMedicines(prev => prev.filter((_, i) => i !== index));
   }, []);
 
-  const handleSearch = useCallback(async (e) => {
-    e.preventDefault();
-    if (!prescription) {
+  const handlePrescriptionUpload = useCallback(async (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      setPrescription(file);
+      setShowError(false);
+      
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const response = await axios.post('/api/upload', formData);
+        setPrescriptionUrl(response.data.url);
+      } catch (error) {
+        console.error('Error uploading image', error);
+        setShowError(true);
+      }
+    } else {
       setShowError(true);
-      return;
     }
-
-    const isValid = medicines.every(medicine => medicine.name.trim() && medicine.quantity > 0);
-    if (!isValid) {
-      setShowError(true);
-      return;
-    }
-
-    setIsSearching(true);
-    setShowError(false);
-
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    const results = medicines.map(medicine => ({
-      ...medicine,
-      available: true,
-      price: Math.floor(Math.random() * 50) + 10,
-      manufacturer: ["PharmaCorp", "MediCare", "HealthPlus"][Math.floor(Math.random() * 3)],
-      expiryDate: "2025-12-31"
-    }));
-
-    setSearchResults(results);
-    setIsSearching(false);
-    
-    const total = results.reduce((sum, medicine) => sum + (medicine.price * medicine.quantity), 0);
-    setCartTotal(total);
-  }, [medicines, prescription]);
-
-  const handleOrder = useCallback(() => {
-    setOrderPlaced(true);
-    setTimeout(() => {
-      setOrderPlaced(false);
-      setMedicines([{ id: Date.now(), name: '', quantity: 1 }]);
-      setPrescription(null);
-      setSearchResults(null);
-      setCartTotal(0);
-    }, 3000);
   }, []);
+const {id} = useParams();
+  const handleOrder = async () => {
+    if (!prescriptionUrl || medicines.some(m => !m.name.trim() || m.quantity < 1)) {
+      setShowError(true);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const orderData = {
+        patient: id, // Replace with actual patient ID from auth
+        medical: medid, // Replace with selected medical shop ID
+        medicines: medicines.map(m => ({
+          name: m.name.trim(),
+          quantity: parseInt(m.quantity)
+        })),
+        prescriptionImage: prescriptionUrl,
+      };
+
+      const response = await axios.post(`/patient/order/${id}`, orderData);
+      
+      // Reset form on success
+      setMedicines([{ name: '', quantity: 1 }]);
+      setPrescription(null);
+      setPrescriptionUrl('');
+      setShowError(false);
+      alert('Order placed successfully! Order ID: ' + response.data.orderId);
+    } catch (error) {
+      console.error('Error placing order:', error);
+      setShowError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -164,7 +149,7 @@ const MedicalOrder = () => {
         <div className={styles.formSection}>
           {medicines.map((medicine, index) => (
             <MedicineEntry
-              key={medicine.id}
+              key={index}
               medicine={medicine}
               index={index}
               onUpdate={(updated) => updateMedicine(index, updated)}
@@ -179,11 +164,7 @@ const MedicalOrder = () => {
             <div className={`${styles.uploadBox} ${prescription ? styles.hasFile : ''}`}>
               <Upload size={24} />
               <p>Drag & drop or click to upload</p>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handlePrescriptionUpload}
-              />
+              <input type="file" accept="image/*" onChange={handlePrescriptionUpload} />
             </div>
             {prescription && (
               <p className={styles.fileName}>
@@ -193,19 +174,15 @@ const MedicalOrder = () => {
           </div>
 
           <button 
-            className={`${styles.searchButton} ${isSearching ? styles.searching : ''}`}
-            onClick={handleSearch}
-            disabled={isSearching}
+            className={`${styles.orderButton} ${loading ? styles.loading : ''}`} 
+            onClick={handleOrder}
+            disabled={loading}
           >
-            {isSearching ? (
-              <>
-                <div className={styles.spinner}></div>
-                Checking Availability...
-              </>
+            {loading ? (
+              <div className={styles.spinner} />
             ) : (
               <>
-                <Search size={20} />
-                Check Availability
+                <ShoppingCart size={20} /> Place Order
               </>
             )}
           </button>
@@ -213,68 +190,10 @@ const MedicalOrder = () => {
 
         {showError && (
           <div className={`${styles.error} ${styles.shake}`}>
-            <AlertCircle size={20} />
-            Please fill in all medicine details and upload a valid prescription
-          </div>
-        )}
-
-        {searchResults && (
-          <div className={styles.resultSection}>
-            <h2>Medicine Details</h2>
-            <div className={styles.resultsList}>
-              {searchResults.map((result, index) => (
-                <div key={index} className={styles.resultCard}>
-                  <div className={styles.medicineInfo}>
-                    <div>
-                      <h3>{result.name}</h3>
-                      <p><strong>Manufacturer:</strong> {result.manufacturer}</p>
-                      <p><strong>Expiry:</strong> {result.expiryDate}</p>
-                    </div>
-                    <div className={styles.priceInfo}>
-                      <p className={styles.price}>${result.price}</p>
-                      <p className={styles.quantity}>Qty: {result.quantity}</p>
-                      <p className={styles.subtotal}>
-                        Subtotal: ${result.price * result.quantity}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <div className={styles.orderSummary}>
-              <div className={styles.totalAmount}>
-                <ShoppingCart size={24} />
-                <div>
-                  <p>Total Amount</p>
-                  <h3>${cartTotal}</h3>
-                </div>
-              </div>
-              <button 
-                className={styles.orderButton}
-                onClick={handleOrder}
-              >
-                Place Order
-              </button>
-            </div>
+            <AlertCircle size={20} /> Please fill in all medicine details and upload a valid prescription
           </div>
         )}
       </div>
-
-      {orderPlaced && (
-        <div className={styles.orderSuccess}>
-          <div className={styles.successContent}>
-            <div className={styles.successIcon}>
-              <Check size={48} />
-            </div>
-            <h2>Order Placed Successfully!</h2>
-            <p>Your medicines will be delivered soon.</p>
-            <div className={styles.orderNumber}>
-              Order #: {Math.random().toString(36).substr(2, 9).toUpperCase()}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

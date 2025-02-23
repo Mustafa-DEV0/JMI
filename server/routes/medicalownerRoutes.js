@@ -14,5 +14,7 @@ router.get("/orders/:id", getMedicalStoreOrders);
 
 router.post("/details/:id", saveMedicalStoreDetails);
 
+router.patch("/orders/:orderId/status", updateOrderStatus);
+
 export default router;
     
