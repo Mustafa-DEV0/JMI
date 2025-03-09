@@ -15,7 +15,9 @@ import AdminDashboard from "../pages/admindashboard/AdminDashboard.jsx";
 import DoctorDashboard from "../pages/doctordashboard/Doctordashboard.jsx";
 import MedicalDetails from "../pages/medicaldetails/MedicalDetails.jsx";
 import MedicalDashboard from "../pages/medicalownerdashboard/MedicalDashboard.jsx";
-import Medicalorder from "../pages/medicalorder/Medicalorder.jsx";
+import MedicalOrder from "../pages/medicalOrder/Medicalorder.jsx";
+import MedicalPrescription from "../pages/medicalprescription/MedicalPrescription.jsx";
+
 
 const AppRoutes = () => {
   return (
@@ -36,7 +38,8 @@ const AppRoutes = () => {
       <Route path="/admin/dashboard/:id" element={<AdminDashboard />} />
       <Route path="/medicalowner/:id" element={<MedicalDetails />} />
       <Route path="/medicalowner/dashboard/:id" element={<MedicalDashboard />} />
-      <Route path="/medicalorder" element={<Medicalorder />} />
+      <Route path="/medicalorder/:id" element={<MedicalOrder />} />
+      <Route path="/medicalprescription" element={<MedicalPrescription />} />
       
     </Routes>
   );

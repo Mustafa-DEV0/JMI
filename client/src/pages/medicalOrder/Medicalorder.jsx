@@ -3,6 +3,7 @@ import { Plus, Minus, Upload, Search, Check, AlertCircle, Trash2, ShoppingCart }
 import styles from './MedicalOrder.module.css';
 import axios from 'axios';
 import {useParams} from 'react-router-dom';
+import FormData from "form-data";
 
 const MedicineEntry = ({ medicine, onUpdate, onRemove, index, isLast, onAddMore }) => {
   return (
@@ -86,25 +87,36 @@ const MedicalOrder = () => {
 
   const handlePrescriptionUpload = useCallback(async (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      setPrescription(file);
-      setShowError(false);
+    if (!file || !file.type.startsWith("image/")) return;
+  
+    setPrescription(file);
+    setShowError(false);
+    
+    const formData = new FormData();
+    formData.append("image", file); // ✅ Changed 'file' to 'image'
+    
+    try {
+      // Step 1: Upload image to backend
+      const res = await axios.post("http://localhost:5000/patient/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
+      setPrescriptionUrl(res.data)
       
-      const formData = new FormData();
-      formData.append('file', file);
-      try {
-        const response = await axios.post('/api/upload', formData);
-        setPrescriptionUrl(response.data.url);
-      } catch (error) {
-        console.error('Error uploading image', error);
-        setShowError(true);
-      }
-    } else {
-      setShowError(true);
+     
+     
+  
+      
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to upload image ");
     }
-  }, []);
+  }, []); // ✅ Added medicine as a dependency
+  
 const {id} = useParams();
+
   const handleOrder = async () => {
+   
     if (!prescriptionUrl || medicines.some(m => !m.name.trim() || m.quantity < 1)) {
       setShowError(true);
       return;
@@ -114,7 +126,7 @@ const {id} = useParams();
     try {
       const orderData = {
         patient: id, // Replace with actual patient ID from auth
-        medical: medid, // Replace with selected medical shop ID
+        medical: "67ba47fb68946dafbf88c4bc", // Replace with selected medical shop ID
         medicines: medicines.map(m => ({
           name: m.name.trim(),
           quantity: parseInt(m.quantity)
@@ -122,7 +134,7 @@ const {id} = useParams();
         prescriptionImage: prescriptionUrl,
       };
 
-      const response = await axios.post(`/patient/order/${id}`, orderData);
+      const response = await axios.post(`http://localhost:5000/patient/order/${id}`, orderData);
       
       // Reset form on success
       setMedicines([{ name: '', quantity: 1 }]);
@@ -166,7 +178,12 @@ const {id} = useParams();
               <p>Drag & drop or click to upload</p>
               <input type="file" accept="image/*" onChange={handlePrescriptionUpload} />
             </div>
-            {prescription && (
+           
+            {prescription && !prescriptionUrl && (
+              <p>Uploading...</p>
+            )}
+
+            {prescriptionUrl && (
               <p className={styles.fileName}>
                 {prescription.name} <Check size={16} className={styles.checkIcon} />
               </p>
