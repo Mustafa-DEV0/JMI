@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Clock, Phone, Globe, CreditCard, Truck, AlertCircle } from 'lucide-react';
 import styles from './MedicalStore.module.css';
 
+
 const medicalStores = [
   {
     id: 1,

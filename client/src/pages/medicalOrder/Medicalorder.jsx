@@ -186,7 +186,7 @@ const {id} = useParams();
             {prescriptionUrl && (
               <p className={styles.fileName}>
                 {prescription.name} <Check size={16} className={styles.checkIcon} />
-              </p>
+              </p> 
             )}
           </div>
 
