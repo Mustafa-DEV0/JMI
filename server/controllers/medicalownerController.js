@@ -100,6 +100,53 @@ export const getMedicalStoreDetails = async (req, res) => {
   }
 };
 
+
+export const getMedicalStores = async (req, res) => {
+  try{
+    const {search,city,state,homeDelivery,onlineOrders,emergencyServices,daysOpen} = req.query;
+    console.log(req.query);
+    const filter = {};
+    if(search){
+      filter.name = { $regex: search, $options: "i" };
+    }
+    if (city) {
+      filter["address.city"] = { $regex: new RegExp(`^${city}$`, "i") };
+    }
+
+    // 🔹 Filter by state (case-insensitive)
+    if (state) {
+      filter["address.state"] = { $regex: new RegExp(`^${state}$`, "i") };
+    }
+
+    // 🔹 Boolean filters
+    if (homeDelivery !== undefined) {
+      filter["deliveryOptions.homeDelivery"] = homeDelivery === "true";
+    }
+    if (onlineOrders !== undefined) {
+      filter["deliveryOptions.onlineOrders"] = onlineOrders === "true";
+    }
+    if (emergencyServices !== undefined) {
+      filter["deliveryOptions.emergencyServices"] = emergencyServices === "true";
+    }
+
+    // 🔹 Check if store is open on the given day
+    if (daysOpen && daysOpen !== "All Days") {
+      filter["workingHours.daysOpen"] = { $in: [daysOpen] };
+    }
+    console.log("Final filter applied:", JSON.stringify(filter, null, 2));
+    console.log("Received dayOpen:", req.query.daysOpen);
+
+    const medicalStores = await MedicalStore.find(filter).select("-password");
+    if(medicalStores.length === 0){
+      return res.json({ message: "No medical stores found" });
+    }
+    res.json(medicalStores);
+  } catch (error) {
+    console.error("Error fetching medical stores:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 // Get medical store orders
 export const getMedicalStoreOrders = async (req, res) => {
   try {

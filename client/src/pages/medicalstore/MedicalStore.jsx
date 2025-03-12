@@ -5,121 +5,17 @@ import styles from './MedicalStore.module.css';
 
 
 
-const medicalStoresMock = [
-  {
-    id: 1,
-    name: "HealthCare Pharmacy Plus",
-    owner: "John Smith",
-    licenseNumber: "HP12345",
-    contactDetails: {
-      phone: "+1 (555) 123-4567",
-      email: "contact@healthcarepharmacy.com",
-      website: "www.healthcarepharmacy.com"
-    },
-    address: {
-      street: "123 Medical Avenue",
-      city: "Boston",
-      state: "Massachusetts",
-      pinCode: "02108",
-      country: "USA"
-    },
-    workingHours: {
-      openTime: "08:00",
-      closeTime: "22:00",
-      daysOpen: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    },
-    deliveryOptions: {
-      homeDelivery: true,
-      onlineOrders: true
-    },
-    paymentMethods: {
-      acceptsCash: true,
-      acceptsCard: true,
-      acceptsUPI: true
-    },
-    emergencyServices: {
-      open24Hours: false
-    },
-    image: "https://images.unsplash.com/photo-1586015555751-63c03a1cd28e?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 2,
-    name: "24/7 MediCare Center",
-    owner: "Sarah Johnson",
-    licenseNumber: "MC78901",
-    contactDetails: {
-      phone: "+1 (555) 987-6543",
-      email: "info@247medicare.com",
-      website: "www.247medicare.com"
-    },
-    address: {
-      street: "456 Health Street",
-      city: "Boston",
-      state: "Massachusetts",
-      pinCode: "02109",
-      country: "USA"
-    },
-    workingHours: {
-      openTime: "00:00",
-      closeTime: "24:00",
-      daysOpen: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    },
-    deliveryOptions: {
-      homeDelivery: true,
-      onlineOrders: true
-    },
-    paymentMethods: {
-      acceptsCash: true,
-      acceptsCard: true,
-      acceptsUPI: true
-    },
-    emergencyServices: {
-      open24Hours: true
-    },
-    image: "https://images.unsplash.com/photo-1576602976047-174e57a47881?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 3,
-    name: "Community Wellness Pharmacy",
-    owner: "Michael Chen",
-    licenseNumber: "WP45678",
-    contactDetails: {
-      phone: "+1 (555) 456-7890",
-      email: "help@communitywellness.com",
-      website: "www.communitywellness.com"
-    },
-    address: {
-      street: "789 Wellness Road",
-      city: "Cambridge",
-      state: "Massachusetts",
-      pinCode: "02138",
-      country: "USA"
-    },
-    workingHours: {
-      openTime: "09:00",
-      closeTime: "20:00",
-      daysOpen: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-    },
-    deliveryOptions: {
-      homeDelivery: false,
-      onlineOrders: true
-    },
-    paymentMethods: {
-      acceptsCash: true,
-      acceptsCard: true,
-      acceptsUPI: false
-    },
-    emergencyServices: {
-      open24Hours: false
-    },
-    image: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=800&auto=format&fit=crop&q=60"
-  }
-];
+
 
 
 
 const cities = ["All Cities", "Boston", "Cambridge", "Somerville", "Brookline"];
-const states = ["All States", "Massachusetts", "New York", "California"];
+const states = ["All States", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
+  "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+  "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan",
+  "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh",
+  "Uttarakhand", "West Bengal"];
 
 function MedicalStore() {
 
@@ -148,7 +44,7 @@ function MedicalStore() {
       setLoading(true);
 
       try{
-        const response = await axios.get('http://localhost:5000/medicalstore/list',{
+        const response = await axios.get('http://localhost:5000/medicalowner/medicalstores/',{
           params: {
             search: searchQuery,
             city: selectedCity !== 'All Cities' ? selectedCity : undefined,
@@ -159,8 +55,8 @@ function MedicalStore() {
             daysOpen: selectedDay !== 'All Days' ? selectedDay : undefined
           }
         });
-
-        setmedicalStores(response.data);
+        
+        setmedicalStores(Array.isArray(response.data) ? response.data : []);
         console.log(response.data);
       } catch (error) {
         setError("Failed to fetch stores")
@@ -263,11 +159,11 @@ function MedicalStore() {
             <div key={store.id} className={styles.storeCard}>
               <div className={styles.storeImage}>
                 <img src={store.image} alt={store.name} />
-                {store.emergencyServices.open24Hours && (
+                {/* {store.emergencyServices.open24Hours && (
                   <div className={styles.emergencyBadge}>
                     <AlertCircle size={16} /> 24/7 Emergency
                   </div>
-                )}
+                )} */}
               </div>
               
               <div className={styles.storeInfo}>
