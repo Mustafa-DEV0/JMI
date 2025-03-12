@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Search, MapPin, Clock, Phone, Globe, CreditCard, Truck, AlertCircle } from 'lucide-react';
 import styles from './MedicalStore.module.css';
 
 
-const medicalStores = [
+
+const medicalStoresMock = [
   {
     id: 1,
     name: "HealthCare Pharmacy Plus",
@@ -115,11 +116,17 @@ const medicalStores = [
   }
 ];
 
+
+
 const cities = ["All Cities", "Boston", "Cambridge", "Somerville", "Brookline"];
 const states = ["All States", "Massachusetts", "New York", "California"];
 
 function MedicalStore() {
-  const navigate = useNavigate();
+
+  const [medicalStores, setmedicalStores] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCity, setSelectedCity] = useState('All Cities');
   const [selectedState, setSelectedState] = useState('All States');
@@ -136,20 +143,33 @@ function MedicalStore() {
     navigate("/medicalprescription");
   };
 
-  const filteredStores = medicalStores.filter(store => {
-    const matchesSearch = 
-      store.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      store.address.street.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCity = selectedCity === 'All Cities' || store.address.city === selectedCity;
-    const matchesState = selectedState === 'All States' || store.address.state === selectedState;
-    const matchesDelivery = !delivery || store.deliveryOptions.homeDelivery;
-    const matchesEmergency = !emergency || store.emergencyServices.open24Hours;
-    const matchesOnlineOrder = !onlineOrder || store.deliveryOptions.onlineOrders;
-    const matchesDay = selectedDay === 'All Days' || store.workingHours.daysOpen.includes(selectedDay);
+  useEffect(() => {
+    const fetchMedicalStores = async () => {
+      setLoading(true);
 
-    return matchesSearch && matchesCity && matchesState && matchesDelivery && 
-           matchesEmergency && matchesOnlineOrder && matchesDay;
-  });
+      try{
+        const response = await axios.get('http://localhost:5000/medicalstore/list',{
+          params: {
+            search: searchQuery,
+            city: selectedCity !== 'All Cities' ? selectedCity : undefined,
+            state: selectedState !== 'All States' ? selectedState : undefined,
+            homeDelivery: delivery || undefined,
+            onlineOrder: onlineOrder || undefined,
+            emergencyServices: emergency || undefined,
+            daysOpen: selectedDay !== 'All Days' ? selectedDay : undefined
+          }
+        });
+
+        setmedicalStores(response.data);
+        console.log(response.data);
+      } catch (error) {
+        setError("Failed to fetch stores")
+      }
+      setLoading(false);
+    };
+
+    fetchMedicalStores();
+  },[searchQuery, selectedCity, selectedState, delivery, onlineOrder, emergency, selectedDay]);
 
   return (
     <div className={styles.container}>
@@ -235,11 +255,11 @@ function MedicalStore() {
         </div>
 
         <div className={styles.resultCount}>
-          {filteredStores.length} Medical Stores Found
+          {medicalStores.length} Medical Stores Found
         </div>
 
         <div className={styles.storeGrid}>
-          {filteredStores.map(store => (
+          {medicalStores.map(store => (
             <div key={store.id} className={styles.storeCard}>
               <div className={styles.storeImage}>
                 <img src={store.image} alt={store.name} />
