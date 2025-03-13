@@ -68,6 +68,8 @@ const Dashboard = () => {
   });
   clearInterval;
 
+  const [orders, setorders] = useState([]);
+
   
   const { id } = useParams();
   useEffect(() => {
@@ -80,6 +82,8 @@ const Dashboard = () => {
         });
         console.log(response.data);
         setPatientData(response.data);
+        console.log("order:", response.data.orders);
+        setorders(Array.isArray(response.data.orders) ? response.data.orders : []);
       } catch (error) {
         console.error("Error fetching patient data:", error);
       }
@@ -493,8 +497,10 @@ const Dashboard = () => {
                   </h3>
 
                   <div className={styles.ordersList}>
-                    {medicineOrders.upcoming.map((order) => (
-                      <div key={order.id} className={styles.orderCard}>
+                    {orders
+                    .filter((order) => order.status === "Pending" || order.status === "Confirmed" )
+                    .map((order) => (
+                      <div key={order._id} className={styles.orderCard}>
                         <div className={styles.orderHeader}>
                           <div>
                             <h4>{order.medicalName}</h4>
@@ -512,18 +518,19 @@ const Dashboard = () => {
                           </span>
                         </div>
                         <div className={styles.orderItems}>
-                          {order.items.map((item, index) => (
+                          {order.medicines.map((item, index) => (
                             <div key={index} className={styles.orderItem}>
                               <p>
                                 {item.name} x {item.quantity}
                               </p>
-                              <p>₹{item.price.toFixed(2)}</p>
+                              <p>₹{item.price ? item.price.toFixed(2) : "0.00"}</p>
+
                             </div>
                           ))}
                         </div>
                         <div className={styles.orderTotal}>
                           <p>Total Amount</p>
-                          <p>₹{order.total.toFixed(2)}</p>
+                          <p>₹{order.totalPrice.toFixed(2)}</p>
                         </div>
                       </div>
                     ))}
@@ -535,42 +542,39 @@ const Dashboard = () => {
                     <ShoppingBag className={styles.icon} /> Previous Orders
                   </h3>
                   <div className={styles.ordersList}>
-                    {medicineOrders.previous.map((order) => (
-                      <div key={order.id} className={styles.orderCard}>
-                        <div className={styles.orderHeader}>
-                          <div>
-                            <h4>{order.medicalName}</h4>
-                            <p className={styles.orderDate}>
-                              Delivered on{" "}
-                              {new Date(
-                                order.deliveryDate
-                              ).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <span
-                            className={`${styles.orderStatus} ${
-                              styles[order.status]
-                            }`}
-                          >
-                            {order.status}
-                          </span>
-                        </div>
-                        <div className={styles.orderItems}>
-                          {order.items.map((item, index) => (
-                            <div key={index} className={styles.orderItem}>
-                              <p>
-                                {item.name} x {item.quantity}
-                              </p>
-                              <p>₹{item.price.toFixed(2)}</p>
-                            </div>
-                          ))}
-                        </div>
-                        <div className={styles.orderTotal}>
-                          <p>Total Amount</p>
-                          <p>₹{order.total.toFixed(2)}</p>
-                        </div>
-                      </div>
-                    ))}
+                  {orders
+  .filter((order) => order.status === "Delivered") // Only include completed orders
+  .map((order) => (
+    <div key={order.id} className={styles.orderCard}>
+      <div className={styles.orderHeader}>
+        <div>
+          <h4>{order.medicalName}</h4>
+          <p className={styles.orderDate}>
+            Delivered on{" "}
+            {new Date(order.deliveryDate).toLocaleDateString()}
+          </p>
+        </div>
+        <span className={`${styles.orderStatus} ${styles[order.status]}`}>
+          {order.status}
+        </span>
+      </div>
+      <div className={styles.orderItems}>
+        {order.medicines.map((item, index) => (
+          <div key={index} className={styles.orderItem}>
+            <p>
+              {item.name} x {item.quantity}
+            </p>
+            <p>₹{item.price?.toFixed(2) || "0.00"}</p>
+          </div>
+        ))}
+      </div>
+      <div className={styles.orderTotal}>
+        <p>Total Amount</p>
+        <p>₹{order.totalPrice?.toFixed(2) || "0.00"}</p>
+      </div>
+    </div>
+  ))}
+
                   </div>
                 </div>
               </div>
