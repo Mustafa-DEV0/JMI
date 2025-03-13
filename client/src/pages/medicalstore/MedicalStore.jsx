@@ -154,12 +154,11 @@ const navigate = useNavigate();
         <div className={styles.resultCount}>
           {medicalStores.length} Medical Stores Found
         </div>
-
         <div className={styles.storeGrid}>
           {medicalStores.map(store => (
             <div key={store.id} className={styles.storeCard}>
               <div className={styles.storeImage}>
-                <img src={store.image} alt={store.name} />
+                <img src={store.imageUrl} alt={store.name} />
                 {/* { {store.emergencyServices.open24Hours && (
                   <div className={styles.emergencyBadge}>
                     <AlertCircle size={16} /> 24/7 Emergency

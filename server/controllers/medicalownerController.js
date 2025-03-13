@@ -9,13 +9,13 @@ export const saveMedicalStoreDetails = async (req, res) => {
       formData: {
         name,
         owner,
-        medicalImage,
         licenseNumber,
         contactDetails = {},
         address = {},
         workingHours = {},
         deliveryOptions = {},
         paymentMethods = {},
+        imageUrl,
        
       },
     } = req.body;
@@ -38,7 +38,7 @@ export const saveMedicalStoreDetails = async (req, res) => {
     // Update fields only if provided
     medicalStore.name = name || medicalStore.name || "";
     medicalStore.owner = owner || medicalStore.owner || "";
-    medicalStore.medicalImage = medicalImage || medicalStore.medicalImage || "";
+    
     medicalStore.licenseNumber = licenseNumber || medicalStore.licenseNumber || "";
 
     medicalStore.contactDetails = {
@@ -66,6 +66,7 @@ export const saveMedicalStoreDetails = async (req, res) => {
       acceptsCard: acceptsCard !== undefined ? acceptsCard : medicalStore.paymentMethods.acceptsCard,
       acceptsUPI: acceptsUPI !== undefined ? acceptsUPI : medicalStore.paymentMethods.acceptsUPI,
     };
+    medicalStore.imageUrl = imageUrl || medicalStore.imageUrl || "";
    
 
     await medicalStore.save();

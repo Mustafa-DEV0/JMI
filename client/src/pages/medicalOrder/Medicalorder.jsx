@@ -4,6 +4,7 @@ import styles from './MedicalOrder.module.css';
 import axios from 'axios';
 import {useParams} from 'react-router-dom';
 import FormData from "form-data";
+import { userId } from '../../utils/auth';
 
 const MedicineEntry = ({ medicine, onUpdate, onRemove, index, isLast, onAddMore }) => {
   return (
@@ -103,6 +104,7 @@ const MedicalOrder = () => {
   
       setPrescriptionUrl(res.data)
       
+      
      
      
   
@@ -114,6 +116,8 @@ const MedicalOrder = () => {
   }, []); // ✅ Added medicine as a dependency
   
 const {id} = useParams();
+const patientId = userId();
+
 
   const handleOrder = async () => {
    
@@ -121,20 +125,21 @@ const {id} = useParams();
       setShowError(true);
       return;
     }
-
+    console.log("before 0:",prescriptionUrl)
     setLoading(true);
     try {
       const orderData = {
-        patient: id, // Replace with actual patient ID from auth
-        medical: "67ba47fb68946dafbf88c4bc", // Replace with selected medical shop ID
+        patient: patientId , // Replace with actual patient ID from auth
+        medical: id, // Replace with selected medical shop ID
         medicines: medicines.map(m => ({
           name: m.name.trim(),
           quantity: parseInt(m.quantity)
         })),
         prescriptionImage: prescriptionUrl,
       };
-
+      console.log("before:",orderData.prescriptionImage)
       const response = await axios.post(`http://localhost:5000/patient/order/${id}`, orderData);
+      console.log("after:",orderData.prescriptionImage)
       
       // Reset form on success
       setMedicines([{ name: '', quantity: 1 }]);

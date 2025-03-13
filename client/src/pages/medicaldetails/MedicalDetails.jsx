@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState,useCallback } from 'react';
 import styles from './MedicalDetails.module.css';
-import { Clock, MapPin, Phone, Mail, CreditCard, Wallet, Smartphone, Truck, ShoppingBag } from 'lucide-react';
+import { Clock, MapPin, Phone, Mail, CreditCard, Wallet, Smartphone, Truck, ShoppingBag, Upload, Check} from 'lucide-react';
 import axios from 'axios';
 import { useParams , useNavigate } from 'react-router-dom';   
+import FormData from 'form-data';
 
 
 const MedicalDetails = () => {
+  const [image, setimage] = useState(null)
+  const [imageurl, setimageurl] = useState('')
+
   const [formData, setFormData] = useState({
     name: '',
     owner: '',
@@ -34,8 +38,11 @@ const MedicalDetails = () => {
       acceptsCash: false,
       acceptsCard: false,
       acceptsUPI: false
-    }
+    },
+    imageUrl: ''
   });
+
+  console.log("form url:",formData.imageUrl)
 
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -77,6 +84,37 @@ const MedicalDetails = () => {
       }
     }));
   };
+
+  const handleImageUpload = useCallback(async (e) => {
+    const file = e.target.files[0];
+    if (!file || !file.type.startsWith("image/")) return;
+  
+    setimage(file);
+    
+    
+    const formData = new FormData();
+    formData.append("image", file); // ✅ Changed 'file' to 'image'
+    
+    try {
+      // Step 1: Upload image to backend
+      const res = await axios.post("http://localhost:5000/image/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
+      
+      setimageurl(res.data)
+      
+      setFormData(prev => ({...prev, imageUrl: res.data}))
+     
+     
+  
+      
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to upload image ");
+    }
+  }, []);
+  
   const { id } = useParams();
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
@@ -334,6 +372,27 @@ const MedicalDetails = () => {
                 </div>
               </div>
             </div>
+
+            <div className={styles.uploadSection}>
+            <label>Upload Pharmacy Image <span className={styles.required}>*</span></label>
+            <div className={`${styles.uploadBox} ${image ? styles.hasFile : ''}`}>
+              <Upload size={24} />
+              <p>Drag & drop or click to upload</p>
+              <input type="file" accept="image/*" onChange={handleImageUpload} />
+            </div>
+           
+            {image && !imageurl && (
+              <p>Uploading...</p>
+            )}
+
+            {imageurl && (
+              <p className={styles.fileName}>
+                {image.name} <Check size={16} className={styles.checkIcon} />
+              </p> 
+            )}
+          </div>        
+
+
           </div>
 
           <button type="submit" className={styles.submitButton}>
