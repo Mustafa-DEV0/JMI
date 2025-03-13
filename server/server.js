@@ -9,6 +9,7 @@ import doctorRoutes from "./routes/doctorRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import medicalownerRoutes from "./routes/medicalownerRoutes.js";
+import imageUploadRoutes from "./routes/imageUploadRoutes.js";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use("/doctor", doctorRoutes);
 app.use("/appointment", appointmentRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/medicalowner", medicalownerRoutes);
+app.use("/image", imageUploadRoutes);
 
 const PORT = process.env.PORT || 5000;
 

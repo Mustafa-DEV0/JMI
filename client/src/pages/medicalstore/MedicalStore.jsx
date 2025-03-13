@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Search, MapPin, Clock, Phone, Globe, CreditCard, Truck, AlertCircle } from 'lucide-react';
 import styles from './MedicalStore.module.css';
@@ -34,9 +35,9 @@ function MedicalStore() {
   const daysOfWeek = [
     'All Days', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
   ];
-
+const navigate = useNavigate();
   const handleSelectStore = (storeId) => {
-    navigate("/medicalprescription");
+    navigate(`/medicalorder/${storeId}`);
   };
 
   useEffect(() => {
@@ -57,7 +58,7 @@ function MedicalStore() {
         });
         
         setmedicalStores(Array.isArray(response.data) ? response.data : []);
-        console.log(response.data);
+       
       } catch (error) {
         setError("Failed to fetch stores")
       }
@@ -159,11 +160,11 @@ function MedicalStore() {
             <div key={store.id} className={styles.storeCard}>
               <div className={styles.storeImage}>
                 <img src={store.image} alt={store.name} />
-                {/* {store.emergencyServices.open24Hours && (
+                {/* { {store.emergencyServices.open24Hours && (
                   <div className={styles.emergencyBadge}>
                     <AlertCircle size={16} /> 24/7 Emergency
                   </div>
-                )} */}
+                )} } */}
               </div>
               
               <div className={styles.storeInfo}>
@@ -173,7 +174,7 @@ function MedicalStore() {
                 <div className={styles.metadata}>
                   <div className={styles.metaItem}>
                     <MapPin className={styles.icon} />
-                    <span>{store.address.street}, {store.address.city}</span>
+                    <span>{store.address.street}, {store.address.city}, {store.address.state}</span>
                   </div>
                   <div className={styles.metaItem}>
                     <Clock className={styles.icon} />
@@ -218,7 +219,7 @@ function MedicalStore() {
                 </div>
 
                 <button
-                  onClick={() => handleSelectStore(store.id)}
+                  onClick={() => handleSelectStore(store._id)}
                   className={styles.selectButton}
                 >
                   Upload Prescription & Order Medicines

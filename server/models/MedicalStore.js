@@ -72,7 +72,7 @@ const MedicalStoreSchema = new mongoose.Schema(
         type: String,
       },
       daysOpen: {
-        type: [String], //["Monday", "Tuesday", "Wednesday"]
+        type: [String], 
       },
     },
 
@@ -100,6 +100,9 @@ const MedicalStoreSchema = new mongoose.Schema(
         default: false,
       },
     },
+    imageUrl: {
+      type: String,
+    }
   },
   { timestamps: true }
 );
