@@ -76,17 +76,18 @@ function DoctorDashboard() {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(API + `/doctor/dashboard/${id}`);
+        const response = await axios.get(`http://localhost:5000/doctor/dashboard/${id}`);
         console.log(response.data);
-        // Destructure and process response data
+    
+        // Destructure response data from the updated controller
         const {
           allPatients = [],
           newPatients = [],
           currentPatients = [],
           dischargedPatients = [],
-          appointments: backendAppointments = {},
+          appointments = { pending: [], upcoming: [], completed: [] }, // Default structure
         } = response.data;
-
+    
         // Update patients with status
         const patientsWithStatus = allPatients.map((patient) => {
           if (newPatients.some((p) => p._id === patient._id)) {
@@ -98,9 +99,10 @@ function DoctorDashboard() {
           }
           return { ...patient, status: "Unknown" };
         });
-
+    
+        // Set state with corrected appointment structure
         setPatients(patientsWithStatus);
-        setAppointments(backendAppointments);
+        setAppointments(appointments);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
@@ -108,13 +110,13 @@ function DoctorDashboard() {
         setLoading(false);
       }
     };
-
+    
     fetchDashboardData();
-  }, [id]);
+  }, [id]);    
 
   const handleAppointmentAction = async (appointmentId, type, action) => {
     try {
-      const response = await axios.put(API + `/appointments/${appointmentId}`, {
+      const response = await axios.put(`http://localhost:5000/appointment/update/${appointmentId}`, {appointmentId,
         action,
       });
 
@@ -409,7 +411,7 @@ function DoctorDashboard() {
           }`}
           onClick={() => setAppointmentTab("pending")}
         >
-          Pending ({appointments.pending.length})
+          Pending ({appointments?.pending?.length})
         </button>
         <button
           className={`${styles.tabButton} ${
@@ -417,7 +419,7 @@ function DoctorDashboard() {
           }`}
           onClick={() => setAppointmentTab("upcoming")}
         >
-          Upcoming ({appointments.upcoming.length})
+          Upcoming ({appointments?.upcoming?.length})
         </button>
         <button
           className={`${styles.tabButton} ${
@@ -425,7 +427,7 @@ function DoctorDashboard() {
           }`}
           onClick={() => setAppointmentTab("completed")}
         >
-          Completed ({appointments.completed.length})
+          Completed ({appointments?.completed?.length})
         </button>
       </div>
 

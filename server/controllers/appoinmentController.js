@@ -64,4 +64,48 @@ const getPatientHistory = async (req, res) => {
   }
 };
 
-export { getDoctorDetails, saveAppointmentDetails, getPatientHistory };
+ const updateAppointmentStatus = async (req, res) => {
+  try {
+    const { appointmentId, action } = req.body;
+    
+    if (!appointmentId || !action) {
+      return res.status(400).json({ message: "Missing appointmentId or action" });
+    }
+
+    let newStatus;
+    switch (action) {
+      case 'accept':
+        newStatus = 'scheduled';
+        break;
+      case 'decline':
+        newStatus = 'cancelled';
+        break;
+      case 'complete':
+        newStatus = 'completed';
+        break;
+      default:
+        return res.status(400).json({ message: "Invalid action" });
+    }
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      { status: newStatus },
+      { new: true }
+    ).populate("patient");
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    res.json({
+      message: "Appointment updated successfully",
+      appointment: updatedAppointment,
+    });
+  } catch (error) {
+    console.error("Error in updateAppointmentStatus:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+export { getDoctorDetails, saveAppointmentDetails, getPatientHistory, updateAppointmentStatus };

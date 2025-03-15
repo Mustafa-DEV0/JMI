@@ -1,5 +1,6 @@
 import Doctor from "../models/Doctor.js";
 import Appointment from "../models/Appointment.js";
+import Patient from "../models/Patient.js";
 import Prescription from "../models/Prescription.js";
 
 export const postDoctorProfile = async (req, res) => {
@@ -26,35 +27,68 @@ export const getDoctorDashboard = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Fetch doctor
-    const doctor = await Doctor.findById(id);
-    if (!doctor) {
-      return res.status(404).json({ message: "Doctor not found" });
+    const allAppointments = await Appointment.find({ doctor: id })
+      .populate({
+        path: "patient",
+        model: "Patient",
+        select: "-password -isAdmin",
+      });
+
+    // Get unique patients from all appointments
+    const uniquePatientIds = [...new Set(allAppointments.map(appt => appt.patient._id.toString()))];
+    const allPatients = await Patient.find({ _id: { $in: uniquePatientIds } });
+
+    // Categorize patients based on their latest appointment status
+    const patientCategories = {
+      new: [],
+      current: [],
+      discharged: []
+    };
+
+    // For each patient, find their latest appointment to determine their status
+    for (const patient of allPatients) {
+      const patientAppointments = allAppointments.filter(
+        appt => appt.patient._id.toString() === patient._id.toString()
+      );
+      const latestAppointment = patientAppointments.sort((a, b) => 
+        new Date(b.createdAt) - new Date(a.createdAt)
+      )[0];
+
+      if (latestAppointment) {
+        switch (latestAppointment.status) {
+          case 'pending':
+            patientCategories.new.push(patient);
+            break;
+          case 'scheduled':
+            patientCategories.current.push(patient);
+            break;
+          case 'completed':
+            patientCategories.discharged.push(patient);
+            break;
+        }
+      }
     }
 
-    // Fetch patients related to the doctor
-    const allPatients = await Patient.find({ doctor: id });
-    const newPatients = allPatients.filter((p) => p.status === "New");
-    const currentPatients = allPatients.filter((p) => p.status === "Current");
-    const dischargedPatients = allPatients.filter(
-      (p) => p.status === "Discharged"
-    );
-
-    // Fetch appointments related to the doctor
-    const appointments = await Appointment.find({ doctor: id });
+    // Categorize appointments
+    const appointmentCategories = {
+      pending: allAppointments.filter(appt => appt.status === 'pending'),
+      upcoming: allAppointments.filter(appt => appt.status === 'scheduled'),
+      completed: allAppointments.filter(appt => appt.status === 'completed')
+    };
 
     res.json({
       allPatients,
-      newPatients,
-      currentPatients,
-      dischargedPatients,
-      appointments,
+      newPatients: patientCategories.new,
+      currentPatients: patientCategories.current,
+      dischargedPatients: patientCategories.discharged,
+      appointments: appointmentCategories
     });
   } catch (error) {
-    console.error("Error fetching doctor dashboard:", error);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error in getDoctorDashboardData:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
  export const getDoctors = async (req, res) => { 
   try {
@@ -118,3 +152,5 @@ export const getDoctorDashboard = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
+

@@ -1,24 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  User,
-  Phone,
-  Calendar,
-  MapPin,
-  Heart,
-  Activity,
-  Clock,
-  Edit,
-  AlertCircle,
-  Pill as Pills,
-  FileText,
-  Upload,
-  Image as ImageIcon,
-  Package,
-  ShoppingBag,
-  X,
-} from "lucide-react";
+import { User, Phone, Calendar, MapPin, Heart, Activity, Clock, Edit, AlertCircle, Pill as Pills, FileText, Upload,   Image as ImageIcon, Package, ShoppingBag, X, } from "lucide-react";
 import styles from "./Dashboard.module.css";
 import API from "../../api/axios";
 
