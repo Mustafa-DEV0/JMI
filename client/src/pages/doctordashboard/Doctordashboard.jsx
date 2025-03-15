@@ -10,6 +10,7 @@ import {
   X,
   Check,
   Plus,
+  CalendarCheck,
   ChevronRight,
 } from "lucide-react";
 import { useParams } from "react-router-dom";
@@ -116,37 +117,40 @@ function DoctorDashboard() {
 
   const handleAppointmentAction = async (appointmentId, type, action) => {
     try {
-      const response = await axios.put(`http://localhost:5000/appointment/update/${appointmentId}`, {appointmentId,
+      const response = await axios.put(`http://localhost:5000/appointment/update/${appointmentId}`, {
+        appointmentId,
         action,
       });
-
-      if (response.data && response.data.updatedAppointment) {
-        const updatedAppointment = response.data.updatedAppointment;
-
-        setAppointments((prev) => {
-          const newState = { ...prev };
-          newState[type] = prev[type].filter(
-            (app) => app._id !== appointmentId
-          );
-
-          if (updatedAppointment.status === "scheduled") {
-            newState.upcoming = [...prev.upcoming, updatedAppointment];
-          } else if (updatedAppointment.status === "completed") {
-            newState.completed = [...prev.completed, updatedAppointment];
-          } else if (updatedAppointment.status === "pending") {
-            newState.pending = [...prev.pending, updatedAppointment];
-          }
-          return newState;
-        });
-
+  
+      if (response.data && response.data.appointment) {
+        const updatedAppointment = response.data.appointment;
+  
+        setAppointments((prev) => ({
+          pending:
+            updatedAppointment.status === "pending"
+              ? [...prev.pending, updatedAppointment]
+              : prev.pending.filter((app) => app._id !== appointmentId),
+  
+          upcoming:
+            updatedAppointment.status === "scheduled"
+              ? [...prev.upcoming, updatedAppointment]
+              : prev.upcoming.filter((app) => app._id !== appointmentId),
+  
+          completed:
+            updatedAppointment.status === "completed"
+              ? [...prev.completed, updatedAppointment]
+              : prev.completed.filter((app) => app._id !== appointmentId),
+        }));
+  
         setShowSuccessMessage(true);
         setTimeout(() => setShowSuccessMessage(false), 3000);
       }
     } catch (error) {
-      console.error("Error updating appointment:", error);
       setError("Failed to update appointment");
     }
   };
+  
+  
 
   const handleAddPrescription = async (e) => {
     e.preventDefault();
@@ -487,7 +491,7 @@ function DoctorDashboard() {
               )}
               {appointmentTab === "upcoming" && (
                 <button
-                  className={styles.completeButton}
+                  className={styles.acceptButton}
                   onClick={() =>
                     handleAppointmentAction(
                       appointment._id,
@@ -496,7 +500,7 @@ function DoctorDashboard() {
                     )
                   }
                 >
-                  Mark as Completed
+                  Mark as Completed  <CalendarCheck size={20} />
                 </button>
               )}
             </div>
