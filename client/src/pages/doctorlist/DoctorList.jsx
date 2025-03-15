@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Search, MapPin, Phone, Star, Clock, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import styles from "./DoctorList.module.css";
 
 const specializations = [
@@ -71,6 +72,12 @@ function DoctorList() {
   const handleApplyFilters = () => {
     setAppliedFilters(filters);
   };
+
+  const navigate = useNavigate();
+  const handleAppointment = (id) => {
+    navigate(`/appointment/${id}`);
+  };
+
 
   return (
     <div className={styles.container}>
@@ -232,7 +239,8 @@ function DoctorList() {
                     <Phone className={styles.icon} />
                     {doctor.phone}
                   </a>
-                  <button className={styles.bookButton}>
+                  <button className={styles.bookButton}
+                  onClick={()=>handleAppointment(doctor.id)}>
                     Book Appointment
                   </button>
                 </div>
